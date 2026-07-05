@@ -1,0 +1,29 @@
+# status.yaml — shared status machine of one multi-atom product (SM1-SM4)
+# One file per products/<product-slug>/; one entry per atom; current state only.
+product: framework-v1
+updated: 2026-07-05T11:05:10Z
+atoms:
+  - id: ROLE-001
+    state: delivered
+    timestamp: 2026-07-05T10:00:39Z
+    note: roles/framework-architect.md + RESULT.md written; all hard criteria pass; self-verification is acceptance (draft)
+  - id: ATOM-001
+    state: delivered
+    timestamp: 2026-07-05T07:41:29Z
+    note: return-1 findings fixed (417 lines); redelivered to Verify
+  - id: ATOM-002
+    state: delivered
+    timestamp: 2026-07-05T10:08:40Z
+    note: FEV-PROTOCOL.md (304 lines) + 3 backfilled decision records + RESULT.md; all hard criteria pass by script
+  - id: ATOM-002-VERIFY
+    state: delivered
+    timestamp: 2026-07-05T10:17:12Z
+    note: VERDICT.md (round 1 accept, 3 minor findings F1-F3, S4 deferred to human); RESULT.md + run.log complete
+  - id: ATOM-003
+    state: delivered
+    timestamp: 2026-07-05T10:56:14Z
+    note: REPO-STRUCTURE.md (251 lines) + 5 seed files + RESULT.md; all hard criteria pass by script; awaiting independent Verify + human sign-off
+  - id: ATOM-003-VERIFY
+    state: delivered
+    timestamp: 2026-07-05T11:05:10Z
+    note: VERDICT.md accept (round 1, returns_used 0); findings F1-F3 all minor; S4 deferred to human; RESULT.md + run.log complete
