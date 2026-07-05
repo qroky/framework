@@ -1,0 +1,27 @@
+2026-07-05T11:25:05Z CYCLE-START ATOM-004 executor=framework-architect tier=L instantiation=session (launch session, per ATOM-004-LAUNCH)
+2026-07-05T11:25:05Z PHASE-ENTER understand — INPUT.md read in full (U1)
+2026-07-05T11:25:05Z UNDERSTAND (U2) JTBD: define how atoms compose into running products — decomposition planning, model-tier assignment, budget calibration, gate-brief placement, launch-file format, spawn mechanics, status sync — so a formulating agent never invents orchestration mechanics and a runtime author knows the binding contract. Consumers: formulating agents; runtimes; Verify atoms; the human. DoD restated: H1 250-700 lines; H2 seven sections by headings; H3 exactly two fenced templates (LAUNCH + decomposition plan); H4 zero platform names (6-term grep); H5 zero trio contradictions, cited ids resolve; H6 RESULT+cost, STATUS delivered, status.yaml. Soft: S1 four-doc sufficiency for a 3-atom product; S2 testable statements; S3 tightens only; S4 LAUNCH template reproduces ATOM-004-LAUNCH structure losslessly; S5 core <=10 min.
+2026-07-05T11:25:05Z UNDERSTAND no blocking ambiguity (U4); accepted decisions 3.1-3.7 are consistent with the trio; the model_tier field addition is a tightening per R0.3, no E7 grounds
+2026-07-05T11:25:05Z PHASE-EXIT understand
+2026-07-05T11:25:05Z PHASE-ENTER research (RS1) — consulted: constitution trio (full read); knowledge/precedent/verify-envelope-calibration.md; knowledge/precedent status via GATE-004 (inherited F1 gate-brief placement + verify-margin observation); prior atom folders 003/003-verify as format precedent; roles/framework-architect.md; roles/humans/ghenadie.md
+2026-07-05T11:25:05Z RESEARCH information sufficient (RS3); no gap carried into Clarify
+2026-07-05T11:25:05Z PHASE-EXIT research; PHASE-SKIP clarify (CL1 — no blocking gap)
+2026-07-05T11:25:05Z PHASE-ENTER create
+2026-07-05T11:25:05Z BUDGET-CHECKPOINT reads to date ~35k tokens (est., trio + INPUT + precedents) vs ~70k envelope; projected total within envelope, no E4
+2026-07-05T11:25:05Z DECISION (O9.1) rule prefixes OD/MT/EC/GB/LP/SS/RC chosen per INPUT hint; verified no collision with R/A/F/C/U/RS/CL/K/V/M/L/O/E/T (ATOM-SPEC), FP/VP/EP/DR/TP/P0 (FEV), LA/NC/KL/HP/RB/SM/BC (REPO)
+2026-07-05T11:25:05Z DECISION (O9.1) id-space disambiguation rule added in section 0 (INPUT hint 6: findings F<n> vs rule ids F1-F6) — citations prefix the document name when ambiguous; reversible wording choice
+2026-07-05T11:25:05Z DECISION (O9.1) MT1 binds atoms formulated after this document's acceptance — avoids retroactive contradiction with INPUTs 001-003 that predate the field
+2026-07-05T11:25:05Z DECISION (O9.1) decomposition plan default location: PLAN.md in the formulating atom's folder (LA3 product-file row); launch files MAY embed the plan in the preamble — simplest reversible option consistent with LA2
+2026-07-05T11:33:54Z CREATE framework/ORCHESTRATION.md written; first draft 203 lines failed H1 floor (250); reworked in-phase: prose trimmed, list-like rules split to sub-bullets, informative glance table + 3-atom walkthrough added (serve S1) — final 251 lines
+2026-07-05T11:33:54Z DECISION (O9.1) EC5 split into EC5 (counters) + EC6 (closure metering) during rework — keeps one obligation per rule id
+2026-07-05T11:33:54Z BUDGET-CHECKPOINT ~55k tokens consumed (est.: reads ~40k + writes ~15k) vs ~70k envelope; delivery projected within envelope, no E4
+2026-07-05T11:33:54Z PHASE-EXIT create (K5 — deliverable exists at framework/ORCHESTRATION.md)
+2026-07-05T11:33:54Z PHASE-ENTER verify-self (V1)
+2026-07-05T11:33:54Z SELF-CHECK H1 wc -l = 251 (250-700) PASS; H2 grep '^## [0-9]' = 9 incl. all seven §4 sections PASS; H3 fence lines = 4 = exactly 2 blocks PASS; H4 grep 6 banned names = 0 PASS; H5 65 distinct cited rule ids extracted, each resolves in trio (script; macOS grep alternation quirk worked around) + contradiction review clean PASS; H6 RESULT/STATUS/status.yaml this step
+2026-07-05T11:33:54Z SELF-CHECK soft: S5 flagged — core incl. informative ~3011 words (~12 min @250wpm); normative-only ~2500 (~10 min); recorded as deviation for Verify
+2026-07-05T11:33:54Z DELIVERY RESULT.md written; STATUS -> delivered
+2026-07-05T11:35:52Z PARENT SPAWN (O5.1/SS1) ATOM-004-VERIFY: value=blind acceptance of constitutional doc (mode independent+human); est. cost ~132k tokens (EC2: ~38k read ×3.5, charged to parent per VP5); not inline because VP2/VP4 require clean context; tier L per MT3/MT4
+2026-07-05T11:54:55Z PARENT VERIFY-RESULT ATOM-004-VERIFY verdict accept (round 1, returns_used 0); findings F1, F2 both minor — transferred to parent record per VP12/L7: F1 -> next touch of REPO-STRUCTURE (OD3 citation + PLAN.md in NC7), F2 -> next touch of ORCHESTRATION (S5 margin)
+2026-07-05T11:54:55Z PARENT EC6 runtime-measured verify total: 139394 tokens vs ~132k envelope (3.7x of ~38k read estimate) — third calibration data point, candidate for knowledge/precedent/verify-envelope-calibration.md next touch
+2026-07-05T11:54:55Z PARENT HUMAN-SIGNOFF GATE-005 answered: "go — принять как reviewed" (recorded decisions/GATE-005-atom-004-acceptance.md, VP18)
+2026-07-05T11:54:55Z PARENT ACCEPTANCE ATOM-004 accepted; maturity reviewed per M3; closure L7/RB6 proceeding (workspaces clean — run.log only)
