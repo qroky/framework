@@ -1,7 +1,7 @@
 # status.yaml — shared status machine of one multi-atom product (SM1-SM4)
 # One file per products/<product-slug>/; one entry per atom; current state only.
 product: framework-v1
-updated: 2026-07-05T11:55:00Z
+updated: 2026-07-05T12:01:40Z
 atoms:
   - id: ROLE-001
     state: delivered
@@ -36,6 +36,10 @@ atoms:
     timestamp: 2026-07-05T11:43:18Z
     note: VERDICT.md round 1 accept (returns_used 0); findings F1, F2 both minor; RESULT.md + run.log complete; human sign-off still required (independent + human)
   - id: ATOM-004H
-    state: formulated
-    timestamp: 2026-07-05T11:21:46Z
-    note: INPUT.md materialized from ATOM-004-LAUNCH.md (step 0); execution deferred until ATOM-004 closure per launch sequence
+    state: delivered
+    timestamp: 2026-07-05T11:57:45Z
+    note: runtime/claude/README.md (86 lines) + RESULT.md; all hard criteria pass; awaiting independent Verify
+  - id: ATOM-004H-VERIFY
+    state: delivered
+    timestamp: 2026-07-05T12:01:40Z
+    note: VERDICT.md round 1 accept (returns_used 0); finding F1 minor; RESULT.md + run.log complete

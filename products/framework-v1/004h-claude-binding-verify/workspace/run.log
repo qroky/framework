@@ -1,0 +1,23 @@
+2026-07-05T11:59:06Z START ATOM-004H-VERIFY round 1; read INPUT.md and FEV-PROTOCOL §2
+2026-07-05T12:00:04Z VP7 step 1 — DoD restated (ATOM-004H INPUT §5, verbatim per verify INPUT §4):
+2026-07-05T12:00:04Z   H1: runtime/claude/README.md exists and is <=200 lines
+2026-07-05T12:00:04Z   H2: covers every item of ORCHESTRATION §7 runtime-binding contract (RC2 items 1-6); correspondence detectable
+2026-07-05T12:00:04Z   H3: no file under framework/ modified
+2026-07-05T12:00:04Z   H4: RESULT.md + STATUS.md delivered; status.yaml updated
+2026-07-05T12:00:04Z   S1 (judge Verify): newcomer with runtime installed can execute a launch file end-to-end using only this README
+2026-07-05T12:00:04Z   S2 (judge Verify): no contradiction with ORCHESTRATION; tier mapping concrete and current
+2026-07-05T12:00:04Z   S3 (judge Verify): honest about limitations (what runtime does not yet enforce)
+2026-07-05T12:00:04Z blind package read: INPUT.md; runtime/claude/README.md; framework/ORCHESTRATION.md; framework/FEV-PROTOCOL.md §2; 004h RESULT.md + STATUS.md; status.yaml. Nothing else.
+2026-07-05T12:00:36Z VP7 step 2 HARD PASS (all checks re-run by script, VP3):
+2026-07-05T12:00:36Z   H1 pass — wc -l runtime/claude/README.md = 86 (<=200); file exists (6758 bytes)
+2026-07-05T12:00:36Z   H2 pass — coverage map lines 16-23 maps RC2 items 1-6 to §1-§6; grep '^## ' shows all six section headings present (lines 27,34,41,51,61,67); content of each section matches the RC2 item's required statements (read-through)
+2026-07-05T12:00:36Z   H3 pass — git status --porcelain framework/ = empty output
+2026-07-05T12:00:36Z   H4 pass — RESULT.md (3407 B) + STATUS.md (542 B, last line delivered 11:57:45Z) exist; status.yaml ATOM-004H entry state=delivered timestamp=11:57:45Z matches STATUS.md
+2026-07-05T12:00:36Z VP7 step 3 SOFT PASS:
+2026-07-05T12:00:36Z   S1 — walked §1 (interactive) and §6 (headless) as newcomer: no findings (justification in verdict)
+2026-07-05T12:00:36Z   S2 — finding F1 (minor): line 12 'Platform names are legal here and only here (RC3)' contradicts RC3, which also permits platform names in atom records; all other rule citations (LP3, SS5/SS6, EC5/EC6, EP3/EP5, RC2 items, MT3) checked against ORCHESTRATION — consistent; tier map dated 2026-07-05, three named models + fallback
+2026-07-05T12:00:36Z   S3 — no findings: §8 lists four concrete non-enforcements each corresponding to a real gap stated in §3/§4/§5/§6
+2026-07-05T12:00:36Z VP7 step 4 — findings composed: F1 minor only; verdict per VP12: accept (minor does not force return)
+2026-07-05T12:01:40Z VP7 step 5 — VERDICT.md written per FEV §5.1 template: accept, round 1, returns_used 0, finding F1 minor
+2026-07-05T12:01:40Z VP7 step 6 — RESULT.md written; budget checkpoint: consumption ~19k of ~46k envelope — within envelope
+2026-07-05T12:01:40Z CLOSE — delivered

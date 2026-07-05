@@ -1,0 +1,20 @@
+2026-07-05T11:55:44Z CYCLE-START ATOM-004H executor=framework-architect tier=M-spec (executed at L — session executor; MT6 up is permitted, logged) instantiation=session
+2026-07-05T11:55:44Z PHASE-ENTER understand — INPUT.md read in full (U1)
+2026-07-05T11:55:44Z UNDERSTAND (U2) JTBD: bind the abstract RC contract to this runtime so a person or headless caller reading only runtime/claude/README.md can launch any launch-file correctly; platform names legal here only. Consumers: the human operator; future runtime authors; ATOM-005/006. DoD: H1 <=200 lines; H2 covers every RC2 item, correspondence detectable; H3 no framework/ file modified; H4 RESULT+STATUS+status.yaml. Soft: S1 newcomer end-to-end; S2 no contradiction with ORCHESTRATION, tier mapping concrete+current; S3 honest limitations.
+2026-07-05T11:55:44Z UNDERSTAND no blocking ambiguity (U4)
+2026-07-05T11:55:44Z PHASE-ENTER research (RS1) — consulted: framework/ORCHESTRATION.md §7 (RC2 checklist, as accepted at GATE-005); observed practice: run.logs of 002/003/004 verify atoms (fresh-context spawns, runtime-measured totals 123814 and 139394), GATE-002..005 flow (question interface, verbatim RU answers), RB6 closures of 440e69f and 1439268; known pitfalls from launch preambles (repo root; one launch-file version; save before send)
+2026-07-05T11:55:44Z RESEARCH information sufficient (RS3); PHASE-SKIP clarify (CL1)
+2026-07-05T11:55:44Z PHASE-ENTER create
+2026-07-05T11:55:44Z DECISION (O9.1) no scripts/ helpers shipped — INPUT §4 says MAY, M2 do-not-gold-plate; hard-criteria checks stay as documented one-liner commands in the README itself
+2026-07-05T11:55:44Z DECISION (O9.1) README written in English — HP2 routes only decision inputs to the human's preferred language; repository artifacts remain agent-and-operator English
+2026-07-05T11:57:21Z CREATE runtime/claude/README.md written (86 lines): coverage map + 6 RC2 sections + pitfalls + limitations; tier table dated per RC2 item 3
+2026-07-05T11:57:21Z BUDGET-CHECKPOINT ~20k tokens consumed (est.: reads ~12k incl. ORCHESTRATION re-read + writes ~8k) vs ~45k envelope; no E4
+2026-07-05T11:57:21Z PHASE-EXIT create (K5)
+2026-07-05T11:57:21Z PHASE-ENTER verify-self (V1)
+2026-07-05T11:57:21Z SELF-CHECK H1 wc -l = 86 (<=200) PASS; H2 coverage map maps RC2 items 1-6 to sections 1-6, each section present by heading PASS; H3 git status framework/ = 0 modifications PASS; H4 RESULT/STATUS/status.yaml this step
+2026-07-05T11:57:21Z SELF-CHECK soft: S1 steps 1-4 of section 1 + section 6 give the full end-to-end path; S2 tier mapping concrete (Haiku 4.5 / Sonnet 5 / Fable 5 with Opus 4.8 fallback), dated; S3 limitations section lists 4 non-enforcements honestly incl. untested headless path
+2026-07-05T11:57:21Z DELIVERY RESULT.md written; STATUS -> delivered
+2026-07-05T11:58:26Z PARENT SPAWN (O5.1/SS1) ATOM-004H-VERIFY: value=blind acceptance of the binding (mode independent); est. cost ~46k tokens (EC2: ~13k read ×3.5, charged to parent per VP5); not inline because VP2/VP4 require clean context; tier L per MT3/MT4
+2026-07-05T12:02:02Z PARENT VERIFY-RESULT ATOM-004H-VERIFY verdict accept (round 1, returns_used 0); finding F1 minor (README line 12 overstates RC3 — platform names also legal in atom records) — transferred to parent record per VP12/L7, closes at next touch of runtime/claude/README.md
+2026-07-05T12:02:02Z PARENT EC6 runtime-measured verify total: 95807 tokens vs ~46k envelope (7.4x of ~13k read estimate; agent self-estimate was ~19k) — fourth calibration data point: the runtime counter includes per-turn context overhead that dwarfs file bytes on small packages; candidate for verify-envelope-calibration.md next touch
+2026-07-05T12:02:02Z PARENT ACCEPTANCE ATOM-004H accepted (mode independent, no human step per FP8 row 2); maturity reviewed per M3; closure L7/RB6 proceeding (workspaces clean — run.log only)
