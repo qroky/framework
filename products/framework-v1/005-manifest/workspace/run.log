@@ -1,0 +1,30 @@
+2026-07-05T12:40:44Z STEP0 INPUT.md materialized verbatim (launch lines 7-92); STATUS.md opened at formulated; status.yaml entry written (SM3)
+2026-07-05T12:40:44Z CYCLE-START ATOM-005 executor: launch session, role framework-architect, tier L (per INPUT frontmatter), envelope ~55k tokens
+2026-07-05T12:41:00Z PHASE understand ENTER
+2026-07-05T12:41:00Z U2 JTBD restated: give RPF its public face — MANIFEST.md (manifesto <=1100 words), README.md (landing <=60 lines), LICENSE (Apache-2.0 verbatim), decisions/RISK-002 (open-core boundary, backfill). Consumer: primarily a non-technical founder, 10 minutes to comprehension; secondarily accelerators, investors, contributors, banks. DoD: H1 four files at exact paths; H2 length caps; H3 Apache-2.0 canonical text; H4 zero platform names in MANIFEST/README, name is exactly "RPF"; H5 RISK-002 conforms to decision-record template; H6 zero contradictions with the constitution, cited numbers match repo state; H7 RESULT.md + STATUS delivered + status.yaml. Soft: S1 founder comprehension (judge human), S2 no hype (Verify), S3 honest limitations (Verify), S4 README routes in under a minute (Verify).
+2026-07-05T12:41:00Z U2 no blocking ambiguity; accepted decisions §3.1-3.7 are complete and mutually consistent; note: README must link runtime/claude/README.md per §4.2 — lowercase path, H4 grep tokens are capitalized, intended per INPUT ("runtime specifics live behind the quickstart pointer")
+2026-07-05T12:41:00Z PHASE understand EXIT
+2026-07-05T12:41:00Z PHASE research ENTER
+2026-07-05T12:41:30Z RS1 consulted: framework/ATOM-SPEC.md, framework/FEV-PROTOCOL.md, framework/REPO-STRUCTURE.md, framework/ORCHESTRATION.md, runtime/claude/README.md, decisions/ (GATE-001..005, RISK-001), knowledge/precedent/ (both), roles/humans/ghenadie.md, products/framework-v1/status.yaml, INPUT.md
+2026-07-05T12:41:30Z RS3 information sufficient; facts for §3.6 fixed: 4 constitutional documents, all blind-verified; ATOM-001 verification returned once (substantive template defect) then accepted; verify-envelope calibration across three measured runs: 8x over envelope (ATOM-002-VERIFY, 123.8k vs ~15k), 1.8x (ATOM-003-VERIFY, 123,814 vs ~70k), +5.6% (ATOM-004-VERIFY, 139,394 vs ~132k); decision journal public in /decisions/
+2026-07-05T12:41:30Z PHASE research EXIT
+2026-07-05T12:41:30Z PHASE clarify SKIPPED no blocking gap (CL1)
+2026-07-05T12:41:30Z BUDGET checkpoint: reads to date ~30k (estimate, no counter — BC4); remaining work writes ~12-15k; projected total ~45-50k within ~55k envelope
+2026-07-05T12:41:30Z PHASE create ENTER
+2026-07-05T12:42:17Z STATE running create phase — writing deliverables
+2026-07-05T12:45:11Z PHASE create EXIT all four deliverables written: MANIFEST.md (888 words excl headings), README.md (31 lines), LICENSE (canonical Apache-2.0, sha1 2b8b8152 pre-substitution, copyright line set), decisions/RISK-002-open-core-boundary.md
+2026-07-05T12:45:11Z DECISION LICENSE downloaded from apache.org for verbatim guarantee; sha1 recorded; copyright placeholder substituted per license's own appendix mechanism
+2026-07-05T12:45:11Z DECISION MANIFEST cites only churn-stable numbers (4 docs; 8x/1.8x/within 6%); atom/decision counts deliberately avoided for H6 durability
+2026-07-05T12:45:11Z PHASE verify-self ENTER
+2026-07-05T12:45:11Z V1 hard checks run by script: H1 pass, H2 pass (888<=1100, 31<=60), H3 pass (markers + section 4), H4 pass (grep exit 1), H5 pass (8 keys, 4 sections), H6 pass (numbers match GATE-004/005); S2 hype-grep clean; S1 deferred to human
+2026-07-05T12:45:11Z BUDGET checkpoint: consumed ~46k estimate (reads ~32k + writes ~14k) within ~55k envelope; no E4
+2026-07-05T12:45:11Z V5 RESULT.md written with cost block; delivering
+2026-07-05T12:45:11Z PHASE verify-self EXIT delivered
+2026-07-05T12:46:36Z L5 formulating ATOM-005-VERIFY (formulating-agent duty per LP5; executor did not brief the verifier beyond the blind package — VP1)
+2026-07-05T12:46:36Z SS1 spawn: justification=independent verification required (mode independent+human, maturity reviewed); tier=L (MT3/MT4, judgment-heavy verification); envelope=~185k tokens (blind package ~122KB -> ~41k read est x3.5 + 40k constant per launch preamble)
+2026-07-05T12:54:08Z L5-L6 ATOM-005-VERIFY delivered VERDICT.md: accept, round 1, returns_used 0; findings F1-F3 all minor (F1 precedent-location pointer; F2 unqualified segregation claim vs self mode; F3 README "any atom folder" overclaim); S1 deferred to human. Real counter: 138,342 tokens (EC6) vs ~185k envelope = 3.4x read estimate — within EC2 range, envelope formula (x3.5+40k) held
+2026-07-05T12:54:08Z VP18 routing human sign-off: brief in Russian per HP2 (roles/humans/ghenadie.md), options + one recommendation, risks explicit
+2026-07-05T13:24:21Z L6 human sign-off (GATE-006): "Go — принять как reviewed (Recommended)"; S1 judged met ("Да — S1 выполнен"); recorded in decisions/GATE-006-atom-005-acceptance.md
+2026-07-05T13:24:21Z L7 acceptance recorded; maturity reviewed conferred (M3); verify findings F1-F3 (all minor) transferred to this log for the next touch of MANIFEST.md/README.md: F1 precedent pointer (substance cleared by GATE-006 feedback update of verify-envelope-calibration.md), F2 unqualified segregation claim vs self mode, F3 README "any atom folder" overclaim (001, role-001 lack verify siblings)
+2026-07-05T13:24:21Z EP7 fed back: knowledge/precedent/verify-envelope-calibration.md updated with all four measured runs + working formula (x3.5 + 40k); closes the update deferred by GATE-004/GATE-005
+2026-07-05T13:24:21Z L7 closing per RB6: workspace clean (run.log only), STATUS/status.yaml synced, commit + push next

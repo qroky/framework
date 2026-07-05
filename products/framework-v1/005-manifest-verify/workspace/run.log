@@ -1,0 +1,33 @@
+[2026-07-05T12:47:18Z] CYCLE START — ATOM-005-VERIFY, round 1, returns_used 0, executor claude-fable-5
+[2026-07-05T12:47:18Z] Read INPUT.md. Blind package: MANIFEST.md, README.md, LICENSE, decisions/RISK-002-open-core-boundary.md, products/framework-v1/005-manifest/{RESULT.md,STATUS.md}; references: framework/{ATOM-SPEC,FEV-PROTOCOL,REPO-STRUCTURE,ORCHESTRATION}.md, decisions/GATE-004-atom-003-acceptance.md, decisions/GATE-005-atom-004-acceptance.md, knowledge/precedent/verify-envelope-calibration.md. Non-content instrument commands (ls/wc/grep counts) permitted for H6.
+[2026-07-05T12:47:18Z] CRITERIA RESTATED:
+  H1 four files exist at exact paths (MANIFEST.md, README.md, LICENSE at root; decisions/RISK-002-open-core-boundary.md)
+  H2 MANIFEST.md <=1100 words excluding headings; README.md <=60 lines
+  H3 LICENSE = Apache 2.0 canonical text ("Apache License" + "Version 2.0" + section 4 redistribution clause)
+  H4 zero platform/product names in MANIFEST+README (Claude, Claude Code, MCP, Codex, OpenClaw, Hermes, BMAD); H4b name exactly "RPF", no other coined name
+  H5 RISK-002 conforms to decision-record template (frontmatter keys + 4 sections) per FEV-PROTOCOL section 5.2 reference
+  H6 zero contradictions with four framework docs; every number cited in MANIFEST matches repo state
+  H7 RESULT.md with cost block; STATUS.md last state delivered; status.yaml updated
+  S1 deferred to human (VP9); S2 no hype vocabulary (Verify); S3 limitations = engineering honesty (Verify); S4 README routes reader <1 min (Verify)
+[CHECKS] Hard pass (VP7 step 2), commands + raw output:
+  H1: ls -la MANIFEST.md README.md LICENSE decisions/RISK-002-open-core-boundary.md -> all four exist (6174 / 2807 / 11346 / 3008 bytes). PASS
+  H2: grep -v '^#' MANIFEST.md | wc -w -> 888 (<=1100); wc -l README.md -> 31 (<=60). PASS
+  H3: grep -c "Apache License" LICENSE -> 4; grep -c "Version 2.0" -> 2; grep -n "^   4. Redistribution" -> line 90. PASS
+  H4: grep -nE "Claude|MCP|Codex|OpenClaw|Hermes|BMAD" MANIFEST.md README.md -> no match (exit 1). PASS. Case-insensitive instrument run: one hit, README:15 "runtime/claude/README.md" — this IS the quickstart pointer the criterion itself sanctions ("runtime specifics live behind the quickstart pointer"); not a violation. Logged for transparency; matches executor's own deviation note.
+  H4b: grep -oE coined-name scan -> only "RPF" (9x) + expansion "Recursive Product Framework" (2x, titles) + footnote "commercial brand name is pending". No other coined name. PASS
+  H5: frontmatter key count (id,date,kind,status,atom,trigger,answered_by,recorded_by) -> 8/8; grep '^## ' -> Question / Brief; Answer (verbatim); Consequences; Fed back to -> 4/4 per FEV-PROTOCOL 5.2/DR4. DR5 reconstruction marked + source named. PASS
+  H6 hard subset (numbers): ls framework/ | wc -l -> 4 ("four framework documents", "all four normative documents"). "8x" -> precedent file "roughly eight times" (grep count 1). "1.8x" -> GATE-004 "(8× → 1.8×)", 123814 vs ~70k. "within 6%" -> GATE-005 "+5.6%", 139394 vs ~132k. "three measured runs" -> GATE-005 "третьим замером". All numbers match repo state. PASS
+  H6 S-checked component: findings F1, F2 (below); considered-and-dismissed items logged.
+  H7: RESULT.md frontmatter carries full cost block, ~-prefixed estimates (BC4); tail -1 005-manifest/STATUS.md -> "delivered"; grep status.yaml "id: ATOM-005" -> state: delivered, note mirrors STATUS. PASS. (status.yaml not listed in blind package section 3; H7 names it, so the entry lines were read as the minimal instrument for the criterion — VP2 item 2 covers files criteria reference.)
+[CHECKS] Soft pass (VP7 step 3):
+  S1: deferred to human judge (VP9).
+  S2: hype grep (revolutionar|game-chang|10x|paradigm|disrupt|unprecedented|world-class|cutting-edge|breakthrough|state-of-the-art) -> no match, both files. Strong claims are mechanism-backed and tied to repo-verifiable specifics. No findings.
+  S3: four limitations each name a concrete missing mechanism; two name the successor product explicitly, two imply via "yet". Intro "each with a planned successor" slightly stronger than items 1 and 3 deliver — considered, dismissed as within honest reading. No findings.
+  S4: README 31 lines: what-is paragraph -> MANIFEST (5 min); 3-step quickstart; 8-row all-linked map; all mapped paths verified to exist (ls). Routing itself is fast. One accuracy defect in a routing claim -> finding F3.
+[FINDINGS] (VP11 — severity / citation / evidence)
+  F1 minor / H6 / MANIFEST line 50: "each measurement recorded as a public precedent in knowledge/precedent/" — grep counts over knowledge/precedent/verify-envelope-calibration.md: "1.8"->0, "6%|5.6"->0, "eight times"->1. Only measurement 1 of 3 lives at the cited location; measurements 2 and 3 live in decisions/GATE-004 and GATE-005, whose "Fed back to" sections explicitly DEFER the precedent-file update.
+  F2 minor / H6 / MANIFEST line 20: unqualified "whoever executes never accepts their own work" and "Verification is blind" contradict ATOM-SPEC 1.4 mode `self` ("The executor, in the verify phase of its own cycle") and L7 ("Parent (or executor on `self` mode)" records acceptance); A9 scopes the prohibition to maturity >= reviewed. Mitigated by the explicit hedge "the normative documents carry the detail", but H6 demands zero contradictions.
+  F3 minor / S4 / README line 16: "any atom folder under products/framework-v1/ shows the full record — INPUT.md -> product -> blind VERDICT.md -> human acceptance" — ls: 001-atom-spec and role-001-framework-architect contain no VERDICT.md and none exists repo-wide for them (only 002/003/004/004h -verify folders carry one). "any" overstates; a reader sent to watch a real cycle can land on a folder without the verdict step.
+[CONSIDERED-DISMISSED] MANIFEST "Sequential execution ... atoms run in dependency order" vs ORCHESTRATION OD5/LP4 parallel-MAY: not a contradiction — the limitation names the missing concurrent-write protocol; OD5's parallel is permissive and LP4's default is strict sequence. "Append-only decision journal" vs DR6 fed-back updates: journal-level append-only holds (DR7); dismissed.
+[VERDICT] accept (VP12): all hard criteria pass; findings F1-F3 all minor, no blocking/substantive; minors transfer to parent run log at closure.
+[2026-07-05T12:53:27Z] DELIVERY — VERDICT.md, RESULT.md written; STATUS.md -> delivered. Cycle complete.
