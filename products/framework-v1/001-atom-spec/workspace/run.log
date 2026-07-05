@@ -1,0 +1,15 @@
+2026-07-05T07:17:34Z START atom=ATOM-001 role=framework-architect input=INPUT.md budget=60k-tokens-soft
+2026-07-05T07:17:34Z UNDERSTAND jtbd restated: produce normative ATOM-SPEC.md defining atom formula, fields, cycle, maturity, lifecycle, obligations, 3 templates; consumers: executor agents, ATOM-002..006, human owner
+2026-07-05T07:17:34Z UNDERSTAND no blocking ambiguity in §3 decisions; normal path — no escalation
+2026-07-05T07:17:34Z RESEARCH input file is sole context per §1 (fresh-session isolation); no repo knowledge layer exists yet — nothing to consult
+2026-07-05T07:17:34Z CLARIFY skipped — no information gap
+2026-07-05T07:17:34Z CREATE repository skeleton created; INPUT.md copied; STATUS.md initialized
+2026-07-05T07:20:59Z VERIFY-SELF hard criteria checked by script: H1 wc-l=413 (400-1200 OK); H2 six sections OK; H3 fences=6 (3 templates) OK; H4 banned-strings=0 OK; H5 RESULT.md+cost block written OK
+2026-07-05T07:20:59Z VERIFY-SELF soft criteria S1-S5 reviewed; results + 7 executor decisions recorded in RESULT.md
+2026-07-05T07:20:59Z BUDGET checkpoint: ~48k/60k tokens projected total — within envelope, no E4
+2026-07-05T07:20:59Z DELIVER product framework/ATOM-SPEC.md + RESULT.md complete; handoff to independent Verify + human
+2026-07-05T07:41:29Z RETURNED Verify return 1/2: (1) INPUT template missing slots for §1.3 fields incl. Input product(s); (2) M1 wording contradiction
+2026-07-05T07:41:29Z REWORK fix1: added Input product(s), Consumer(s), Maturity target, Gates rows to §6.1 Product Identity table — all 15 fields now have designated places
+2026-07-05T07:41:29Z REWORK fix2: M1 reworded to single unambiguous sentence (≥ minimum; above minimum requires F3 override justification)
+2026-07-05T07:41:29Z VERIFY-SELF re-check: H1 wc-l=417 OK; H3 fences=6 OK; H4 banned=0 OK; no other content touched
+2026-07-05T07:41:29Z DELIVER redelivered after return 1
