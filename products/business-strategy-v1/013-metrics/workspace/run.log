@@ -1,0 +1,6 @@
+2026-07-05T15:14:00Z PHASE-ENTER understand — INPUT read; four §4 metric names verbatim; telemetry scope bounds sources
+2026-07-05T15:16:00Z PHASE-ENTER research — day-one baselines pulled from decisions/ + status.yaml + precedent file; founder-hours unclocked on this tree -> baseline TBD
+2026-07-05T15:17:00Z PHASE-SKIP clarify — no gap
+2026-07-05T15:18:00Z PHASE-ENTER create — two metric tables + cadence/review + exclusion note
+2026-07-05T15:21:00Z PHASE-ENTER verify (self) — H1-H6 grep script pass
+2026-07-05T15:22:00Z DELIVERED — RESULT.md + STATUS.md written; cost ~5k tokens (BC4 estimate)

@@ -1,0 +1,85 @@
+# ATOM-015-VERIFY run.log — 2026-07-05, blind verify, round 1
+
+## 0. Package intake
+- Read 015-strategy-verify/INPUT.md (instruction source)
+- Read products/business-strategy-v1/STRATEGY.md (product, full)
+- Read 015-strategy/RESULT.md + STATUS.md (claims only, digest rule 2)
+- No framework/ reads (GATE-008 slim). No web access.
+
+## 1. Hard criteria re-run (all from repo root /Users/ghcernei/Work/rpf)
+
+H1: ls -la products/business-strategy-v1/STRATEGY.md
+    -> -rw-r--r-- 1 ghcernei staff 6259 Jul 5 20:00 products/business-strategy-v1/STRATEGY.md  [PASS]
+
+H2: grep -v '^#' products/business-strategy-v1/STRATEGY.md | wc -w
+    -> 831  (<=1500)  [PASS]
+
+H3: for s in Segments Channel Pricing Pilot Name Re-validation; do grep -c "^## $s" STRATEGY.md; done
+    -> Segments:1 Channel:1 Pricing:1 Pilot:1 Name:1 Re-validation:1  [PASS]
+
+H4: grep -oE '`[a-zA-Z0-9_/.-]+\.(md|yaml)`' STRATEGY.md | sort -u
+    -> 12 distinct: NOT-DOING.md, channels/channel-comparison.md,
+       decisions/GATE-008-atom-006-g1-direction.md, decisions/INFO-001-pilot-terms-startup-moldova.md,
+       knowledge/precedent/verify-envelope-calibration.md, metrics/metrics-system.md,
+       naming/naming-verdict.md, pilot/pilot-design.md, pricing/pricing-ladder.md,
+       runtime/claude/README.md, segments/segment-map.md, status.yaml
+    -> >=6 distinct paths; each of six sections cites >=1 path  [PASS]
+
+H6: grep -n 'uarterly' STRATEGY.md
+    -> 1 hit, L43: "Quarterly re-validation gate: a re-touch is a diff against this file plus a human gate"  [PASS]
+
+H7: grep -niE 'claude|anthropic|openai|gpt|gemini|sonnet|opus|haiku|fable|llama|mistral' STRATEGY.md
+    -> 1 hit, L29, inside literal path `runtime/claude/README.md` — excluded per criterion  [PASS]
+
+## 2. H5 + S2/S3 spot-checks (partial reads, grep-traced)
+
+Segments -> segments/segment-map.md:
+  grep -nE '23/35|25/35|18/35|7-factor|jobs|A → C'
+  -> L29 Total 23/35 (A); L47 18/35 (B); L65 25/35 (C); L10 7-factor checklist + jobs-as-hypotheses;
+     L69 sequence A → C → B, C gated on pilot proof (§3.6b)  [TRACED]
+  GATE-008: grep -> L19 "Go — направление верное… A → C → B принято, jobs сегмента A подтверждены"  [TRACED]
+
+Channel -> channels/channel-comparison.md:
+  grep -nE '1,000|1,500|cohort|kill|6\+|\$0|capacity'
+  -> L16 acquisition ~$0, paid in kind (case study + 2–3 intros per INFO-001);
+     L18 cohort license $1,000–1,500/cohort-month ~10 founders (assumption);
+     L47 accelerator -> paid bank pilot -> second bank; open core passive $0;
+     L49 kill trigger 6+ founders / capacity-not-demand / no second channel  [TRACED]
+
+Pricing -> pricing/pricing-ladder.md + knowledge/precedent/verify-envelope-calibration.md:
+  grep -> L14–15,21 real counters 105,273–139,394 tokens/verify (matches "105–139k");
+     calib L20 139 394 real counter; L41 ~1.0–1.6M tokens/founder-month;
+     L44 ~$15–32/month raw compute; L48 WTP $50–200 (assumption) + ×3 sensitivity +
+     binding COGS = human attention; L54 Rung 1 free open core; L61 8–15 h/founder-month (assumption);
+     L62 $150 anchor (assumption); L67 managed 3–5× (assumption)  [TRACED]
+
+Pilot -> pilot/pilot-design.md + decisions/INFO-001:
+  grep -> L18–21 red lines: no turnkey code / no investment guarantees / no exclusivity / no team hiring;
+     L31–36 six success criteria incl. capacity criterion 4 (>=2 concurrent, >=6 extrapolated);
+     L42 telemetry operational files only, open script, ATOM-007 prerequisite;
+     L47–50 consent text (own machine/subscription/private repo; deletion fixed date);
+     L58 SLA reaction to blocked within one business day; L63 total ≈ 12 weeks, one cohort rhythm;
+     INFO-001 L21 case study + 2–3 intros, red lines match  [TRACED]
+
+Name -> naming/naming-verdict.md + NOT-DOING.md:
+  grep -> L11/L19/L27 Atomaro = live commercial product of Rostelecom (major telecom), KILL,
+     backorder inadvisable/cancelled; L41 Qroky GO-CONDITIONAL, two probes (GitHub org form +
+     formal EUIPO/USPTO/WIPO); L56 register qroky.com now, RPF placeholder until probes close,
+     lesson: live-company search in market's languages first  [TRACED]
+  NOT-DOING: table rows 1–14, each row carries a revisit trigger -> "14 entries" claim  [TRACED]
+
+Re-validation -> metrics/metrics-system.md + NOT-DOING.md:
+  grep -> metrics L12–15: all four named metrics (escalation rate, verify returns, cost per
+     product type, founder-hours per gate); L29 quarterly re-validation gate (accepted §3.8),
+     "every framework metric is a grep over files the constitution already obliges";
+     NOT-DOING L4 reviewed at the quarterly re-validation gate  [TRACED]
+
+## 3. S3 sweep
+Every number/substantive claim spot-checked in STRATEGY.md found in a cited source at matching
+value and assumption-marker status. No smuggled analysis detected.
+Noted limit: opening-paragraph citations "accepted §3.1" / "RISK-002" are outside the §3 blind
+package — attribution to prior accepted decisions, not new analysis; not a finding.
+
+## 4. Verdict
+All H1–H7 pass; S2 pass; S3 pass; S1 deferred to human G2.
+Findings: none. Verdict: accept.

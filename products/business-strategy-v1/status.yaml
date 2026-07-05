@@ -1,12 +1,12 @@
 # status.yaml — shared status machine of one multi-atom product (SM1-SM4)
 # One file per products/<product-slug>/; one entry per atom; current state only.
 product: business-strategy-v1
-updated: 2026-07-05T14:22:28Z
+updated: 2026-07-05T16:10:00Z
 atoms:
   - id: ATOM-006
-    state: running
-    timestamp: 2026-07-05T14:22:28Z
-    note: G1 passed (GATE-008 go, envelope ~320k; GATE-009 naming accepted; INFO-001); channels next
+    state: delivered
+    timestamp: 2026-07-05T16:10:00Z
+    note: CLOSED reviewed via GATE-010 (accepted with HP2-extension reservation); M3 bootstrap condition met; tree ~323k vs ~320k envelope (+1%, accepted)
   - id: ATOM-008-VERIFY
     state: delivered
     timestamp: 2026-07-05T14:11:52Z
@@ -27,3 +27,31 @@ atoms:
     state: delivered
     timestamp: 2026-07-05T14:06:00Z
     note: segment-map.md written; H1-H4 pass; self-verification is delivery (draft); G1 direction check pending
+  - id: ATOM-011
+    state: delivered
+    timestamp: 2026-07-05T14:50:00Z
+    note: pricing-ladder.md written; H1-H6 pass; self-verification is delivery (draft); resequenced before ATOM-010 (parent run.log 14:40Z)
+  - id: ATOM-010
+    state: delivered
+    timestamp: 2026-07-05T15:00:00Z
+    note: channel-comparison.md written; H1-H6 pass; self-verification is delivery (draft); executed after ATOM-011 per resequencing
+  - id: ATOM-012
+    state: delivered
+    timestamp: 2026-07-05T15:12:00Z
+    note: pilot-design.md written; H1-H8 pass; self-verification is delivery (draft); consent text ready for G2 review
+  - id: ATOM-013
+    state: delivered
+    timestamp: 2026-07-05T15:22:00Z
+    note: metrics-system.md written; H1-H6 pass; self-verification is delivery (draft)
+  - id: ATOM-014
+    state: delivered
+    timestamp: 2026-07-05T15:30:00Z
+    note: NOT-DOING.md at product root; 14 entries; H1-H5 pass; self-verification is delivery (draft)
+  - id: ATOM-015
+    state: delivered
+    timestamp: 2026-07-05T15:40:00Z
+    note: STRATEGY.md 831 words / 6 sections; accepted reviewed (verify accept round 1 + human GATE-010); closed per L7
+  - id: ATOM-015-VERIFY
+    state: delivered
+    timestamp: 2026-07-05T15:50:00Z
+    note: VERDICT.md accept (round 1, returns_used 0, zero findings); real counter 90,424 tokens vs ~75k slim envelope
