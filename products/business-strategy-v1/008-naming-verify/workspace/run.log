@@ -1,0 +1,23 @@
+2026-07-05T14:06:55Z cycle-start ATOM-008-VERIFY round 1, returns_used 0; blind package: INPUT.md + naming/naming-verdict.md + 008-naming/RESULT.md + 008-naming/STATUS.md + framework/FEV-PROTOCOL.md + framework/ATOM-SPEC.md; nothing else read (VP2)
+2026-07-05T14:07:10Z restate-U2 JTBD: blind-verify ATOM-008's naming verdict against its DoD; consumer: ATOM-006 orchestrator (acceptance) + human at G1. Criteria restated in own words:
+2026-07-05T14:07:10Z restate-H1 the product file must exist at products/business-strategy-v1/naming/naming-verdict.md — check: ls
+2026-07-05T14:07:10Z restate-H2 each of the two live candidates (Atomaro, Qroky) must have all 7 checklist points as numbered evidence rows — check: grep/count numbered rows per candidate section, expect 7+7
+2026-07-05T14:07:10Z restate-H3 the Atomico confusion risk (flagged by parent INPUT §3.3) must be explicitly assessed — check: grep -c Atomico >= 1 and confirm it appears in an assessment sentence
+2026-07-05T14:07:10Z restate-H4 every evidence row must carry a source marker "(source:" (input §3.3 / URL / repo path, with date) or explicit "assumption" / "not verifiable" — check: grep each of the 14 rows
+2026-07-05T14:07:10Z restate-H5 a Verdict section with per-candidate go/hold/kill and exactly one recommendation — check: grep "## Verdict" and "Recommendation"
+2026-07-05T14:07:10Z restate-S1 no invented facts: web claims match cited sources, unverifiable register states declared not guessed — judge: me (Verify agent); MAY spot-check cited URLs live per INPUT §6
+2026-07-05T14:07:10Z restate-S2 decision-ready for non-technical founder — judge: human at G1 — deferred per VP9, I do not judge it
+2026-07-05T14:07:10Z restate-exit no blocking ambiguity in the DoD; proceeding to hard pass (VP7 step 2)
+2026-07-05T14:08:20Z check-H1 ls products/business-strategy-v1/naming/naming-verdict.md -> exists (6337 bytes) -> pass
+2026-07-05T14:08:20Z check-H2 sed section-scoped grep -cE '^\| [1-7] \|' -> Atomaro 7, Qroky 7; numbers 1..7 each with no gaps -> pass
+2026-07-05T14:08:20Z check-H3 grep -c Atomico -> 4; incl. dedicated section "## Atomico confusion flag (required assessment)" with per-candidate assessment sentences -> pass
+2026-07-05T14:08:20Z check-H4 grep 14 evidence rows for '\(source:|assumption|not verifiable' -> 0 rows lack a marker (14/14 marked) -> pass
+2026-07-05T14:08:20Z check-H5 grep '## Verdict' -> line 49; grep 'Recommendation' -> 1 hit, line 56 marked "(exactly one)" -> pass; note: Qroky verdict token is "go-conditional", outside the closed vocabulary go/hold/kill named in H5 prose -> composed as minor finding F2
+2026-07-05T14:09:40Z soft-S1 spot-check 1: WebFetch atomaro.design/business -> live Rostelecom IT design-system product; tiers Pro (free) / Pro+ (50 000 RUB/yr) / Enterprise confirmed verbatim -> matches product claims
+2026-07-05T14:09:40Z soft-S1 spot-check 2: WebSearch "Atomaro Rostelecom design system" -> rtkit.ru, rtk-market.ru, figma.com community file, design.rt.ru all surface; "registered as a Russian software product in 2023" confirms tadviser-sourced claim -> matches
+2026-07-05T14:10:30Z soft-S1 spot-check 3: WebSearch "Qroky" -> no exact-string company/product/trademark, confirming the clean-field claim; however near-string neighbors Qrky.me (QR item-tag service) and QROK (QR-code tech co) exist and are closer than the ROKKY/Qore hits the product names -> composed as minor finding F1
+2026-07-05T14:10:30Z soft-S1 register states: both trademark screens declared "not performed"/"not verifiable"; RU trademark marked assumed -> declared, not guessed -> consistent with S1
+2026-07-05T14:10:30Z soft-S2 named judge is human (G1) -> deferred per VP9, not judged, not a finding
+2026-07-05T14:11:00Z findings-composed F1 minor (S1, neighbor understatement), F2 minor (H5, verdict-token vocabulary); no blocking, no substantive
+2026-07-05T14:11:00Z verdict accept per VP12 (minor-only findings); minors transfer to parent run log at closure (L7)
+2026-07-05T14:10:07Z delivery VERDICT.md, RESULT.md, STATUS.md written to file bus; atom delivered

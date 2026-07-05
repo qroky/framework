@@ -1,0 +1,6 @@
+2026-07-05T14:05:05Z CYCLE-START ATOM-009 inline in ATOM-006 session (executor role: market-analyst); INPUT read in full (U1)
+2026-07-05T14:05:05Z U2-RESTATE JTBD: map who RPF serves first — job-defined segments as explicit hypotheses with success criteria, scored on the accepted 7-factor checklist, ranked with sensitivity, so the human can confirm/redirect at G1. Consumers: human (G1), channels, pricing, assembly. DoD: H1 file, H2 >=3 segments/>=2 hypotheses/criteria, H3 7 factors each, H4 markers; S1 sensitivity (self), S2 founder-recognizable (human)
+2026-07-05T14:05:05Z PHASE-EXIT understand — no blocking ambiguity; research: §3.4-§3.7 + MANIFEST audiences (in session context); clarify skipped — unsourceable numbers marked as assumptions per INPUT §7, customer-knowledge gaps queued as G1 questions per INPUT design
+2026-07-05T14:05:05Z CREATE segments/segment-map.md written: segments A (accelerator founder 23/35), C (regulated org 25/35), B (solo builder 18/35); sequence A->C->B; sensitivity named
+2026-07-05T14:05:05Z VERIFY-SELF H1-H4 pass by script (3 segments, 7 hypotheses, 21 factor rows, 0 unmarked); S1 reviewed; S2 deferred to human; RESULT.md written
+2026-07-05T14:05:05Z DELIVERED awaiting G1 direction check

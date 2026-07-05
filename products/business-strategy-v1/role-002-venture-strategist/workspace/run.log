@@ -1,0 +1,6 @@
+2026-07-05T13:58:00Z CYCLE-START ROLE-002 inline in ATOM-006 session; INPUT read in full (U1)
+2026-07-05T13:58:00Z U2-RESTATE JTBD: executor identity for strategy/analysis atoms; consumers: pending F2 atoms; DoD H1 template, H2 <=60 lines, H3 provenance, S1 discipline baked in
+2026-07-05T13:58:00Z PHASE-EXIT understand — no ambiguity; research: §6.3 template + sibling roles (in session context); clarify skipped (no gap)
+2026-07-05T13:58:00Z CREATE roles/venture-strategist.md written
+2026-07-05T13:58:00Z VERIFY-SELF H1-H3 pass by script (wc -l, grep); S1 reviewed; RESULT.md written
+2026-07-05T13:58:00Z DELIVERED

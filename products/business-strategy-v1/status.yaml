@@ -1,0 +1,29 @@
+# status.yaml — shared status machine of one multi-atom product (SM1-SM4)
+# One file per products/<product-slug>/; one entry per atom; current state only.
+product: business-strategy-v1
+updated: 2026-07-05T14:22:28Z
+atoms:
+  - id: ATOM-006
+    state: running
+    timestamp: 2026-07-05T14:22:28Z
+    note: G1 passed (GATE-008 go, envelope ~320k; GATE-009 naming accepted; INFO-001); channels next
+  - id: ATOM-008-VERIFY
+    state: delivered
+    timestamp: 2026-07-05T14:11:52Z
+    note: VERDICT.md accept (round 1, returns_used 0); F1-F2 minor; real counter 105,273 tokens
+  - id: ROLE-002
+    state: delivered
+    timestamp: 2026-07-05T13:58:00Z
+    note: roles/venture-strategist.md written; H1-H3 pass by script; self-verification is acceptance (draft)
+  - id: ROLE-003
+    state: delivered
+    timestamp: 2026-07-05T13:58:00Z
+    note: roles/market-analyst.md written; H1-H3 pass by script; self-verification is acceptance (draft)
+  - id: ATOM-008
+    state: delivered
+    timestamp: 2026-07-05T14:02:48Z
+    note: accepted reviewed by human (GATE-009) after Verify accept round 1; closed per L7
+  - id: ATOM-009
+    state: delivered
+    timestamp: 2026-07-05T14:06:00Z
+    note: segment-map.md written; H1-H4 pass; self-verification is delivery (draft); G1 direction check pending
