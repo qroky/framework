@@ -1,0 +1,103 @@
+Qroky setup kit — dry-run transcript
+Generated: 2026-07-07T12:28:45Z
+Sandbox: fresh temp directory under /private/tmp, network-free (local stub git repo + fake claude binary on PATH)
+Command a founder actually types: bash bootstrap.sh   (no arguments, no flags)
+
+############################################################
+# RUN 1 — first time. This is exactly what a new founder sees.
+############################################################
+== Qroky setup ==
+
+Step 1 of 5 — checking what is already on this machine
+  git — found (git version 2.50.1 (Apple Git-155))
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  step done, 0s elapsed so far
+
+Step 2 of 5 — creating the private workspace at: /private/tmp/qroky-dry-run.awe7wn/founder-workspace
+  private repository created — this is this founder's own; nobody else has access unless invited
+  step done, 0s elapsed so far
+
+Step 3 of 5 — adding the rulebook the assistant follows (pinned to one fixed version, so it never changes without notice)
+  added and pinned to version 705b34319983
+  this copy is read-only by convention: the founder's own work never goes inside framework/ (see CLAUDE.md, written next)
+  step done, 0s elapsed so far
+
+Step 4 of 5 — connecting the assistant to this workspace
+  connected — CLAUDE.md written at the top of the workspace
+  step done, 0s elapsed so far
+
+Step 5 of 5 — finishing up
+  step done, 0s elapsed so far
+
+== Setup finished in 0s. Nothing failed. ==
+
+What to do next:
+  1. Open this folder (/private/tmp/qroky-dry-run.awe7wn/founder-workspace) in a terminal, or open it in Claude Code.
+  2. Type: claude
+  3. Say hello — the first conversation starts there.
+
+This workspace is private. Nothing here is sent anywhere unless a
+separate, explicit agreement to share is signed — that is its own step,
+described in the kit's telemetry consent document, not this one.
+
+--- RUN 1 exit code: 0 ; elapsed: 0s ---
+
+############################################################
+# RUN 2 — same command, same folder. Proves re-running is safe
+# and does not repeat work already done (idempotency).
+############################################################
+== Qroky setup ==
+
+Step 1 of 5 — checking what is already on this machine
+  git — found (git version 2.50.1 (Apple Git-155))
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  step done, 0s elapsed so far
+
+Step 2 of 5 — creating the private workspace at: /private/tmp/qroky-dry-run.awe7wn/founder-workspace
+  this workspace is already set up (found .qroky/bootstrapped) — re-checking instead of redoing the work
+  a repository already exists here — reusing it
+  step done, 0s elapsed so far
+
+Step 3 of 5 — adding the rulebook the assistant follows (pinned to one fixed version, so it never changes without notice)
+  already added — making sure it is on the pinned version
+  this copy is read-only by convention: the founder's own work never goes inside framework/ (see CLAUDE.md, written next)
+  step done, 0s elapsed so far
+
+Step 4 of 5 — connecting the assistant to this workspace
+  already connected — CLAUDE.md exists
+  step done, 0s elapsed so far
+
+Step 5 of 5 — finishing up
+  step done, 0s elapsed so far
+
+== Setup finished in 0s. Nothing failed. ==
+
+What to do next:
+  1. Open this folder (/private/tmp/qroky-dry-run.awe7wn/founder-workspace) in a terminal, or open it in Claude Code.
+  2. Type: claude
+  3. Say hello — the first conversation starts there.
+
+This workspace is private. Nothing here is sent anywhere unless a
+separate, explicit agreement to share is signed — that is its own step,
+described in the kit's telemetry consent document, not this one.
+
+--- RUN 2 exit code: 0 ; elapsed: 0s ---
+
+############################################################
+# Summary
+############################################################
+Run 1 elapsed (the number that matters — a founder only ever runs this once): 0s
+Run 2 elapsed (idempotency re-run): 0s
+Time budget: <= 15 minutes (900s) from a founder saying yes to a ready workspace.
+Verdict: PASS — run 1 exited 0 in 0s, within the 900s budget.
+Idempotency: PASS — run 2 exited 0 and reused the existing workspace (see 'already set up' / 'reusing it' / 'already added' / 'already connected' lines above).
+
+############################################################
+# Questions asked of the founder
+############################################################
+Count: 0
+Classification of every prompt shown in the two runs above (H2 requirement, one line each):
+  There were no prompts. bootstrap.sh contains no interactive 'read' call — every line printed
+  above is either a progress message or, on failure, a self-contained fix instruction that names
+  the exact command to run next. Proof (grep for an interactive read/prompt idiom in bootstrap.sh):
+  0 matches for 'read -p' / 'read -r' (or any interactive read) in bootstrap.sh — confirmed zero questions.

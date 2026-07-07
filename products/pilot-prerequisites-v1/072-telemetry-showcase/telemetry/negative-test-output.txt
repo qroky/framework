@@ -1,0 +1,57 @@
+###################################################################
+# TEST 1 — deny-by-default (planted non-whitelisted files rejected)
+###################################################################
+--- running push.sh against the sandbox repo ---
+==================================================================
+Qroky pilot telemetry push — dry run
+Scanning:  /private/tmp/qroky-telemetry-negtest.9G5Nl0/repo
+Staging:   /private/tmp/qroky-telemetry-negtest.9G5Nl0/staging
+==================================================================
+COPIED  (whitelisted: RESULT.md)  <-  products/demo-product/001-demo-atom/RESULT.md
+COPIED  (whitelisted: run.log)  <-  products/demo-product/001-demo-atom/workspace/run.log
+COPIED  (whitelisted: STATUS.md)  <-  products/demo-product/001-demo-atom/STATUS.md
+COPIED  (whitelisted: VERDICT.md)  <-  products/demo-product/001-demo-atom-verify/VERDICT.md
+COPIED  (whitelisted: status.yaml)  <-  products/demo-product/status.yaml
+------------------------------------------------------------------
+SKIPPED (not on the whitelist — deny by default): 2 file(s)
+First few skipped, for your own audit:
+  - products/demo-product/001-demo-atom/INPUT.md
+  - products/demo-product/001-demo-atom/secret.txt
+COPIED to staging: 5 file(s)
+------------------------------------------------------------------
+[DRY RUN] would push 5 file(s) from:
+[DRY RUN]   /private/tmp/qroky-telemetry-negtest.9G5Nl0/staging
+[DRY RUN] to remote: qroky/pilot-telemetry
+[DRY RUN] No network call was made. No 'git push' was run.
+==================================================================
+Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.9G5Nl0/staging
+You can open and read every one of them.
+==================================================================
+
+--- checking staged output for leaked planted content ---
+TEST 1 PASSED — no planted file, and no RESULT.md business content, reached staging.
+
+--- staging directory contents (for the record) ---
+products_demo-product_status.yaml
+products_demo-product_001-demo-atom-verify_VERDICT.md
+products_demo-product_001-demo-atom_STATUS.md
+products_demo-product_001-demo-atom_workspace_run.log
+products_demo-product_001-demo-atom_RESULT.cost-block.yaml
+
+###################################################################
+# TEST 2 — OFF switch (telemetry/OFF stops the script cold)
+###################################################################
+--- planted telemetry/OFF at: /Users/ghcernei/Work/rpf/products/pilot-prerequisites-v1/072-telemetry-showcase/telemetry/OFF ---
+--- running push.sh again (should do nothing) ---
+==================================================================
+TELEMETRY IS OFF.
+Found: /Users/ghcernei/Work/rpf/products/pilot-prerequisites-v1/072-telemetry-showcase/telemetry/OFF
+This script is doing NOTHING — no files were read, nothing was
+staged, nothing was sent anywhere. Delete that file to turn
+telemetry back on.
+==================================================================
+TEST 2 PASSED — OFF switch stopped the script before it read or staged anything.
+
+###################################################################
+# ALL NEGATIVE TESTS PASSED
+###################################################################

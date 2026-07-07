@@ -1,0 +1,32 @@
+# run.log — ATOM-071-VERIFY (round 1, blind, fresh context)
+Date: 2026-07-07
+
+1. Read own INPUT.md (071-setup-kit-verify/INPUT.md). Confirmed slim blind
+   package: 8 permitted files, framework docs off-limits, target INPUT/STATUS/
+   workspace off-limits.
+2. H1: `ls -la .../071-setup-kit/setup/` → 7 files present (bootstrap.sh,
+   QUICKSTART.ro/.ru, TIERS.ro/.ru, dry-run.sh, dry-run-transcript.txt).
+   Noted the INPUT's own "6 files" miscount vs its 7 enumerated paths.
+3. Read all 7 permitted setup files in full.
+4. RESULT.md access kept minimal: `grep -nE '^#|^\|'` to locate tables, then
+   `sed -n '43,72p'` — DoD Self-Check table + both H4 tables only.
+5. H3 re-run: grep -inE "DoD|атом|atom|verify|INPUT|гейт|gate" over the 4
+   founder-facing files → zero hits, exit 1. PASS.
+6. H5a re-run: `bash -n bootstrap.sh` → exit 0. PASS.
+7. H5b/H2 reproduction: copied bootstrap.sh + dry-run.sh into
+   mktemp -d /private/tmp/qroky-verify.XXXXXX (so the committed transcript is
+   never overwritten), executed dry-run.sh → exit 0; fresh transcript:
+   RUN 1 exit 0 / 0s, RUN 2 exit 0 / 0s, Verdict PASS, Idempotency PASS,
+   Questions Count: 0 with classification. Temp dir removed after.
+8. H4 spot-check: compared the target's point-by-point tables against the
+   actual RO/RU files — steps, numbers, promises identical; one cosmetic
+   wording drift in TIERS closing (framework vs project; automat vs всегда)
+   → finding M3, minor.
+9. S1 judged from the founder's chair → PASS with findings M1 (kit-folder
+   assumption unstated) and M2 (Windows needs a "Git Bash" line), both minor.
+10. S2 judged → PASS; all numbers hedged, measured-not-marketing stated, cost
+    lands on founder's own subscription; no glossed claim found.
+11. Wrote VERDICT.md (accept, per-criterion table, 3 minor findings),
+    STATUS.md, RESULT.md, this run.log. status.yaml untouched.
+
+Verdict: ACCEPT. Token estimate ~35k of ~80k budget.

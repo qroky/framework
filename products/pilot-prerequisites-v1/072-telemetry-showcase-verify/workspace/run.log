@@ -1,0 +1,20 @@
+2026-07-07T00:00:00Z CYCLE-START ATOM-072-VERIFY; executor claude-fable-5 as blind-verify; round 1; slim package VP20
+2026-07-07 READ INPUT.md (own folder) — §2 file list, DoD verbatim, verdict discipline
+2026-07-07 H1 ls telemetry/ consent/ showcase/ — all 10 deliverables present; push.sh, negative-test.sh, render.sh executable
+2026-07-07 READ telemetry/push.sh, telemetry/negative-test.sh, telemetry/negative-test-output.txt
+2026-07-07 READ consent/CONSENT.ro.md, consent/CONSENT.ru.md
+2026-07-07 READ showcase/cost-line-spec.md, team-summary-spec.md, render.sh, example-cost-line.txt, example-team-summary.md
+2026-07-07 READ pilot-design.md — ONLY "Telemetry & consent" section (closed list L42 + consent master text L44-52), located via grep, read via sed 40,60p
+2026-07-07 READ target RESULT.md — ONLY DoD self-check table (L50-61) + H3 consent table (L65-75), located via grep offsets
+2026-07-07 H6 bash -n push.sh / negative-test.sh / render.sh — all clean
+2026-07-07 SANDBOX /private/tmp/atom072-verify.m8wWt4 created; kit copy of push.sh + negative-test.sh
+2026-07-07 H2 RE-RAN negative-test.sh from sandbox copy — exit 0; TEST 1 PASSED (planted INPUT.md + secret.txt rejected by content and name; RESULT.md Summary business string absent — cost-block-only extraction proven); TEST 2 PASSED (OFF → exit 0, loud message, zero staged); matches committed negative-test-output.txt
+2026-07-07 H2 whitelist compare — push.sh WHITELIST_FILENAMES (5 entries) literal match with pilot-design.md L42 closed list; deny-by-default confirmed in code
+2026-07-07 H3 checked both consent files myself — 4 red lines, deletion clause with [____] fill-in field (not prose), open-script clause present in RO and RU; substance matches EN master, no promise added/removed; target's H3 table accurate
+2026-07-07 H4 spec tables — cost-line-spec 5/5 elements → named fields; team-summary-spec 4/4 sections → named record fields
+2026-07-07 H5 RE-RAN render.sh /Users/ghcernei/Work/rpf ATOM-018 → sandbox outputs; exit 0; diff vs committed example-cost-line.txt and example-team-summary.md: byte-identical both; math re-checked: 177951 × $8.00/M = $1.42361 → ceiling $1.43 correct
+2026-07-07 S1-S3 judged — S1 PASS (no opaque passage), S2 PASS (blind spot named: single-atom example, honest state), S3 PASS (gloss named as F2)
+2026-07-07 FINDINGS 0 blocking, 3 minor: F1 m_roles=1 hardcoded (render.sh L88) vs spec's generic subtree count; F2 spec rule 2 "always states four-way breakdown" not implemented in render output; F3 «роль» singular hardcoded vs fixed format «M ролей» (wrong for M>1)
+2026-07-07 VERDICT accept, round 1, returns_used 0 — VERDICT.md written
+2026-07-07 WROTE STATUS.md, RESULT.md in own folder; status.yaml NOT touched (per INPUT §4)
+2026-07-07 CYCLE-END delivered

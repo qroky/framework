@@ -1,7 +1,7 @@
 # status.yaml — shared status machine of one multi-atom product (SM1-SM4)
 # One file per products/<product-slug>/; one entry per atom; current state only.
 product: pilot-prerequisites-v1
-updated: 2026-07-07T12:22:33Z
+updated: 2026-07-07T12:47:37Z
 atoms:
   - id: ATOM-007
     state: running
@@ -28,10 +28,34 @@ atoms:
     timestamp: 2026-07-07T12:16:35Z
     note: delivered, all H pass (self-verify); real counter 51,225 tokens (calibration: ~50k fixed subagent overhead)
   - id: ATOM-071
-    state: running
-    timestamp: 2026-07-07T12:22:33Z
-    note: Wave 1 build (setup kit + tiers); pilot-toolsmith, tier M subagent; envelope ~110k (GATE-016); slim blind verify on delivery
+    state: delivered
+    timestamp: 2026-07-07T12:34:00Z
+    note: all H1-H5 pass (self); real 165,895 tokens; blind slim-verify running
   - id: ATOM-072
+    state: delivered
+    timestamp: 2026-07-07T12:38:31Z
+    note: all H1-H6 pass (self); real 193,710 tokens; blind slim-verify running
+  - id: ATOM-071-VERIFY
+    state: delivered
+    timestamp: 2026-07-07T12:38:31Z
+    note: ACCEPT round 1 (returns_used 0); 3 minor findings; real 88,414 tokens
+  - id: ATOM-072-VERIFY
+    state: delivered
+    timestamp: 2026-07-07T12:47:37Z
+    note: ACCEPT round 1 (returns_used 0); 3 minor (render m_roles hardcode, breakdown absent, singular form); real 101,262 tokens
+  - id: ATOM-073
     state: running
-    timestamp: 2026-07-07T12:22:33Z
-    note: Wave 1 build (telemetry + consent RO/RU + showcase incl. TEAM summary INFO-007); pilot-toolsmith, tier M subagent; envelope ~120k (GATE-016); slim blind verify on delivery
+    timestamp: 2026-07-07T12:47:37Z
+    note: fan lens founder-ux (M sonnet, ~90k); LF2 shared question; SY9 contradiction demanded
+  - id: ATOM-074
+    state: running
+    timestamp: 2026-07-07T12:47:37Z
+    note: fan lens token-economics (S haiku, ~75k)
+  - id: ATOM-075
+    state: running
+    timestamp: 2026-07-07T12:47:37Z
+    note: fan lens security-telemetry (M sonnet, ~90k), adversarial
+  - id: ATOM-076
+    state: running
+    timestamp: 2026-07-07T12:47:37Z
+    note: fan lens owner-capacity (S haiku, ~75k)
