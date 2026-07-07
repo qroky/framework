@@ -4,15 +4,15 @@
 --- running push.sh against the sandbox repo ---
 ==================================================================
 Qroky pilot telemetry push — dry run
-Scanning:  /private/tmp/qroky-telemetry-negtest.g8A8dV/repo
-Staging:   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging
-Content filtering mode: wholefile (CEO choice at G2 — see this file's header)
+Scanning:  /private/tmp/qroky-telemetry-negtest.y4yiCX/repo
+Staging:   /private/tmp/qroky-telemetry-negtest.y4yiCX/staging
+Content filtering mode: filtered (settled at G2, GATE-019 register #3 — see this file's header)
 ==================================================================
-COPIED  (whitelisted: RESULT.md, mode: wholefile)  <-  products/demo-product/001-demo-atom/RESULT.md
-COPIED  (whitelisted: run.log, mode: wholefile)  <-  products/demo-product/001-demo-atom/workspace/run.log
-COPIED  (whitelisted: STATUS.md, mode: wholefile)  <-  products/demo-product/001-demo-atom/STATUS.md
-COPIED  (whitelisted: VERDICT.md, mode: wholefile)  <-  products/demo-product/001-demo-atom-verify/VERDICT.md
-COPIED  (whitelisted: status.yaml, mode: wholefile)  <-  products/demo-product/status.yaml
+COPIED  (whitelisted: RESULT.md, mode: filtered)  <-  products/demo-product/001-demo-atom/RESULT.md
+COPIED  (whitelisted: run.log, mode: filtered)  <-  products/demo-product/001-demo-atom/workspace/run.log
+COPIED  (whitelisted: STATUS.md, mode: filtered)  <-  products/demo-product/001-demo-atom/STATUS.md
+COPIED  (whitelisted: VERDICT.md, mode: filtered)  <-  products/demo-product/001-demo-atom-verify/VERDICT.md
+COPIED  (whitelisted: status.yaml, mode: filtered)  <-  products/demo-product/status.yaml
 ------------------------------------------------------------------
 SKIPPED (not on the whitelist — deny by default): 2 file(s)
 First few skipped, for your own audit:
@@ -21,11 +21,11 @@ First few skipped, for your own audit:
 COPIED to staging: 5 file(s)
 ------------------------------------------------------------------
 [DRY RUN] would push 5 file(s) from:
-[DRY RUN]   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging
+[DRY RUN]   /private/tmp/qroky-telemetry-negtest.y4yiCX/staging
 [DRY RUN] to remote: qroky/pilot-telemetry
 [DRY RUN] No network call was made. No 'git push' was run.
 ==================================================================
-Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.g8A8dV/staging
+Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.y4yiCX/staging
 You can open and read every one of them.
 ==================================================================
 
@@ -33,11 +33,11 @@ You can open and read every one of them.
 TEST 1 PASSED — no planted file, and no RESULT.md business content, reached staging.
 
 --- staging directory contents (for the record) ---
-products_demo-product_status.yaml
-products_demo-product_001-demo-atom-verify_VERDICT.md
-products_demo-product_001-demo-atom_STATUS.md
-products_demo-product_001-demo-atom_workspace_run.log
+products_demo-product_001-demo-atom_workspace_run.log.filtered.txt
+products_demo-product_001-demo-atom-verify_VERDICT.filtered.md
+products_demo-product_status.filtered.yaml
 products_demo-product_001-demo-atom_RESULT.cost-block.yaml
+products_demo-product_001-demo-atom_STATUS.filtered.txt
 
 ###################################################################
 # TEST 2 — OFF switch (telemetry/OFF stops the script cold)
@@ -57,13 +57,13 @@ Revoking stops future sends AND requests deletion of what was already sent.
 TEST 2 PASSED — OFF switch stopped the script before it read or staged anything.
 
 ###################################################################
-# TEST 3 — filtered content mode strips free text (register #3, вариант A)
+# TEST 3 — filtered content mode strips free text (register #3=A, the only mode)
 ###################################################################
 ==================================================================
 Qroky pilot telemetry push — dry run
-Scanning:  /private/tmp/qroky-telemetry-negtest.g8A8dV/repo
-Staging:   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging-filtered
-Content filtering mode: filtered (CEO choice at G2 — see this file's header)
+Scanning:  /private/tmp/qroky-telemetry-negtest.y4yiCX/repo
+Staging:   /private/tmp/qroky-telemetry-negtest.y4yiCX/staging-filtered
+Content filtering mode: filtered (settled at G2, GATE-019 register #3 — see this file's header)
 ==================================================================
 COPIED  (whitelisted: RESULT.md, mode: filtered)  <-  products/demo-product/001-demo-atom/RESULT.md
 COPIED  (whitelisted: run.log, mode: filtered)  <-  products/demo-product/001-demo-atom/workspace/run.log
@@ -78,11 +78,11 @@ First few skipped, for your own audit:
 COPIED to staging: 5 file(s)
 ------------------------------------------------------------------
 [DRY RUN] would push 5 file(s) from:
-[DRY RUN]   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging-filtered
+[DRY RUN]   /private/tmp/qroky-telemetry-negtest.y4yiCX/staging-filtered
 [DRY RUN] to remote: qroky/pilot-telemetry
 [DRY RUN] No network call was made. No 'git push' was run.
 ==================================================================
-Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.g8A8dV/staging-filtered
+Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.y4yiCX/staging-filtered
 You can open and read every one of them.
 ==================================================================
 TEST 3 PASSED — filtered mode kept the structural VERDICT.md fields and dropped the Findings prose.

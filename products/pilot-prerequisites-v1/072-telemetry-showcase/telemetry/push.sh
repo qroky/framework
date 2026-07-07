@@ -31,24 +31,16 @@
 #   found, logged as "SKIPPED (not on the whitelist)", and never opened.
 #   This is "deny-by-default": the default answer for any file is NO.
 #
-# CONTENT FILTERING MODE (ATOM-078 register #3 — a CEO text-choice, not an
-# executor decision; both variants below are real, working code; the
-# variable at the top of this section selects which one runs):
-#   - "wholefile" (current default, unchanged from ATOM-072, already
-#     covered by the negative-test.sh suite): STATUS.md, run.log,
-#     status.yaml and VERDICT.md are copied whole. The consent text must
-#     honestly disclose that these four are copied whole and may carry
-#     quoted excerpts (see CONSENT.<lang>.md, "Ce copiem" / "Что копируем"
-#     footnote) — this is "вариант B — honest whole-file disclosure".
-#   - "filtered": the same four files are reduced to their structural
-#     fields only (no free-text notes, no Findings prose, no progress-log
-#     sentences) before copying — see the copy_*_filtered() functions below.
-#     This is "вариант A — content filtering of the 4 whole-copied files".
-#   Set with: QROKY_TELEMETRY_FILTER_MODE=filtered ./push.sh ...
-#   CEO picks the mode that ships to real founders at G2; until then this
-#   script keeps shipping with the tested default (wholefile) so existing
-#   negative-test.sh coverage is not broken by this fix-round.
-CONTENT_FILTER_MODE="${QROKY_TELEMETRY_FILTER_MODE:-wholefile}"
+# CONTENT FILTERING MODE (ATOM-079 register #3 — SETTLED at G2, GATE-019:
+# CEO chose "A — content filtering". This is now the ONLY path this script
+# runs. STATUS.md, run.log, status.yaml and VERDICT.md are always reduced to
+# their structural fields only (no free-text notes, no Findings prose, no
+# progress-log sentences) before copying — see the copy_*_filtered()
+# functions below. The consent text (CONSENT.<lang>.md) promises exactly
+# this and nothing else; there is no remaining code path that copies these
+# four files whole ("вариант B — honest whole-file disclosure" was the
+# rejected alternative offered at G2 and is not implemented here).
+CONTENT_FILTER_MODE="filtered"
 #
 # YOUR OFF SWITCH:
 #   Create an empty file named "OFF" in this same folder (next to this
@@ -60,7 +52,8 @@ CONTENT_FILTER_MODE="${QROKY_TELEMETRY_FILTER_MODE:-wholefile}"
 #   something before is treated as a REVOCATION, not just a pause — see
 #   "DELETION ON REVOCATION" below.
 #
-# DELETION — BY DATE AND ON REVOCATION (ATOM-078 register #5):
+# DELETION — BY DATE AND ON REVOCATION (register #5 — SETTLED at G2,
+# GATE-019: CEO chose "B — runbook"):
 #   The consent document's "Ștergere"/"Удаление" field fixes a deletion
 #   date in writing at signing. If that date is written into a file named
 #   "DELETE-BY" next to this script (one line, YYYY-MM-DD), this script
@@ -75,10 +68,11 @@ CONTENT_FILTER_MODE="${QROKY_TELEMETRY_FILTER_MODE:-wholefile}"
 #   delete against qroky/pilot-telemetry. Until then, the code-side part —
 #   detecting the trigger, stopping sends, and writing a dated, auditable
 #   local record — is real and runs every time; the human-executed removal
-#   of already-sent copies at the real remote is documented as a runbook
-#   step (see ../workspace/telemetry-deletion-runbook.md in the fix-round
-#   product folder) until that automation exists — flagged there for CEO
-#   confirmation at G2, per the register.
+#   of already-sent copies at the real remote is a weekly, dated, logged
+#   runbook step (see ../../078-fix-round/workspace/telemetry-deletion-runbook.md,
+#   and the "owner" section of ../../071-setup-kit/setup/QUICKSTART.<lang>.md)
+#   — this is the settled, permanent mechanism per GATE-019 register #5
+#   ("B — runbook"), not a stopgap awaiting further CEO confirmation.
 #
 # WORK-UNIT NOTE (ATOM-078 register #11, decidable after GATE-018/E8-1):
 #   E8-1 answered "opt-in": a founder may separately allow one short,
@@ -112,7 +106,9 @@ CONTENT_FILTER_MODE="${QROKY_TELEMETRY_FILTER_MODE:-wholefile}"
 #                   temp folder, printed at the end so you can inspect it)
 #
 # Author: pilot-toolsmith (ATOM-072) · Date: 2026-07-07
-# Fix-round: ATOM-078 (register #3, #5, #11) — 2026-07-07
+# Fix-round 1: ATOM-078 (register #3, #5, #11) — 2026-07-07
+# Fix-round 2: ATOM-079 (register #3=A settled as the only path, #5=B
+#              language settled, per GATE-019 pivot) — 2026-07-07
 # Purpose: prove the whitelist mechanics end-to-end before pilot kickoff.
 # What this script changes: nothing in REPO_ROOT (it only reads there); it
 # writes only inside STAGING_DIR (never your repo) and, for the deletion
@@ -182,7 +178,7 @@ echo "=================================================================="
 echo "Qroky pilot telemetry push — dry run"
 echo "Scanning:  $REPO_ROOT"
 echo "Staging:   $STAGING_DIR"
-echo "Content filtering mode: $CONTENT_FILTER_MODE (CEO choice at G2 — see this file's header)"
+echo "Content filtering mode: $CONTENT_FILTER_MODE (settled at G2, GATE-019 register #3 — see this file's header)"
 echo "=================================================================="
 
 # ============================================================================
@@ -197,12 +193,12 @@ echo "=================================================================="
 # comment on each line states exactly how much of that file is copied.
 # ============================================================================
 WHITELIST_FILENAMES=(
-  "STATUS.md"    # whole file in "wholefile" mode; structural-only in "filtered" mode
+  "STATUS.md"    # structural fields only (filtered mode — see copy_status_filtered())
   "RESULT.md"    # NOT the whole file — see copy_result_cost_block() below;
                   # only the frontmatter "cost:" block is ever copied
-  "run.log"      # whole file in "wholefile" mode; structural-only in "filtered" mode
-  "status.yaml"  # whole file in "wholefile" mode; structural-only in "filtered" mode
-  "VERDICT.md"   # whole file in "wholefile" mode; structural-only in "filtered" mode
+  "run.log"      # structural fields only (filtered mode — see copy_run_log_filtered())
+  "status.yaml"  # structural fields only (filtered mode — see copy_status_yaml_filtered())
+  "VERDICT.md"   # structural fields only (filtered mode — see copy_verdict_filtered())
 )
 
 is_whitelisted() {
@@ -327,17 +323,21 @@ while IFS= read -r -d '' file; do
         copy_result_cost_block "$file" "$STAGING_DIR/${flat%.md}.cost-block.yaml"
         ;;
       *)
-        if [[ "$CONTENT_FILTER_MODE" == "filtered" ]]; then
-          case "$base" in
-            STATUS.md)   copy_status_filtered   "$file" "$STAGING_DIR/${flat%.md}.filtered.txt" ;;
-            run.log)     copy_run_log_filtered  "$file" "$STAGING_DIR/${flat}.filtered.txt" ;;
-            status.yaml) copy_status_yaml_filtered "$file" "$STAGING_DIR/${flat%.yaml}.filtered.yaml" ;;
-            VERDICT.md)  copy_verdict_filtered   "$file" "$STAGING_DIR/${flat%.md}.filtered.md" ;;
-            *)           cp "$file" "$STAGING_DIR/$flat" ;;
-          esac
-        else
-          cp "$file" "$STAGING_DIR/$flat"
-        fi
+        # ATOM-079 register #3: filtered mode is the only path (GATE-019).
+        # The whole-file copy path ("вариант B") that used to run here when
+        # CONTENT_FILTER_MODE != "filtered" has been removed, not just
+        # disabled — CONTENT_FILTER_MODE is now a constant (see the header
+        # above), so this case statement is the single, unconditional path.
+        case "$base" in
+          STATUS.md)   copy_status_filtered   "$file" "$STAGING_DIR/${flat%.md}.filtered.txt" ;;
+          run.log)     copy_run_log_filtered  "$file" "$STAGING_DIR/${flat}.filtered.txt" ;;
+          status.yaml) copy_status_yaml_filtered "$file" "$STAGING_DIR/${flat%.yaml}.filtered.yaml" ;;
+          VERDICT.md)  copy_verdict_filtered   "$file" "$STAGING_DIR/${flat%.md}.filtered.md" ;;
+          # Register #3 = filtered-only: a whitelist entry without a filter
+          # handler must fail loudly, never fall back to an unfiltered copy
+          # (079-VERIFY F1).
+          *)           echo "ERROR: whitelisted '$base' has no filter handler — refusing unfiltered copy" >&2; exit 1 ;;
+        esac
         ;;
     esac
     copied_count=$((copied_count + 1))

@@ -77,3 +77,22 @@ câteva minute. Cu mult sub bugetul de 15 minute per total. Această măsurătoa
 a fost făcută pe o mașină de test, fără conexiune la internet, cu o copie
 locală a regulilor — partea care variază cu adevărat (descărcarea reală) nu a
 fost încă măsurată pe o conexiune reală.*
+
+---
+
+## Notă internă pentru echipa Flow Support (secțiune internă, nu pentru fondator)
+
+**Pas săptămânal, datat și înregistrat:** în fiecare săptămână, cineva din
+echipă verifică fișierul `telemetry/deletion-requests.log` al fiecărui
+fondator activ din pilot și, dacă există o cerere nouă (dată de ștergere
+atinsă sau retragere a consimțământului), execută pașii din runbook-ul de
+ștergere a telemetriei
+(`078-fix-round/workspace/telemetry-deletion-runbook.md`): găsește
+declanșatorul → localizează ce a fost trimis efectiv la depozitul real →
+șterge și înregistrează într-un jurnal intern al echipei → confirmă
+fondatorului, într-un mesaj scurt, că datele lui au fost șterse. Bifează
+data verificării săptămânale în același jurnal intern.
+
+*(Mecanism stabilit prin decizia CEO din 2026-07-07, GATE-019, registrul nr.
+5 — un pas de runbook, executat de om, datat și verificabil, nu cod automat
+de ștergere.)*

@@ -83,3 +83,15 @@ atoms:
     state: running
     timestamp: 2026-07-07T14:59:23Z
     note: parent-layer slim blind verify (VP20), tier L fable, envelope ~120k; recomputes RESULT arithmetic
+  - id: ATOM-007-VERIFY
+    state: delivered
+    timestamp: 2026-07-07T15:40:00Z
+    note: ACCEPT round 1 (returns_used 0); parent-layer arithmetic recomputed exact; 2 minor (fixed in RESULT); real 128,172
+  - id: ATOM-079
+    state: delivered
+    timestamp: 2026-07-07T17:10:00Z
+    note: G2 pivot fix-round (GATE-019 P1-P7 + register 3=A/5=B/9); negative-test 4/4 green x2; cold-read ~8.2-9.5 min < 10; real 215,899
+  - id: ATOM-079-VERIFY
+    state: delivered
+    timestamp: 2026-07-07T17:45:00Z
+    note: ACCEPT round 1 (returns_used 0); H1-H7 all pass, 3 minor (F1/F2 fixed by parent, F3 observation); real 243,393 incl. 114,893 lost to mid-run API server error + resume (infrastructure, not a verify return)

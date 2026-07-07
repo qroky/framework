@@ -3,14 +3,15 @@
 # negative-test.sh — proves push.sh's whitelist and OFF switch actually work
 # ============================================================================
 #
-# WHAT THIS PROVES (two tests, run in order):
+# WHAT THIS PROVES (four tests, run in order):
 #
-#   TEST 1 — deny-by-default: builds a throwaway fake repo in a sandbox
-#   under /private/tmp containing BOTH whitelisted files (STATUS.md,
-#   RESULT.md, run.log, status.yaml, VERDICT.md) AND two planted files that
-#   must NEVER be sent: a fake INPUT.md and a secret.txt. Runs push.sh
-#   against the sandbox, then checks the staging output does not contain
-#   either planted file's content anywhere.
+#   TEST 1 — deny-by-default AND structural filtering: builds a throwaway
+#   fake repo in a sandbox under /private/tmp containing BOTH whitelisted
+#   files (STATUS.md, RESULT.md, run.log, status.yaml, VERDICT.md) AND two
+#   planted files that must NEVER be sent: a fake INPUT.md and a secret.txt.
+#   Runs push.sh against the sandbox with its default (and, since ATOM-079,
+#   only) mode — content filtering, register #3=A — then checks the staging
+#   output does not contain either planted file's content anywhere.
 #
 #   TEST 2 — OFF switch: temporarily places telemetry/OFF next to push.sh,
 #   runs push.sh again, and checks it staged and pushed nothing at all
@@ -18,15 +19,17 @@
 #   at the end regardless of outcome, so the kit ships with telemetry ON
 #   by default.
 #
-#   TEST 3 (ATOM-078 register #3) — filtered content mode: runs push.sh with
-#   QROKY_TELEMETRY_FILTER_MODE=filtered against a VERDICT.md whose Findings
-#   body contains a planted business-descriptive sentence, and checks that
-#   sentence is stripped from the staged copy (only frontmatter survives).
+#   TEST 3 (register #3=A, settled at G2/GATE-019) — filtered content mode:
+#   runs push.sh (filtered is the only mode there is now — no env var
+#   selects a "wholefile" alternative any more) against a VERDICT.md whose
+#   Findings body contains a planted business-descriptive sentence, and
+#   checks that sentence is stripped from the staged copy (only frontmatter
+#   survives).
 #
-#   TEST 4 (ATOM-078 register #5) — deletion on revocation: runs push.sh
-#   once for real (staging something, which writes the .ever-sent marker),
-#   then plants OFF and runs again, and checks a deletion request was
-#   logged to deletion-requests.log.
+#   TEST 4 (register #5=B, settled at G2/GATE-019) — deletion on
+#   revocation: runs push.sh once for real (staging something, which writes
+#   the .ever-sent marker), then plants OFF and runs again, and checks a
+#   deletion request was logged to deletion-requests.log.
 #
 # No network calls are made anywhere in this test (push.sh's own push step
 # is a stub — see push.sh's push_to_remote()). Nothing outside /private/tmp
@@ -36,7 +39,10 @@
 #
 # Usage: ./negative-test.sh   (no arguments; self-contained)
 # Author: pilot-toolsmith (ATOM-072) · Date: 2026-07-07
-# Fix-round: ATOM-078 (register #3, #5) — 2026-07-07
+# Fix-round 1: ATOM-078 (register #3, #5) — 2026-07-07
+# Fix-round 2: ATOM-079 (register #3=A settled as the only mode — the
+#              QROKY_TELEMETRY_FILTER_MODE env var no longer has an
+#              alternative to select) — 2026-07-07
 # ============================================================================
 
 set -euo pipefail
@@ -199,7 +205,7 @@ echo "TEST 2 PASSED — OFF switch stopped the script before it read or staged a
 echo ""
 rm -f "$OFF_FILE" "$EVER_SENT_FILE" "$DELETION_LOG"   # reset state before the next tests
 echo "###################################################################"
-echo "# TEST 3 — filtered content mode strips free text (register #3, вариант A)"
+echo "# TEST 3 — filtered content mode strips free text (register #3=A, the only mode)"
 echo "###################################################################"
 
 cat > "$FAKE_REPO/products/demo-product/001-demo-atom-verify/VERDICT.md" <<'EOF'
@@ -218,7 +224,8 @@ feature and must not survive filtered-mode extraction.
 EOF
 
 FILTERED_STAGING="$SANDBOX/staging-filtered"
-QROKY_TELEMETRY_FILTER_MODE=filtered "$PUSH_SH" "$FAKE_REPO" "$FILTERED_STAGING"
+# No env var needed any more — filtered is push.sh's only mode (register #3=A).
+"$PUSH_SH" "$FAKE_REPO" "$FILTERED_STAGING"
 
 if grep -R "PLANTED-VERDICT-BUSINESS-TEXT-b91fe2" "$FILTERED_STAGING" >/dev/null 2>&1; then
   fail "TEST 3 — filtered mode did not strip the VERDICT.md Findings body; business text leaked"
