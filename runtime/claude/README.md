@@ -48,6 +48,13 @@ Plus §7 operational pitfalls and §8 known limitations (RC5).
 
 Operational note: flagship-tier quota (Fable/Opus) is limited on current plans. If quota forces a substitution, log it in the run log; prefer postponing a tier-L Verify over running it below tier L (MT3/MT4 — a weak verifier is a rubber stamp).
 
+**Routing autonomy (INFO-008, 2026-07-07 — operational here; constitutional codification queued for the next ORCHESTRATION touch):**
+
+1. Every child/subagent spawn carries an **explicit** `model_tier` from the table above — default `M` for execution, `S` for mechanics, `L` strictly for Formulate / Verify / Synthesis / decomposition planning. Each choice is logged in the run log **with its work class** (`tier=<S|M|L> class=<...>`).
+2. In an interactive session the agent classifies its current work against the session's model and, on mismatch, hands the operator a one-line switch task («работа M-класса, ты на L — `/model sonnet`, экономия ~N%») — once per work-class change, never switching silently.
+3. Safeguards: Verify below tier L — only by a **recorded CEO decision**; after 2 verify returns of one atom, the executor's tier auto-escalates one step (logged).
+4. Subtree cost accounting (O4.3) carries an L/M/S share breakdown — the routing-health metric (skew = defect to surface).
+
 ## 4. Instantiation mapping
 
 | Mode (L2) | On this platform | VP4 isolation |
