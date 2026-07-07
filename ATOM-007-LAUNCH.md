@@ -33,7 +33,7 @@
 ---
 atom: ATOM-007
 product: Pilot Prerequisites v1 (products/pilot-prerequisites-v1/ tree)
-parent: RPF venture (pilot critical path; strategy per products/business-strategy-v1/STRATEGY.md)
+parent: Qroky venture (pilot critical path; strategy per products/business-strategy-v1/STRATEGY.md)
 formulated_by: Human (Ghenadie — INFO-006) + formulating agent (launch session), 2026-07-07
 verification: independent + human (founder-facing artifacts cross the perimeter)
 maturity_target: reviewed
@@ -50,7 +50,7 @@ recursion_allowance: 2
 | :---- | :---- |
 | Product | `products/pilot-prerequisites-v1/` tree — deliverables per §4 |
 | Atom ID | ATOM-007 |
-| Parent product | RPF venture |
+| Parent product | Qroky venture |
 | Executor role | venture-strategist (exists — chair of the fan per SY3); lens roles created on demand per F2 |
 | Input product(s) | This INPUT; `products/business-strategy-v1/pilot/pilot-design.md` (consent master text, success criteria, telemetry scope); `products/business-strategy-v1/STRATEGY.md`; `decisions/INFO-001` (exchange + red lines), `INFO-005` (subtree accounting), `INFO-006` (this atom's accepted decisions); `knowledge/precedent/` (all); `runtime/claude/README.md` |
 | Consumer(s) | Pilot founders + Startup Moldova (setup, consent, telemetry — perimeter); the pilot operator (Flow Support tooling, intake protocol); pricing re-anchor at pilot exit (cost data); SYNTHESIS-PROTOCOL validation record |
@@ -128,10 +128,11 @@ owner review, sentinel atoms draft, human approves every intervention, SLA
 inline / micro / full (per §3.4 of the strategy inputs).
 
 ### 3.7 Naming
-Rebrand «RPF» → Qroky is pending (TASKS decision 2.1). Founder-facing artifacts
-use the working name **Qroky** where a name is unavoidable (the telemetry repo is
-already `qroky/pilot-telemetry` — INFO-006); keep every mention sed-replaceable
-and flag any hard-to-swap occurrence in RESULT.
+Rebrand «RPF» → Qroky executed per GATE-012 (ATOM-017); the repository lives at
+`qroky/framework`. Founder-facing artifacts use **Qroky**; «Recursive Product
+Framework» remains the methodology's spelled-out name (ATOM-017 boundary B2).
+Telemetry repo: `qroky/pilot-telemetry` (INFO-006).
+*(§3.7 refreshed 2026-07-07 by ATOM-017 — launch not yet materialized; change logged in ATOM-017 run.log, decision B5.)*
 
 ## 4. Deliverable
 

@@ -1,8 +1,8 @@
-# RPF Business Strategy v1
+# Qroky Business Strategy v1
 
 **Assembled by ATOM-015 (venture-strategist) · 2026-07-05 · maturity target: reviewed · G2 gate: GATE-010**
 
-RPF sells one thing: a founder operating as **CEO of agents** — a constitutional framework whose recursive decomposition generates the questions the founder didn't know to ask (positioning per accepted §3.1; open-core boundary per RISK-002). This document is the strategy in ≤1500 words; every number traces to an analysis file by path. It is built to open three commercial conversations: with **Startup Moldova** (pilot kickoff), with a **first bank** (via pilot intros), and with a **follow-on accelerator or fund** (via the case study).
+Qroky sells one thing: a founder operating as **CEO of agents** — a constitutional framework whose recursive decomposition generates the questions the founder didn't know to ask (positioning per accepted §3.1; open-core boundary per RISK-002). This document is the strategy in ≤1500 words; every number traces to an analysis file by path. It is built to open three commercial conversations: with **Startup Moldova** (pilot kickoff), with a **first bank** (via pilot intros), and with a **follow-on accelerator or fund** (via the case study).
 
 ## Segments
 
@@ -36,7 +36,7 @@ Six measured success criteria convert the strategy's widest assumptions into dat
 
 ## Name
 
-Verdict (`naming/naming-verdict.md`, human-accepted via GATE-009; evidence updated per `decisions/INFO-002` and `decisions/INFO-003`): **Atomaro is dead** — a live commercial product of a major telecom occupies the name in our market's language space; backorder cancelled. **Qroky is cleared for public use**: qroky.com and the GitHub org secured (human-acquired), and the formal register screen (TMview across EUIPO/WIPO/USPTO/AGEPI, 05.07.2026) came back clean — zero exact hits, no live near-string mark in classes 9/42. The "RPF"→Qroky swap is one `sed`, pending only the rebrand-timing decision. Method lesson recorded: live-company search in the market's languages first — it killed in one check what domain research missed. Rejected names and all other closed questions live in `NOT-DOING.md` (14 entries, each with a revisit trigger).
+Verdict (`naming/naming-verdict.md`, human-accepted via GATE-009; evidence updated per `decisions/INFO-002` and `decisions/INFO-003`): **Atomaro is dead** — a live commercial product of a major telecom occupies the name in our market's language space; backorder cancelled. **Qroky is cleared for public use**: qroky.com and the GitHub org secured (human-acquired), and the formal register screen (TMview across EUIPO/WIPO/USPTO/AGEPI, 05.07.2026) came back clean — zero exact hits, no live near-string mark in classes 9/42. The "RPF"→Qroky swap was executed per GATE-012 (ATOM-017, 2026-07-07). Method lesson recorded: live-company search in the market's languages first — it killed in one check what domain research missed. Rejected names and all other closed questions live in `NOT-DOING.md` (14 entries, each with a revisit trigger).
 
 ## Re-validation
 

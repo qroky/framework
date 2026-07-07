@@ -1,0 +1,99 @@
+# run.log — ATOM-017-VERIFY (append-only, UTC)
+
+2026-07-07T09:17:20Z START. Blind Verify atom per FEV-PROTOCOL §2, round 1, returns_used 0.
+Blind package read: INPUT.md (this atom); framework/FEV-PROTOCOL.md; decisions/GATE-012-rebrand-now-and-chain-order.md; roles/framework-architect.md. Living set to be read next (10 files). Nothing else will be read; instrument commands (grep -r, git status --porcelain, git remote get-url origin, head -1) permitted incl. over frozen paths, contents not read beyond match counts.
+
+2026-07-07T09:17:20Z VP7 step 1 — DoD restated (verbatim source: INPUT.md §4):
+JTBD: accept/return verdict on ATOM-017 (rebrand text swap «RPF» → Qroky) per FEV-PROTOCOL §2.
+Hard criteria:
+- H1: grep -c "RPF" = 0 in every living file EXCEPT (a) TASKS historical lines («Закрыто недавно» quoting past product names) and (b) STRATEGY §Naming's verbatim «"RPF"→Qroky» swap-history mention if retained as history. Check: grep per file. Formulator round-1 note: ATOM-007-LAUNCH §3.7 carries «Rebrand «RPF» → Qroky executed per GATE-012» — I must judge explicitly whether it falls under the same history exemption; if not, it is a finding.
+- H2: MANIFEST contains neither the footnote line «brand name is pending» nor a dangling ¹ anchor. Check: grep.
+- H3: git status shows changes ONLY in living files + ATOM-017 atom folder + status.yaml + the GATE-012 record. Frozen set (decisions/ others, knowledge/, atom metadata under products/*/, closed launch files, naming-verdict.md, framework/) untouched. Check: git status --porcelain capture.
+- H4: Titles of MANIFEST and README = «# Qroky — Recursive Product Framework». Check: head -1.
+- H5: git remote get-url origin = https://github.com/qroky/framework.git.
+Soft criteria:
+- S1 (judge: Verify agent): boundary applied consistently — every remaining spelled-out «Recursive Product Framework» sits in a methodology-name position; no brand position still reads RPF.
+- S2 (judge: Verify agent): public face reads coherently post-swap — no sentence broken by the substitution; consent text natural.
+- S3 (judge: human): «Имя на витрине — моё» — deferred per VP9.
+Boundary frame (GATE-012, accepted): Qroky = brand/product; spelled-out «Recursive Product Framework» permitted as methodology name in titles/subtitles/definitions; history frozen (append-only).
+Living set (10): MANIFEST.md; README.md; TASKS.md; ATOM-007-LAUNCH.md; products/business-strategy-v1/{STRATEGY.md, segments/segment-map.md, pilot/pilot-design.md, pricing/pricing-ladder.md, metrics/metrics-system.md, channels/channel-comparison.md}.
+Note: my own atom folder (017-rebrand-swap-verify/) will necessarily appear in git status as untracked — I will record this and judge H3 against the target's change set, treating my own verify-atom artifacts as excluded (they postdate the target's delivery and are mandated by my own contract).
+
+2026-07-07T09:19:05Z VP7 step 2 — HARD PASS (commands + raw output).
+H1 check: for each of the 10 living files: grep -c 'RPF' <file>; grep -n 'RPF' <file>.
+Raw counts: MANIFEST.md 0; README.md 0; TASKS.md 1 (line 45: "- ✅ 05.07.2026 — **ATOM-006: RPF Business Strategy v1 принята reviewed (GATE-010)**; bootstrap-условие фреймворка выполнено (M3)"); ATOM-007-LAUNCH.md 1 (line 131: "Rebrand «RPF» → Qroky executed per GATE-012 (ATOM-017); the repository lives at"); STRATEGY.md 1 (line 39, §Naming block: "The \"RPF\"→Qroky swap was executed per GATE-012 (ATOM-017, 2026-07-07)."); segment-map.md 0; pilot-design.md 0; pricing-ladder.md 0; metrics-system.md 0; channel-comparison.md 0.
+Adjudication pending: (i) TASKS line 45 — confirm it sits in «Закрыто недавно» historical section (exemption a); (ii) STRATEGY line 39 — confirm §Naming position (exemption b); (iii) ATOM-007-LAUNCH line 131 — formulator-delegated judgment on history exemption.
+
+H2 check: grep -n 'brand name is pending' MANIFEST.md → no match (exit 1); grep -n '¹' MANIFEST.md → no match (exit 1); grep -n 'pending' MANIFEST.md → no match (exit 1). H2 PASS.
+
+H4 check: head -1 MANIFEST.md → "# Qroky — Recursive Product Framework"; head -1 README.md → "# Qroky — Recursive Product Framework". Both equal required title. H4 PASS.
+
+H5 check: git remote get-url origin → "https://github.com/qroky/framework.git". H5 PASS.
+
+H3 check: git status --porcelain →
+ M ATOM-007-LAUNCH.md
+ M MANIFEST.md
+ M README.md
+ M TASKS.md
+ M products/business-strategy-v1/STRATEGY.md
+ M products/business-strategy-v1/channels/channel-comparison.md
+ M products/business-strategy-v1/metrics/metrics-system.md
+ M products/business-strategy-v1/pilot/pilot-design.md
+ M products/business-strategy-v1/pricing/pricing-ladder.md
+ M products/business-strategy-v1/segments/segment-map.md
+ M products/framework-v1/status.yaml
+ ?? Handover1.md
+ ?? decisions/GATE-012-rebrand-now-and-chain-order.md
+ ?? products/framework-v1/017-rebrand-swap-verify/
+ ?? products/framework-v1/017-rebrand-swap/
+Mapping to allowed set: 10 M-lines = living files ✓; status.yaml ✓; ?? GATE-012 record ✓; ?? 017-rebrand-swap/ = ATOM-017 atom folder ✓; ?? 017-rebrand-swap-verify/ = THIS Verify atom's own folder — excluded from the target's change set (postdates target delivery; mandated by VP1/VP6; created by formulating agent + this atom, not by the target executor). Remaining: ?? Handover1.md — NOT in the allowed set (not a living file, not the atom folder, not status.yaml, not the GATE-012 record). Untracked additions count as "changes" in this criterion's sense — the allowed set itself lists two untracked paths (GATE-012 record, atom folder). Frozen tracked set: zero M/D lines outside living+status.yaml → frozen files untouched ✓. H3 verdict: FAIL on the single out-of-set path Handover1.md. Per VP8 → blocking finding (F1). Provenance unknowable blindly (I may not read it); the check as stated (FP2) is deterministic and fails.
+
+2026-07-07T09:19:05Z Next: read 10 living files (full) for H1 adjudication + soft pass S1–S2.
+
+2026-07-07T09:24:40Z H1 ADJUDICATION (three residual "RPF" hits vs exemptions).
+(i) TASKS.md:45 — sits under heading "## Закрыто недавно (для контекста)" (line 39), a historical closure line quoting the past product name "RPF Business Strategy v1". Exemption (a) applies. EXEMPT.
+(ii) STRATEGY.md:39 — sits in section "## Name" (the naming section), phrase: 'The "RPF"→Qroky swap was executed per GATE-012 (ATOM-017, 2026-07-07).' — exactly the verbatim «"RPF"→Qroky» swap-history mention exemption (b) names, retained as history. EXEMPT.
+(iii) ATOM-007-LAUNCH.md:131 (§3.7 Naming) — 'Rebrand «RPF» → Qroky executed per GATE-012 (ATOM-017); the repository lives at qroky/framework.' Formulator-delegated judgment: the old name appears solely in quotation as the object of the completed rebrand — a swap-history record structurally identical to the exempted STRATEGY §Name mention; GATE-012's accepted frame freezes history (append-only) and the surrounding §3.7 text itself enforces the boundary ("Founder-facing artifacts use Qroky; «Recursive Product Framework» remains the methodology's spelled-out name"). It is not a brand position. JUDGED: falls under the same history exemption → not a finding. H1 PASS (all residuals exempt).
+
+2026-07-07T09:24:40Z VP7 step 3 — SOFT PASS.
+S1 (boundary consistency). Enumeration: grep -n 'Recursive Product Framework' over all 10 living files → 5 hits: MANIFEST.md:1 (title, methodology-name position mandated by H4); README.md:1 (title, same); README.md:31 (explicit definition sentence: "Qroky is the product's brand name; the methodology it implements is the Recursive Product Framework" — definition position); TASKS.md:26 (quotes the GATE-012 boundary itself: «Recursive Product Framework» = имя методологии — definition position); ATOM-007-LAUNCH.md:132–133 ("«Recursive Product Framework» remains the methodology's spelled-out name (ATOM-017 boundary B2)" — definition position). All 5 in title/definition positions per the GATE-012 frame. Case-variant sweep grep -in 'rpf' excluding the spelled-out name → only the 3 H1-exempt history lines; zero brand positions read RPF. Brand positions across all files read Qroky (doc titles "Qroky Business Strategy v1", "Qroky Pricing Ladder...", "Qroky Success Metrics System", "Qroky Channel Comparison...", "Segment Map — who Qroky serves first"; consent header "Telemetry consent — Qroky pilot"). S1: no findings — justification above is criterion-specific.
+S2 (coherence post-swap). Full read of all 10 files. Sentence-level spot-judgments where the brand name is embedded: MANIFEST "One person plus Qroky is a company", "Qroky answers it with an operating system", "Qroky's recursive decomposition *generates the questions...*" — grammatical, natural; README lead "Qroky is an operating system for building products with a workforce of agents" — natural; consent text "You run Qroky on your own machine, your own subscription..." — natural, first-person address intact, no broken agreement; STRATEGY lead "Qroky sells one thing: a founder operating as CEO of agents" — natural; segment-map "jobs they would hire Qroky for" — idiomatic. No sentence broken by substitution, no doubled words, no article/case mismatch found. S2: no findings — justification above is criterion-specific.
+S3: judge = human → deferred per VP9 (not judged here; not a finding).
+
+2026-07-07T09:24:40Z VP7 step 4 — FINDINGS + VERDICT.
+F1 — blocking — Out-of-set change in git status: untracked `Handover1.md` at repo root. Cites: H3 (+VP8). Evidence: git status --porcelain line "?? Handover1.md"; H3 allows ONLY living files + ATOM-017 atom folder + status.yaml + GATE-012 record. Untracked additions count as changes (the allowed set itself contains two untracked paths). Provenance unknowable blindly (content not read, per package rules); the check as stated (FP2) is deterministic → fail. Per VP8: automatically blocking; per VP12: return mandatory.
+No other findings. Verdict: RETURN, round 1. Fix list: single closed entry for F1 (see VERDICT.md).
+Note for the record: `?? products/framework-v1/017-rebrand-swap-verify/` (this Verify atom's own folder) was excluded from the H3 change set — it postdates target delivery and is mandated by VP1/VP6; exclusion reasoning logged at step 2.
+
+2026-07-07T09:24:40Z VP7 step 5–6 — writing VERDICT.md, RESULT.md, STATUS.md → delivered.
+
+2026-07-07T09:22:12Z CLOCK CORRECTION (append-only, no edits): the two preceding entry timestamps (09:24:40) were written from an estimated clock and run ahead of the actual wall clock re-read at this entry (09:22:12). Their true order of events is as written (adjudication → soft pass → findings → deliverables); treat their timestamps as ~09:20–09:22. Logged for audit honesty.
+
+2026-07-07T09:22:12Z DELIVERED. VERDICT.md (round 1, verdict: return, F1 blocking on H3 Handover1.md), RESULT.md written; STATUS.md → delivered. Cost ~48k tokens (~ estimate) vs ~120k envelope — within budget. End of run.
+
+=== ROUND 2 (VP16 re-verify) — 2026-07-07 ===
+[R2-01] Blind package re-confirmed: INPUT.md re-read; same 10 living files + FEV-PROTOCOL + GATE-012 record + role spec; instruments only (grep, git status --porcelain, git remote get-url origin, head -1). Target workspace/RESULT/run.log: not read.
+[R2-02] Fix under re-verify (closed list, 1 entry): F1 — Handover1.md relocated out of the repository working tree (to parent dir, outside git's view). Nothing else was to change.
+[R2-03] H1 re-run: grep -c 'RPF' per living file -> MANIFEST 0; README 0; TASKS 1; ATOM-007-LAUNCH 1; STRATEGY 1; segment-map 0; pilot-design 0; pricing-ladder 0; metrics-system 0; channel-comparison 0. grep -n on the three non-zero files: TASKS.md:45 (closed-history line, exemption a); STRATEGY.md:39 (verbatim "RPF"->Qroky swap-history, exemption b); ATOM-007-LAUNCH.md:131 (§3.7 swap-history, round-1 exemption judgment unchanged). PASS.
+[R2-04] H2 re-run: grep -n 'brand name is pending' MANIFEST.md -> no match (exit 1); grep -n '¹' MANIFEST.md -> no match (exit 1). PASS.
+[R2-05] H3 re-run: git status --porcelain ->
+         M ATOM-007-LAUNCH.md
+         M MANIFEST.md
+         M README.md
+         M TASKS.md
+         M products/business-strategy-v1/STRATEGY.md
+         M products/business-strategy-v1/channels/channel-comparison.md
+         M products/business-strategy-v1/metrics/metrics-system.md
+         M products/business-strategy-v1/pilot/pilot-design.md
+         M products/business-strategy-v1/pricing/pricing-ladder.md
+         M products/business-strategy-v1/segments/segment-map.md
+         M products/framework-v1/status.yaml
+         ?? decisions/GATE-012-rebrand-now-and-chain-order.md
+         ?? products/framework-v1/017-rebrand-swap-verify/
+         ?? products/framework-v1/017-rebrand-swap/
+        All in-set (living files + status.yaml + GATE-012 record + ATOM-017 folder + this verify atom's own folder per VP6). '?? Handover1.md' GONE (grep -c 'Handover' over porcelain = 0). Frozen set untouched. PASS -> F1 resolved.
+[R2-06] H4 re-run: head -1 MANIFEST.md / README.md -> '# Qroky — Recursive Product Framework' both. PASS.
+[R2-07] H5 re-run: git remote get-url origin -> https://github.com/qroky/framework.git. PASS.
+[R2-08] No-drift spot-check of round-1 verified positions: README:31 license/brand-vs-methodology sentence unchanged; pilot-design.md:47 consent line unchanged; ATOM-007-LAUNCH.md:131-133 §3.7 unchanged; spelled-out 'Recursive Product Framework' enumeration = same 5 positions as round 1 (MANIFEST:1, README:1, README:31, TASKS:26, ATOM-007-LAUNCH:132-133 line-wrapped). Porcelain delta vs round 1 = exactly the one removed line. NO DRIFT.
+[R2-09] Full soft re-read: NOT performed — fix touched no file content, no drift found; round-1 S1/S2 'no findings' stand; S3 deferred to human (VP9).
+[R2-10] VP17: VERDICT.md renamed to VERDICT-round-1.md (unmodified); new VERDICT.md written: round 2, returns_used 1, verdict ACCEPT, zero findings.

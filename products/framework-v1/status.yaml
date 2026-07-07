@@ -1,7 +1,7 @@
 # status.yaml — shared status machine of one multi-atom product (SM1-SM4)
 # One file per products/<product-slug>/; one entry per atom; current state only.
 product: framework-v1
-updated: 2026-07-06T21:30:50Z
+updated: 2026-07-07T10:44:01Z
 atoms:
   - id: ROLE-001
     state: delivered
@@ -59,3 +59,11 @@ atoms:
     state: delivered
     timestamp: 2026-07-06T21:23:45Z
     note: VERDICT.md round 1 accept (returns_used 0); zero findings; S5 deferred to human; real counter 139,532 tokens
+  - id: ATOM-017
+    state: delivered
+    timestamp: 2026-07-07T10:44:01Z
+    note: CLOSED reviewed via GATE-013 (go; S3 met); verify return r1 -> accept r2 zero findings
+  - id: ATOM-017-VERIFY
+    state: delivered
+    timestamp: 2026-07-07T10:44:01Z
+    note: round 2 accept (returns_used 1); r1 real 123,722 tokens, r2 ~25k (stall swallowed counter)

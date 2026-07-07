@@ -1,4 +1,4 @@
-# RPF Channel Comparison + Recommendation
+# Qroky Channel Comparison + Recommendation
 
 **Atom:** ATOM-010 · **Role:** venture-strategist · **Date:** 2026-07-05 · **Maturity:** draft
 **Inputs:** ATOM-006 INPUT §3.6/§3.9; `segments/segment-map.md` (G1-confirmed sequence A→C→B); `pricing/pricing-ladder.md` (founder-month economics); `decisions/INFO-001-pilot-terms-startup-moldova.md` (pilot exchange terms).

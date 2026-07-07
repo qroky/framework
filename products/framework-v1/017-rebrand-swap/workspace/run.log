@@ -1,0 +1,20 @@
+2026-07-07T09:14:34Z CYCLE start; executor framework-architect inline at session tier L (tier-S work, MT6 upward substitution)
+2026-07-07T09:14:34Z U2 restate: JTBD=complete text half of rebrand under GATE-012 boundary; consumers=public readers, ATOM-007 tree; DoD H1-H5/S1-S3 understood; no blocking ambiguity
+2026-07-07T09:14:34Z RS sources: GATE-012 (boundary frame), INFO-002/003 (name cleared), grep scope of all RPF occurrences (44 files scanned, living set = 10 files)
+2026-07-07T09:14:34Z O9.1 DECISION B1: brand positions — standalone acronym "RPF" -> "Qroky" in living set
+2026-07-07T09:14:34Z O9.1 DECISION B2: spelled-out "Recursive Product Framework" kept as methodology name; title pattern "Qroky — Recursive Product Framework"; README license line rewritten to state brand vs methodology explicitly
+2026-07-07T09:14:34Z O9.1 DECISION B3: frozen history untouched — decisions/, knowledge/, atom metadata, closed launches, naming-verdict.md (evidence); TASKS "Закрыто недавно" historical lines keep historical product names
+2026-07-07T09:14:34Z O9.1 DECISION B4: STRATEGY §Naming swap-pending sentence updated to "executed per GATE-012 (ATOM-017)" — status fact, not history rewrite
+2026-07-07T09:14:34Z O9.1 DECISION B5: ATOM-007-LAUNCH §3.7 refreshed (rebrand done, Qroky founder-facing) + change note at file end — launch not yet materialized, formulator act
+2026-07-07T09:14:34Z PHASE create: entering per-file edits
+2026-07-07T09:15:34Z CREATE done: 10 files edited per B1-B5; footnote + anchor removed
+2026-07-07T09:15:34Z V1 self-check: H1 grep=0 across living set (TASKS: only historical line 45 retained per B3); H2 footnote+anchor absent; H3 git status = living set + atom folder only; H4 titles "Qroky — Recursive Product Framework"; H5 remote qroky/framework. All pass
+2026-07-07T09:16:35Z DELIVER: RESULT.md written; STATUS delivered
+2026-07-07T09:16:35Z L5 formulating ATOM-017-VERIFY (VP1); SS1 spawn: justification=mode independent+human (perimeter); tier=L (MT3/MT4); envelope=~120k (package ~70KB -> ~23k read x3.5+40k)
+2026-07-07T09:23:47Z L6 ATOM-017-VERIFY round 1: return; F1 blocking (untracked Handover1.md at root fails H3); S1-S2 no findings; history-exemption judged exempt
+2026-07-07T09:23:47Z REWORK per VP14 fix list: Handover1.md relocated out of the repository to /Users/ghcernei/Work/rpf-Handover1.md (O9.1: file is advisor-generated handover, content absorbed into INFO-004/ATOM-016 records; reversible move; noted for the human at GATE-013). Nothing else changed
+2026-07-07T09:23:47Z REDELIVER: git status --porcelain clean of out-of-set entries; STATUS delivered again; re-verify round 2 next (VP16)
+2026-07-07T10:44:01Z L6 re-verify round 2: accept (zero findings; no-drift confirmed; VP17 round-1 verdict preserved). Verify runtime note: round-2 agent stalled at final chat reply AFTER all deliverables were on the file bus — L9/SS4: files are truth, delivery valid
+2026-07-07T10:44:01Z L6 human sign-off (GATE-013): "Go — принять (Recommended)"; S3 judged met; recorded in decisions/GATE-013-atom-017-rebrand-acceptance.md
+2026-07-07T10:44:01Z L7 acceptance recorded; maturity reviewed conferred (M3); EC6 verify real counters: round 1 = 123,722 (agent counter); round 2 ~25k (BC4 estimate — runtime stall swallowed the counter)
+2026-07-07T10:44:01Z L7 closing per RB6: workspace clean (run.log only), STATUS/status.yaml synced, commit + push next

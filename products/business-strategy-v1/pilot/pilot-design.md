@@ -8,7 +8,7 @@ Prerequisites (setup script, execution tiers) are owned by future **ATOM-007** �
 
 ## Framing
 
-**Observation is a service, not a payment** (accepted §3.4). Pilot founders — a couple of startups from Startup Moldova, including non-technical founders (source: §3.4, verbal agreement) — run RPF **self-hosted**: their machine, their own runtime subscription (tiers per `runtime/claude/README.md`), their private repo with the constitution as a dependency (repo separation per accepted §3.2). We provide **Flow Support v0**: daily owner review of their atom flows, sentinel atoms draft interventions, a human approves and sends every intervention. Daily cadence is deliberate (accepted §3.4). The pilot is simultaneously the test instrument for the strategy's marked assumptions (see Success criteria) and — per `channels/channel-comparison.md` — the acquisition mechanism for the bank channel.
+**Observation is a service, not a payment** (accepted §3.4). Pilot founders — a couple of startups from Startup Moldova, including non-technical founders (source: §3.4, verbal agreement) — run Qroky **self-hosted**: their machine, their own runtime subscription (tiers per `runtime/claude/README.md`), their private repo with the constitution as a dependency (repo separation per accepted §3.2). We provide **Flow Support v0**: daily owner review of their atom flows, sentinel atoms draft interventions, a human approves and sends every intervention. Daily cadence is deliberate (accepted §3.4). The pilot is simultaneously the test instrument for the strategy's marked assumptions (see Success criteria) and — per `channels/channel-comparison.md` — the acquisition mechanism for the bank channel.
 
 ## Exchange & red lines
 
@@ -43,8 +43,8 @@ Escalation rate, verify returns, and cost per product type are pilot metrics too
 
 **Consent text (founder-facing; ships RO/RU at ATOM-007 setup — English master per HP2):**
 
-> **Telemetry consent — RPF pilot (Flow Support v0)**
-> You run RPF on your own machine, your own subscription, and your own private repository. To support you and to measure what the framework really costs, we ask your consent to receive copies of **operational files only**: atom STATUS files, the cost blocks of RESULT files, run logs, status.yaml, and verification verdicts.
+> **Telemetry consent — Qroky pilot (Flow Support v0)**
+> You run Qroky on your own machine, your own subscription, and your own private repository. To support you and to measure what the framework really costs, we ask your consent to receive copies of **operational files only**: atom STATUS files, the cost blocks of RESULT files, run logs, status.yaml, and verification verdicts.
 > **We never receive**: your product content, specifications, code, decisions, or anything describing what your startup is building. The script that sends these files is open — you can read exactly what it sends before you agree.
 > Your data is used for two purposes only: (1) daily review of your flows so we can help when something is blocked (reaction within one business day), and (2) aggregate cost/usage statistics for the framework.
 > **Deletion:** all telemetry from your repos is deleted on **[pilot end date + 30 days — fixed in writing at signing]**, or earlier on your request at any time, no reason needed.

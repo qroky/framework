@@ -1,13 +1,13 @@
-# Segment Map — who RPF serves first
+# Segment Map — who Qroky serves first
 
 | Field | Value |
 | :---- | :---- |
-| Product | Jobs-based segment map, RPF Business Strategy v1 |
+| Product | Jobs-based segment map, Qroky Business Strategy v1 |
 | Produced by | ATOM-009 (executor role: market-analyst) |
 | Maturity | `draft` — human direction check at G1 |
 | Date | 2026-07-05 |
 
-Discipline per parent INPUT §3.5: segments defined by the jobs they would hire RPF for; every job is a stated **hypothesis** with a client success criterion, not a fact. Scoring: the accepted 7-factor attractiveness checklist, each factor 1–5 where **5 = most attractive** (for "competition for its jobs": 5 = weak competition). Every quantitative claim is sourced or marked `assumption`.
+Discipline per parent INPUT §3.5: segments defined by the jobs they would hire Qroky for; every job is a stated **hypothesis** with a client success criterion, not a fact. Scoring: the accepted 7-factor attractiveness checklist, each factor 1–5 where **5 = most attractive** (for "competition for its jobs": 5 = weak competition). Every quantitative claim is sourced or marked `assumption`.
 
 ## Segment A — Non-technical founder in an accelerator *(candidate #1 per input)*
 

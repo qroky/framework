@@ -1,4 +1,4 @@
-# RPF Pricing Ladder + Founder-Month Token Economics
+# Qroky Pricing Ladder + Founder-Month Token Economics
 
 **Atom:** ATOM-011 · **Role:** venture-strategist · **Date:** 2026-07-05 · **Maturity:** draft
 **Inputs:** ATOM-006 INPUT §3.7/§3.9; `segments/segment-map.md` (budget-for-the-job, margin factors); repo cost blocks cited below; model tiers S/M/L per `runtime/claude/README.md`.

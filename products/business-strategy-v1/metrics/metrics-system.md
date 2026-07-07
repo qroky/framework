@@ -1,4 +1,4 @@
-# RPF Success Metrics System
+# Qroky Success Metrics System
 
 **Atom:** ATOM-013 · **Role:** market-analyst · **Date:** 2026-07-05 · **Maturity:** draft
 **Inputs:** ATOM-006 INPUT §4 (four named metrics); `pilot/pilot-design.md` (instruments, telemetry scope); `pricing/pricing-ladder.md` (assumptions under measurement).

@@ -1,16 +1,16 @@
-# RPF — Recursive Product Framework
+# Qroky — Recursive Product Framework
 
-*A manifesto. Normative rules live in [`framework/`](framework/); this document tells you why they exist.*¹
+*A manifesto. Normative rules live in [`framework/`](framework/); this document tells you why they exist.*
 
 ## Why now
 
 Agents can now produce most of what a company produces: research, specifications, code, contracts-in-draft, plans. What they cannot produce is the wanting of it — someone still has to decide what the company is for, accept the risks, and know whether a thing is actually done. The bottleneck has moved from producing work to governing it.
 
-Today's tools answer this with assistance: a faster pair of hands attached to one person's attention. RPF answers it with an operating system. One person plus RPF is a company — the founder acts as chief executive of a workforce of agents, and everything below intent runs as governed, verified, recorded production.
+Today's tools answer this with assistance: a faster pair of hands attached to one person's attention. Qroky answers it with an operating system. One person plus Qroky is a company — the founder acts as chief executive of a workforce of agents, and everything below intent runs as governed, verified, recorded production.
 
-The difference is not speed. An assistant answers the questions you ask it. RPF's recursive decomposition *generates the questions you didn't know to ask*: state an intent, and it becomes a tree of products, each with a named consumer, acceptance criteria, a budget, and a verification plan — your unknown unknowns, surfaced as a structure you can steer. Not an assistant that answers. An operating system that asks, produces, verifies, and records.
+The difference is not speed. An assistant answers the questions you ask it. Qroky's recursive decomposition *generates the questions you didn't know to ask*: state an intent, and it becomes a tree of products, each with a named consumer, acceptance criteria, a budget, and a verification plan — your unknown unknowns, surfaced as a structure you can steer. Not an assistant that answers. An operating system that asks, produces, verifies, and records.
 
-## What RPF is
+## What Qroky is
 
 Five principles carry the whole framework. One line each — the normative documents carry the detail.
 
@@ -22,7 +22,7 @@ Five principles carry the whole framework. One line each — the normative docum
 
 ## Who it is for
 
-**The founder, first.** One person with an idea and no team: RPF turns intent into a governed production tree and asks only what it genuinely cannot answer. **Teams**, next: the same structure lets a small team run a portfolio of products with explicit ownership of risk and acceptance. **Regulated organizations**, deliberately: segregation of duties, blind verification, recorded risk acceptance, and an append-only decision journal are not add-ons here — they are the architecture.
+**The founder, first.** One person with an idea and no team: Qroky turns intent into a governed production tree and asks only what it genuinely cannot answer. **Teams**, next: the same structure lets a small team run a portfolio of products with explicit ownership of risk and acceptance. **Regulated organizations**, deliberately: segregation of duties, blind verification, recorded risk acceptance, and an append-only decision journal are not add-ons here — they are the architecture.
 
 ## What the founder does
 
@@ -55,4 +55,3 @@ No market claims. Only what this repository can show:
 Ten more minutes: read [`framework/ATOM-SPEC.md`](framework/ATOM-SPEC.md) §1 — the atom formula is the whole idea. Then the [`README.md`](README.md) routes you: constitution reading order, the runtime quickstart, and the repository map. License: [Apache-2.0](LICENSE).
 
 ---
-¹ RPF is the methodology's name; a commercial brand name is pending.
