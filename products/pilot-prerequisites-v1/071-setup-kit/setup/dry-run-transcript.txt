@@ -1,5 +1,5 @@
 Qroky setup kit — dry-run transcript
-Generated: 2026-07-07T12:28:45Z
+Generated: 2026-07-07T14:41:00Z
 Sandbox: fresh temp directory under /private/tmp, network-free (local stub git repo + fake claude binary on PATH)
 Command a founder actually types: bash bootstrap.sh   (no arguments, no flags)
 
@@ -8,31 +8,41 @@ Command a founder actually types: bash bootstrap.sh   (no arguments, no flags)
 ############################################################
 == Qroky setup ==
 
-Step 1 of 5 — checking what is already on this machine
+Step 1 of 6 — checking what is already on this machine
   git — found (git version 2.50.1 (Apple Git-155))
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
   step done, 0s elapsed so far
 
-Step 2 of 5 — creating the private workspace at: /private/tmp/qroky-dry-run.awe7wn/founder-workspace
+Step 2 of 6 — creating the private workspace at: /private/tmp/qroky-dry-run.epusCk/founder-workspace
   private repository created — this is this founder's own; nobody else has access unless invited
   step done, 0s elapsed so far
 
-Step 3 of 5 — adding the rulebook the assistant follows (pinned to one fixed version, so it never changes without notice)
-  added and pinned to version 705b34319983
+Step 3 of 6 — adding the rulebook the assistant follows (pinned to one fixed version, so it never changes without notice)
+  added and pinned to version b3872215d54b
   this copy is read-only by convention: the founder's own work never goes inside framework/ (see CLAUDE.md, written next)
   step done, 0s elapsed so far
 
-Step 4 of 5 — connecting the assistant to this workspace
+Step 4 of 6 — connecting the assistant to this workspace
   connected — CLAUDE.md written at the top of the workspace
   step done, 0s elapsed so far
 
-Step 5 of 5 — finishing up
+Step 5 of 6 — installing daily support tooling (stays OFF until you sign the separate consent document)
+  telemetry tooling copied in
+  consent document copied in — read it when you are ready; nothing is sent until you sign it
+  daily support switched OFF for now — this is the safe default
+  (once you have signed the consent document, delete the file named
+  OFF inside the telemetry folder, or ask the assistant to do it for
+  you, to turn daily support on)
+  step done, 0s elapsed so far
+
+Step 6 of 6 — finishing up
+  daily schedule registered (runs once a day; does nothing while telemetry/OFF exists)
   step done, 0s elapsed so far
 
 == Setup finished in 0s. Nothing failed. ==
 
 What to do next:
-  1. Open this folder (/private/tmp/qroky-dry-run.awe7wn/founder-workspace) in a terminal, or open it in Claude Code.
+  1. Open this folder (/private/tmp/qroky-dry-run.epusCk/founder-workspace) in a terminal, or open it in Claude Code.
   2. Type: claude
   3. Say hello — the first conversation starts there.
 
@@ -48,32 +58,37 @@ described in the kit's telemetry consent document, not this one.
 ############################################################
 == Qroky setup ==
 
-Step 1 of 5 — checking what is already on this machine
+Step 1 of 6 — checking what is already on this machine
   git — found (git version 2.50.1 (Apple Git-155))
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
-  step done, 0s elapsed so far
+  step done, 1s elapsed so far
 
-Step 2 of 5 — creating the private workspace at: /private/tmp/qroky-dry-run.awe7wn/founder-workspace
+Step 2 of 6 — creating the private workspace at: /private/tmp/qroky-dry-run.epusCk/founder-workspace
   this workspace is already set up (found .qroky/bootstrapped) — re-checking instead of redoing the work
   a repository already exists here — reusing it
-  step done, 0s elapsed so far
+  step done, 1s elapsed so far
 
-Step 3 of 5 — adding the rulebook the assistant follows (pinned to one fixed version, so it never changes without notice)
+Step 3 of 6 — adding the rulebook the assistant follows (pinned to one fixed version, so it never changes without notice)
   already added — making sure it is on the pinned version
   this copy is read-only by convention: the founder's own work never goes inside framework/ (see CLAUDE.md, written next)
-  step done, 0s elapsed so far
+  step done, 1s elapsed so far
 
-Step 4 of 5 — connecting the assistant to this workspace
+Step 4 of 6 — connecting the assistant to this workspace
   already connected — CLAUDE.md exists
-  step done, 0s elapsed so far
+  step done, 1s elapsed so far
 
-Step 5 of 5 — finishing up
-  step done, 0s elapsed so far
+Step 5 of 6 — installing daily support tooling (stays OFF until you sign the separate consent document)
+  telemetry tooling already present — reusing it
+  step done, 1s elapsed so far
 
-== Setup finished in 0s. Nothing failed. ==
+Step 6 of 6 — finishing up
+  daily schedule already registered for this workspace — nothing to add
+  step done, 1s elapsed so far
+
+== Setup finished in 1s. Nothing failed. ==
 
 What to do next:
-  1. Open this folder (/private/tmp/qroky-dry-run.awe7wn/founder-workspace) in a terminal, or open it in Claude Code.
+  1. Open this folder (/private/tmp/qroky-dry-run.epusCk/founder-workspace) in a terminal, or open it in Claude Code.
   2. Type: claude
   3. Say hello — the first conversation starts there.
 
@@ -81,13 +96,13 @@ This workspace is private. Nothing here is sent anywhere unless a
 separate, explicit agreement to share is signed — that is its own step,
 described in the kit's telemetry consent document, not this one.
 
---- RUN 2 exit code: 0 ; elapsed: 0s ---
+--- RUN 2 exit code: 0 ; elapsed: 1s ---
 
 ############################################################
 # Summary
 ############################################################
 Run 1 elapsed (the number that matters — a founder only ever runs this once): 0s
-Run 2 elapsed (idempotency re-run): 0s
+Run 2 elapsed (idempotency re-run): 1s
 Time budget: <= 15 minutes (900s) from a founder saying yes to a ready workspace.
 Verdict: PASS — run 1 exited 0 in 0s, within the 900s budget.
 Idempotency: PASS — run 2 exited 0 and reused the existing workspace (see 'already set up' / 'reusing it' / 'already added' / 'already connected' lines above).

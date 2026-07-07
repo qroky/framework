@@ -4,14 +4,15 @@
 --- running push.sh against the sandbox repo ---
 ==================================================================
 Qroky pilot telemetry push — dry run
-Scanning:  /private/tmp/qroky-telemetry-negtest.9G5Nl0/repo
-Staging:   /private/tmp/qroky-telemetry-negtest.9G5Nl0/staging
+Scanning:  /private/tmp/qroky-telemetry-negtest.g8A8dV/repo
+Staging:   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging
+Content filtering mode: wholefile (CEO choice at G2 — see this file's header)
 ==================================================================
-COPIED  (whitelisted: RESULT.md)  <-  products/demo-product/001-demo-atom/RESULT.md
-COPIED  (whitelisted: run.log)  <-  products/demo-product/001-demo-atom/workspace/run.log
-COPIED  (whitelisted: STATUS.md)  <-  products/demo-product/001-demo-atom/STATUS.md
-COPIED  (whitelisted: VERDICT.md)  <-  products/demo-product/001-demo-atom-verify/VERDICT.md
-COPIED  (whitelisted: status.yaml)  <-  products/demo-product/status.yaml
+COPIED  (whitelisted: RESULT.md, mode: wholefile)  <-  products/demo-product/001-demo-atom/RESULT.md
+COPIED  (whitelisted: run.log, mode: wholefile)  <-  products/demo-product/001-demo-atom/workspace/run.log
+COPIED  (whitelisted: STATUS.md, mode: wholefile)  <-  products/demo-product/001-demo-atom/STATUS.md
+COPIED  (whitelisted: VERDICT.md, mode: wholefile)  <-  products/demo-product/001-demo-atom-verify/VERDICT.md
+COPIED  (whitelisted: status.yaml, mode: wholefile)  <-  products/demo-product/status.yaml
 ------------------------------------------------------------------
 SKIPPED (not on the whitelist — deny by default): 2 file(s)
 First few skipped, for your own audit:
@@ -20,11 +21,11 @@ First few skipped, for your own audit:
 COPIED to staging: 5 file(s)
 ------------------------------------------------------------------
 [DRY RUN] would push 5 file(s) from:
-[DRY RUN]   /private/tmp/qroky-telemetry-negtest.9G5Nl0/staging
+[DRY RUN]   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging
 [DRY RUN] to remote: qroky/pilot-telemetry
 [DRY RUN] No network call was made. No 'git push' was run.
 ==================================================================
-Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.9G5Nl0/staging
+Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.g8A8dV/staging
 You can open and read every one of them.
 ==================================================================
 
@@ -49,8 +50,57 @@ Found: /Users/ghcernei/Work/rpf/products/pilot-prerequisites-v1/072-telemetry-sh
 This script is doing NOTHING — no files were read, nothing was
 staged, nothing was sent anywhere. Delete that file to turn
 telemetry back on.
+This workspace had sent data before — a deletion request was logged (revocation).
+See: /Users/ghcernei/Work/rpf/products/pilot-prerequisites-v1/072-telemetry-showcase/telemetry/deletion-requests.log
+Revoking stops future sends AND requests deletion of what was already sent.
 ==================================================================
 TEST 2 PASSED — OFF switch stopped the script before it read or staged anything.
+
+###################################################################
+# TEST 3 — filtered content mode strips free text (register #3, вариант A)
+###################################################################
+==================================================================
+Qroky pilot telemetry push — dry run
+Scanning:  /private/tmp/qroky-telemetry-negtest.g8A8dV/repo
+Staging:   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging-filtered
+Content filtering mode: filtered (CEO choice at G2 — see this file's header)
+==================================================================
+COPIED  (whitelisted: RESULT.md, mode: filtered)  <-  products/demo-product/001-demo-atom/RESULT.md
+COPIED  (whitelisted: run.log, mode: filtered)  <-  products/demo-product/001-demo-atom/workspace/run.log
+COPIED  (whitelisted: STATUS.md, mode: filtered)  <-  products/demo-product/001-demo-atom/STATUS.md
+COPIED  (whitelisted: VERDICT.md, mode: filtered)  <-  products/demo-product/001-demo-atom-verify/VERDICT.md
+COPIED  (whitelisted: status.yaml, mode: filtered)  <-  products/demo-product/status.yaml
+------------------------------------------------------------------
+SKIPPED (not on the whitelist — deny by default): 2 file(s)
+First few skipped, for your own audit:
+  - products/demo-product/001-demo-atom/INPUT.md
+  - products/demo-product/001-demo-atom/secret.txt
+COPIED to staging: 5 file(s)
+------------------------------------------------------------------
+[DRY RUN] would push 5 file(s) from:
+[DRY RUN]   /private/tmp/qroky-telemetry-negtest.g8A8dV/staging-filtered
+[DRY RUN] to remote: qroky/pilot-telemetry
+[DRY RUN] No network call was made. No 'git push' was run.
+==================================================================
+Done. Staged copies are at: /private/tmp/qroky-telemetry-negtest.g8A8dV/staging-filtered
+You can open and read every one of them.
+==================================================================
+TEST 3 PASSED — filtered mode kept the structural VERDICT.md fields and dropped the Findings prose.
+
+###################################################################
+# TEST 4 — OFF after a real send logs a deletion request (register #5)
+###################################################################
+==================================================================
+TELEMETRY IS OFF.
+Found: /Users/ghcernei/Work/rpf/products/pilot-prerequisites-v1/072-telemetry-showcase/telemetry/OFF
+This script is doing NOTHING — no files were read, nothing was
+staged, nothing was sent anywhere. Delete that file to turn
+telemetry back on.
+This workspace had sent data before — a deletion request was logged (revocation).
+See: /Users/ghcernei/Work/rpf/products/pilot-prerequisites-v1/072-telemetry-showcase/telemetry/deletion-requests.log
+Revoking stops future sends AND requests deletion of what was already sent.
+==================================================================
+TEST 4 PASSED — revoking after a real send logged an auditable deletion request.
 
 ###################################################################
 # ALL NEGATIVE TESTS PASSED

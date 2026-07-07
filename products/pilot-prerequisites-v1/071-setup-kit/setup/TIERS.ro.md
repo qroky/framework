@@ -43,11 +43,31 @@ o notă scurtă despre ce anume s-a verificat.
 aproximativ 1–2,5 dolari pentru verificare — deci de regulă sub 5 dolari
 per element.
 
+**De ce nivelul 3 costă mai mult decât pare la prima vedere:** orice
+element pe care îl trimiți mai departe (către o bancă, un partener, sau
+publicat) trece automat prin acest nivel — nu poți alege să-l trimiți fără
+verificare. Într-un pilot de 8 săptămâni, cu câteva elemente trimise mai
+departe în fiecare săptămână, costul verificării se adună: de exemplu, 8
+elemente trimise mai departe, la ~2,5 dolari verificare fiecare, înseamnă
+~20 dolari doar pentru partea de verificare, pe lângă lucrul propriu-zis.
+Regula simplă de control al costului: cu cât trimiți mai puține elemente
+mai departe, cu atât cheltuiești mai puțin pe verificare — alegerea este
+mereu a ta, elementul rămâne pe nivelul 1 sau 2 până când decizi să-l
+trimiți cuiva.
+
 ## De ce contează asta pentru tine
 
 Nu alegi tu nivelul — sistemul îl alege, pe baza mărimii și riscului cererii
 tale. Regula simplă: orice pleacă spre altcineva (bancă, partener, public)
-trece automat prin verificare completă. Cifrele de mai sus sunt măsurate
-direct din construcția acestui cadru, nu sunt cifre de marketing — costul
-apare pe abonamentul tău de Claude Code, nu pe o factură separată de la noi,
-iar timpii de așteptare pot varia de la un caz la altul.
+trece automat prin verificare completă. Costul apare pe abonamentul tău de
+Claude Code, nu pe o factură separată de la noi, iar timpii de așteptare pot
+varia de la un caz la altul.
+
+**O notă onestă despre cifre:** cifrele de mai sus arată *structura* costului
+(care nivel costă cât, față de care) pe baza construcției acestui cadru — nu
+sunt cifre de marketing inventate. Dar suma exactă în dolari depinde de un
+tarif per milion de jetoane („tokens”) care, la data acestui document, este
+încă o valoare-substitut, nu tariful contractat final; niciun răspuns al
+asistentului nu îți va arăta o sumă în dolari până când acel tarif nu este
+confirmat în scris. Vei vedea sumele reale de îndată ce tariful este
+confirmat — niciodată tăcut, mereu semnalat.

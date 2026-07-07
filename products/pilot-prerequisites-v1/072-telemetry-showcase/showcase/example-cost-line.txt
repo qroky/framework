@@ -1,15 +1,13 @@
-⚙ 0 агентов · 1 роль · глубина 0 · возвратов verify 0 · $1.43
+⚙ 0 агентов · 1 роль · глубина 0 · возвратов verify 0 · стоимость пока не показывается
 
 # --- how this line was built (kept in the same file for auditability) ---
 # source atom:      ATOM-018  (/Users/ghcernei/Work/rpf/products/framework-v1/018-constitutional-touch/RESULT.md)
-# N (agents)     <- total_descendants                = 0
-# M (roles)      <- distinct roles in subtree         = 1 (framework-architect)
+# N (agents)     <- RESULT.md frontmatter total_descendants = 0
+# M (roles)      <- distinct roles in subtree         = 1 (framework-architect (no fan found for this atom — see honesty note))
 # D (depth)      <- max_depth_reached                 = 0
 # R (returns)    <- sum(VERDICT.md returns_used)      = 0
-# $X (cost)      <- 177951 tokens @ $8.00/M tokens (assumption dated 2026-07-07)
-#                    token source: status.yaml closure note, 'executor real' counter (measured, not estimated)
+# CHECKSTOP (register #1): no confirmed contracted rate in /Users/ghcernei/Work/rpf/products/pilot-prerequisites-v1/072-telemetry-showcase/showcase/rate.config — a placeholder or missing rate.config means NO founder-visible dollar figure is produced. Fill rate.config with the contracted $/M rate, in writing, to unblock.
+#                    tokens measured (177951, source: status.yaml closure note, 'real' counter (measured, not estimated)) — held back pending the rate
+# breakdown: execute=~152k verify=0 role_creation=0 synthesis=0
 # NOTE (honesty): N=0 here because ATOM-018 spawned no sub-atoms of its
-# own (it is a pre-fan, single atom -- see INPUT.md 'Fan decision: opt-out
-# per PM4'). This is the correct, literal reading of total_descendants,
-# not a bug. The framework's first real lens fan has not closed in this
-# repo yet -- see cost-line-spec.md and team-summary-spec.md.
+# own — the correct, literal reading of total_descendants, not a bug.

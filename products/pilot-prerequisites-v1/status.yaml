@@ -1,7 +1,7 @@
 # status.yaml — shared status machine of one multi-atom product (SM1-SM4)
 # One file per products/<product-slug>/; one entry per atom; current state only.
 product: pilot-prerequisites-v1
-updated: 2026-07-07T14:09:09Z
+updated: 2026-07-07T14:48:01Z
 atoms:
   - id: ATOM-007
     state: running
@@ -64,10 +64,18 @@ atoms:
     timestamp: 2026-07-07T14:09:09Z
     note: yes-with-conditions (7 conditions); 6 fact-tensions handled, 2 value conflicts -> GATE-018 (answered); register 22 items; real 131,338
   - id: ATOM-078
-    state: running
-    timestamp: 2026-07-07T14:09:09Z
-    note: Wave 4 fix-round per synthesis register + E8 wiring + INFO-009 narrative spec (M sonnet, ~170k); slim re-verify after
+    state: delivered
+    timestamp: 2026-07-07T14:48:01Z
+    note: H1-H5 pass; register 20/22 (3 A/B variants for CEO at G2, 2 landed in 077); real 100,429; blind re-verify running
   - id: ATOM-077
+    state: delivered
+    timestamp: 2026-07-07T14:24:52Z
+    note: all H1-H5 pass; verify ACCEPT r1 (2 minor, F1 closed by parent spot-diff); real exec 164,002 / verify 96,410
+  - id: ATOM-077-VERIFY
+    state: delivered
+    timestamp: 2026-07-07T14:24:52Z
+    note: ACCEPT round 1 (returns_used 0); 2 minor; real 96,410
+  - id: ATOM-078-VERIFY
     state: running
-    timestamp: 2026-07-07T14:09:09Z
-    note: Wave 4 intake protocol, mission-first (M sonnet, ~170k); E1 hold released per GATE-018; slim verify after
+    timestamp: 2026-07-07T14:48:01Z
+    note: slim blind re-verify + regression H6 (VP20), tier L fable, envelope ~110k

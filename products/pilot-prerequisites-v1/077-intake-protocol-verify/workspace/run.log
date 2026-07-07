@@ -1,0 +1,29 @@
+2026-07-07 ATOM-077-VERIFY run log (blind, round 1, returns 0)
+
+1. Read INPUT.md (this atom). Confirmed allowed-file list and discipline.
+2. H1: ls intake/ + both atom folders — 5/5 deliverable files present.
+3. H2: ran literal DoD pattern grep -iE "DoD|атом|atom|verify|INPUT|гейт|gate"
+   on mission-template.ro.md + mission-template.ru.md — zero hits, exit 1.
+4. Read both mission templates fully (H3, S2 evidence).
+5. Read INTAKE-GUIDE.md fully (H4, S1 context).
+6. Read derivation.md + field-test-lessons.md fully (S1, H5 targets).
+7. Read the 3 reference decisions: INFO-007, INFO-009, GATE-018 (the law).
+8. Read RESULT.md ONLY at DoD self-check table (L42–53) and H3 table (L55–64),
+   located via header grep + sed range extraction. No other RESULT sections,
+   no target INPUT/STATUS/workspace/run.log, no framework docs read.
+9. H5 mechanical diff: lesson №2 blockquote (field-test-lessons L25–34,
+   '> ' stripped, whitespace normalized) vs INFO-007 Statement (L14–23) —
+   identical after removing enclosing «» → VERBATIM PASS. GATE-018 closure
+   quotes grep-compared (target L48/L51 vs law L32/L35) — verbatim modulo «».
+10. H4 greps: detail question §2 (L56–61, default 2); cost worked example §5.2
+    (L129–148, ~$40 figure at L142, rate disclaimer §5.4); as-is branch §3
+    (L71–95); TEAM-summary line §6 (L176–181). All present.
+11. S1: applied disguised-task-list test independently to 3 example branches +
+    delete-mission double-check — all pass; noted generic heads of branches
+    1/3 as minor F2.
+12. S2: no processing-tone passage found in either template.
+13. Noted package/target source mismatch on lesson №1 (INFO-006 outside
+    package; INFO-009 supplied instead, correctly embodied in guide §2 /
+    templates §4) — minor F1, verification gap, non-blocking.
+14. Wrote VERDICT.md (ACCEPT, 0 blocking / 2 minor), RESULT.md, STATUS.md
+    update, this run.log. status.yaml untouched.
