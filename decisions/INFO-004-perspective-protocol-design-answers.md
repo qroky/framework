@@ -78,3 +78,7 @@ the queued constitutional touch remains a human decision (TASKS §2).
 
 `ATOM-016-LAUNCH.md` INPUT §3 (decisions D1–D7); `TASKS.md` queue. Role specs: none
 yet — the protocol itself will fix where lens-role derivation lands.
+**Update 2026-07-07 (DR6):** the recorded D7 gap ("см. ниже" detail) is closed by
+`decisions/INFO-005-d7-subtree-accounting-detail.md` — transitive subtree
+accounting (total_descendants / max_depth_reached / subtree_cost + type breakdown),
+routed to the constitutional touch.
