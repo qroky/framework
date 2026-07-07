@@ -1,0 +1,19 @@
+2026-07-07T15:05:00Z CYCLE-START ATOM-078-VERIFY round 1; executor fable as blind-verify; slim package INPUT.md read
+2026-07-07T15:06:00Z READ references (law): SYNTHESIS.md Fix-priority register (22 rows, lines 183-218), GATE-018 (E8-1/E8-2 verbatim answers), INFO-009 (narrative spec)
+2026-07-07T15:07:00Z READ target RESULT.md H1 coverage table only (lines 9-101); noted claims for re-run
+2026-07-07T15:10:00Z READ all 7 setup/ files, all telemetry/ + consent/ + showcase/ files (21 artifacts), amendment proposal (exists, read)
+2026-07-07T15:14:00Z SANDBOX built at /private/tmp/atom078-verify-sandbox (full copy of 071-setup-kit + 072-telemetry-showcase)
+2026-07-07T15:14:30Z H2 bash -n on all 5 scripts: exit 0, clean
+2026-07-07T15:15:00Z H2 negative-test.sh re-run in sandbox: TESTS 1-4 all PASSED, exit 0
+2026-07-07T15:16:00Z H2+H6 dry-run.sh re-run in sandbox: run 1 exit 0 in 0-1s (budget 900s), run 2 exit 0 idempotent, scheduler registered once then "already registered", 0 questions — regression H6 part 1 green
+2026-07-07T15:17:00Z H3 jargon grep (verbatim pattern) on 6 RO/RU founder files: QUICKSTART/TIERS zero hits; CONSENT hits confined to invisible HTML comment header + "agregate" substring false positive — PASS
+2026-07-07T15:19:00Z H5 render.sh --debrief + --spawn-brief re-run against real repo records (ATOM-007-SYNTH): output byte-identical to committed example-debrief.md / example-spawn-brief.md; --audit PASS on both; narrative-spec.md carries ≤5% rule, field mappings, levels 1/2/3 + piercing events
+2026-07-07T15:21:00Z H4 behavioral: --external without opt-in → no content sentence, no INPUT leak; with consent/TEAM-CONTENT-OPTIN → one Summary sentence shown; with INPUT.md deleted → renders exit 0 (no read dependency proven)
+2026-07-07T15:23:00Z H1 №1 behavioral: rate.config absent → "стоимость пока не показывается"; =8.00 placeholder → still held back; =2.50 → $ figure shown. Checkstop real
+2026-07-07T15:24:00Z H4/№11 behavioral in deployed workspace shape: work_unit stripped without opt-in, kept with opt-in; noted M3 (push.sh script-relative vs render.sh repo-root-relative marker base)
+2026-07-07T15:26:00Z H6 part 2: WHITELIST_FILENAMES equals the closed 5-item list verbatim (STATUS.md, RESULT.md cost block, run.log, status.yaml, VERDICT.md); deny-by-default re-proven by TEST 1
+2026-07-07T15:28:00Z H1 spot-checks №2/№4/№5/№6/№20 against artifacts: all map to real changes; CEO rows №3/№9 labeled Вариант A/B nothing chosen; №5 descriptive flag only (M2 minor); noted M1 (RESULT table swapped A/B labels for №3 vs artifacts)
+2026-07-07T15:30:00Z S1: git diff fa33fea..d45f012 — all 21 touched files within register/INFO-009 scope; TIERS "всегда"→"автоматически" = №19 alignment; no drive-by rewording
+2026-07-07T15:31:00Z S2: debrief reads as a story; one mild mechanics leak — internal record numbers "(073)" in lens rows (M5); dead pct variable in render_debrief (M4)
+2026-07-07T15:33:00Z VERDICT written: accept, round 1, returns_used 0; findings 5 minor / 0 blocking. RESULT.md + STATUS.md updated; status.yaml untouched per package
+2026-07-07T15:33:30Z CYCLE-END delivered

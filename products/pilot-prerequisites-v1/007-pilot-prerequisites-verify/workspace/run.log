@@ -1,0 +1,27 @@
+2026-07-07 CYCLE-START ATOM-007-VERIFY as framework-architect (blind parent-layer verify, VP20 slim, tier L fable, round 1)
+2026-07-07 READ INPUT.md (this atom) — package list + H1-H6/S1-S4 verbatim
+2026-07-07 READ 007-pilot-prerequisites/RESULT.md + PLAN.md + status.yaml (parallel)
+2026-07-07 RECOMPUTE H6 arithmetic from status.yaml EC6 counters:
+           roles 57068+53045+51306+54776+51225 = 267420 ✓ (role_creation)
+           builds 165895+193710+164002+100429 = 624036 ✓
+           lenses 151423+95001+155859+91655 = 493938 ✓ ; execute 1117974 ✓
+           verifies 88414+101262+96410+180118 = 466204 ✓ ; synthesis 131338 ✓
+           children 1982936 ✓ ; subtree ~2123k (=1982936+~140k BC4) ✓
+           descendants delivered = 18 ✓ (parent-verify excluded — running, no counter; noted M2)
+           tier shares 737542/931318/454076 over 2122936 = 34.7/43.9/21.4 ≈ 35/44/21 ✓
+           max_depth 1 ✓ ; verify_returns_total 0 ✓ — NO wrong number
+2026-07-07 READ parent INPUT.md §4-§5 (DoD) + ls all five deliverable trees — H1 paths all present
+2026-07-07 RECOMPUTE PLAN OD4 sum: 675k ✓ ; E4/G1 + GATE-018 re-raise logged, not silent
+2026-07-07 READ 007-synth/SYNTHESIS.md — §6.2 shape full; X1-X6 each SY6-classified fact/value; SY9 table + per-lens coverage; 076 NO carried unsmoothed (condition 7 / E8-2) — H6 structure PASS
+2026-07-07 GREP four child VERDICTs — all accept r1, returns_used 0; findings match RESULT claims (3/3/2/5 minor, 0 blocking)
+2026-07-07 SPOT-READ dry-run-transcript (run1 0s exit0, questions count 0 + classification) — H2 PASS
+2026-07-07 SPOT-READ push.sh whitelist (5 basenames == pilot-design closed list, deny-by-default) + negative-test-output (INPUT.md/secret.txt SKIPPED, TEST 1 PASSED) — H3 PASS
+2026-07-07 GREP CONSENT.ru + CONSENT.ro — deletion [____] fill-in, 4 red lines, open-script clause, GATE-018 opt-in item present in both — H4 PASS
+2026-07-07 GREP specs — cost-line N/M/D/R/$ from named fields; team-summary-spec 10 record refs; narrative-spec 9; worked examples from real repo data (ATOM-018 provenance in-file) — H5 PASS
+2026-07-07 SPOT-READ render.sh L119-140 — hard checkstop rejects missing rate.config or literal 8.00 — S3 code half PASS; governance overhead visible (verify+roles+synth = 41% of subtree) — S3 PASS
+2026-07-07 S1 jargon spot-grep over 8 founder-facing RO/RU files — QUICKSTART/TIERS/templates zero hits; CONSENT hits inside invisible HTML comment header only + «agregate» false positive (matches 078V H3) — S1 PASS
+2026-07-07 READ derivation.md end-to-end — counterfactual-value test + double-check + self-application; worked example passes line-by-line — S2 PASS
+2026-07-07 READ four LENS-VERDICT SY9 sections + answer lines (073/074/075 yes-with-conditions, 076 NO) — each names a real contradiction; dissolutions in synthesis are evidence-based, not averaged — S4 PASS
+2026-07-07 FINDINGS: M1 «8 ролей» vs 7 enumerated in live TEAM summary (M counter not recomputable from package); M2 D7 fields are pre-closure snapshot excluding this verify. 0 blocking.
+2026-07-07 WRITE VERDICT.md (accept r1) + STATUS.md + RESULT.md + this run.log. status.yaml NOT touched.
+2026-07-07 CYCLE-END — verdict accept, 2 minor / 0 blocking; cost self-estimate ~65k tokens (envelope ~120k, margin held)

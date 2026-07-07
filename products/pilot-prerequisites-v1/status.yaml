@@ -1,7 +1,7 @@
 # status.yaml — shared status machine of one multi-atom product (SM1-SM4)
 # One file per products/<product-slug>/; one entry per atom; current state only.
 product: pilot-prerequisites-v1
-updated: 2026-07-07T14:48:01Z
+updated: 2026-07-07T14:59:23Z
 atoms:
   - id: ATOM-007
     state: running
@@ -76,6 +76,10 @@ atoms:
     timestamp: 2026-07-07T14:24:52Z
     note: ACCEPT round 1 (returns_used 0); 2 minor; real 96,410
   - id: ATOM-078-VERIFY
+    state: delivered
+    timestamp: 2026-07-07T14:59:23Z
+    note: ACCEPT round 1 (returns_used 0); 5 minor, 0 blocking; regression green; real 180,118
+  - id: ATOM-007-VERIFY
     state: running
-    timestamp: 2026-07-07T14:48:01Z
-    note: slim blind re-verify + regression H6 (VP20), tier L fable, envelope ~110k
+    timestamp: 2026-07-07T14:59:23Z
+    note: parent-layer slim blind verify (VP20), tier L fable, envelope ~120k; recomputes RESULT arithmetic
