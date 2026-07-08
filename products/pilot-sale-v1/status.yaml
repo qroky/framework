@@ -1,0 +1,15 @@
+# status.yaml — pilot-sale-v1 (SM discipline)
+product: pilot-sale-v1
+atoms:
+  - id: ATOM-090
+    state: running
+    timestamp: 2026-07-08T10:30:00Z
+    note: G1 = GATE-022 (CEO go verbatim); envelope ~450k self-set per default-envelope practice; first externally-closed atom (long-loop)
+  - id: ROLE-009
+    state: delivered
+    timestamp: 2026-07-08T10:40:00Z
+    note: sales-operator born from battle task (not org chart); real 49,485
+  - id: ATOM-091
+    state: running
+    timestamp: 2026-07-08T10:45:00Z
+    note: kickoff sale kit; role sales-operator; tier M (sonnet); envelope ~180k
