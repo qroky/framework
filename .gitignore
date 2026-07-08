@@ -8,3 +8,7 @@ desktop.ini
 *.swp
 *.swo
 *~
+
+# heartbeat local state (runtime/claude/heartbeat)
+runtime/claude/heartbeat/out/
+runtime/claude/heartbeat/heartbeat.log
