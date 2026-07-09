@@ -1,0 +1,14 @@
+# status registry — distribution-kit-v1 (SM3)
+atoms:
+  ATOM-100:
+    folder: 100-distribution-kit
+    status: running
+    maturity: —
+    opened: 2026-07-10
+    gate: GATE-025 (G1 go)
+  ATOM-101:
+    folder: 101-distribution-installer
+    status: formulated
+    maturity: —
+    opened: 2026-07-10
+    parent: ATOM-100
