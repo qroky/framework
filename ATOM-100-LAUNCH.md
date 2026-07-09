@@ -31,7 +31,7 @@ role: orchestrator (launch session); executor role: pilot-toolsmith (reuse)
 formulated_by: launch session from CEO mandate INFO-017 (verbatim), 2026-07-09
 verification: blind (ATOM-101-VERIFY, L) + human dry run (G2, release criterion)
 maturity_target: reviewed (validated — after first stranger-install in the field)
-budget: ~650k tokens subtree envelope (executor ~280k incl. 071-kit reads + INFO-022 state machine and three-scenario harness; verify ~150k per ×3.5+40k; parent orchestration + narrative ≤5%; ~50k fixed per subagent). Default-envelope practice per GATE-022/INFO-019: E4 only on breach. Raised from ~600k by the CEO-authored INFO-022 amendment (pre-launch).
+budget: ~800k tokens subtree envelope (executor(s) ~380k incl. 071-kit reads + INFO-022 state machine + three-scenario harness + INFO-023 heartbeat consent and self-update channel; verify ~180k per ×3.5+40k; parent orchestration + narrative ≤5%; ~50k fixed per subagent). Default-envelope practice per GATE-022/INFO-019: E4 only on breach. Raised ~600k→650k→800k by CEO-authored pre-launch amendments INFO-022/INFO-023.
 recursion_allowance: 2
 ---
 
@@ -71,7 +71,15 @@ working Qroky instance in ≤15 minutes with zero questions outside the intervie
 > безопасен → финал «скажи qroky start». Критерий релиза: чистая машина,
 > ≤15 мин, ноль вопросов вне интервью (сухой прогон — HUMAN-TASK мне остаётся).
 
-The six interview points are a CLOSED list — no seventh question may be added
+Seventh point — added by the list's owner (CEO, INFO-023, verbatim):
+
+> Heartbeat — согласие в интервью инсталлятора: вопрос через пользу
+> («утренний дайджест в Telegram: что сделано, что ждёт тебя — да/нет,
+> меняется позже»), в вопросе одной строкой — что пульс делает (read-only
+> скан, никаких действий и передачи данных); «да» → launchd включён, «нет» →
+> установлен выключенным + инструкция включения; рекомендация в подсказке — да.
+
+The seven interview points are a CLOSED list — no eighth question may be added
 without E1; removing one is E7.
 
 ## 4. Definition of Done
@@ -79,13 +87,14 @@ without E1; removing one is E7.
 **Hard criteria (machine-checkable):**
 - H1. `distribution/install.sh` exists; single entry point; bash; depends only on
   POSIX tools + curl + git (checks and says in human words what is missing).
-- H2. The interview covers exactly the six declared points, in the user's chosen
+- H2. The interview covers exactly the seven declared points, in the user's chosen
   language (ro/ru/en, chosen first): working folder; Claude Code check/install with
   human hints; subscription check; Telegram opt-in — hand-held through BotFather
   until a WORKING token (validated live via Bot API `getMe`; skippable — opt-in);
   telemetry opt-in — shows verbatim WHAT leaves before asking (072 pattern,
-  filtered-only). Zero questions outside the interview. Check: scripted transcript
-  of a full run; question inventory equals the closed list.
+  filtered-only); heartbeat consent (H10). Zero questions outside the interview.
+  Check: scripted transcript of a full run; question inventory equals the closed
+  list.
 - H3. Self-managing idempotency (INFO-022): every step is an idempotent
   «check→do» pair. A rerun replays the checks from the top and resumes EXACTLY at
   the stop point (answered interview points are never re-asked — answers live in
@@ -121,6 +130,25 @@ without E1; removing one is E7.
   file is the last line for hopeless cases only). Max 2 auto-attempts per step;
   the third failure of a step ALWAYS goes to the human. Check: fault-injection in
   the H6(c) scenario exercises the ladder end-to-end.
+- H10. Heartbeat consent (INFO-023): interview point 7 asks through the benefit
+  («утренний дайджест: что сделано, что ждёт тебя — да/нет, меняется позже»)
+  with ONE honest line on what the pulse does (read-only scan, no actions, no
+  data transfer); recommendation hint = yes. «Да» → launchd agent installed AND
+  enabled; «нет» → installed DISABLED plus a one-command enable instruction.
+  Check: both branches exercised in the H6 harness; disabled branch leaves no
+  running agent.
+- H11. Self-update channel (INFO-023): the heartbeat pulse runs `git fetch` on
+  the vendored framework — read-only, RELEASE TAGS ONLY, never main. On a new
+  version: a digest line with a 3-line human changelog («что улучшится у тебя»)
+  and the choice да/позже/подробнее (buttons are Tree-B UI; in v1 the digest
+  names the exact command/words). APPLYING is only on an explicit «да», executed
+  as a mini-atom recorded in the USER's own `decisions/`, preceded by
+  reconciliation of the user's local edits — conflicts SHOWN, never silently
+  overwritten. Health-check and update mechanics share the ONE state/trace
+  (`install-state.json`, H8). Check: sandbox scenario — instance on tag N, tag
+  N+1 published with local user edit present → digest line appears, apply waits
+  for «да», reconciliation surfaces the conflict, decisions record written.
+  (Signed tags — touch candidate 17, trigger «100+ инстансов»; not in v1.)
 
 **Soft criteria (judgment — judge named per criterion):**
 - S1. Every user-facing line passes the non-technical-founder bar: no method jargon
