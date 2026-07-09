@@ -1,0 +1,122 @@
+Scenario 8 — heartbeat consent, both branches (H10)
+Generated: 2026-07-09T22:25:25Z
+
+--- fresh install answering 'y' at the heartbeat question ---
+== Qroky setup ==
+
+Step 1 of 7 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   language set: en
+
+Step 2 of 7 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.xJFApJ/w8yes
+>   working folder: /private/tmp/qroky-install-dry-run.xJFApJ/w8yes
+
+Step 3 of 7 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+
+Step 4 of 7 — check your subscription
+  subscription/login — looks active
+
+Step 5 of 7 — connect Telegram (optional)
+Would you like a morning digest and updates through Telegram?
+This step is optional — you can skip it and add it later.
+Yes/no (y/n), default n:   Telegram — skipped, you can add it later by running this installer again
+
+Step 6 of 7 — daily support sharing (optional)
+Daily support sharing — before asking, here is EXACTLY what would leave this
+computer, in plain words: short progress logs and cost summaries about HOW
+the work went (never WHAT you are building — no code, no specs, no product
+content). You can read the exact list and the script that sends it any time
+at: distribution/README.<lang>.md, section "What leaves this computer".
+Turn daily support sharing on? Yes/no (y/n), default n:   daily support sharing — OFF (nothing is ever sent while this stays off)
+
+Step 7 of 7 — morning digest (optional)
+Morning digest — a short daily message: what got done, what is waiting for
+you. Yes/no now, you can change your mind later. One honest line about how
+it works: it only READS your own workspace to build the summary — it never
+takes actions on its own and never sends anything anywhere except this
+digest to you. Recommended: yes.
+Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed and ON
+
+
+== Setup finished. Nothing failed. ==
+
+Your assistant is ready. To start:
+  1. Open a terminal in: /private/tmp/qroky-install-dry-run.xJFApJ/w8yes
+  2. Type: claude
+  3. Say: qroky start
+
+That single phrase — "qroky start" — is all you need; it works in any
+language you type it in.
+
+(total elapsed: 1s)
+
+plist generated: yes (md.qroky.heartbeat.w8yes)
+fake-launchctl saw a bootstrap call for it: yes
+
+--- fresh install answering 'n' at the heartbeat question ---
+== Qroky setup ==
+
+Step 1 of 7 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   language set: en
+
+Step 2 of 7 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.xJFApJ/w8no
+>   working folder: /private/tmp/qroky-install-dry-run.xJFApJ/w8no
+
+Step 3 of 7 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+
+Step 4 of 7 — check your subscription
+  subscription/login — looks active
+
+Step 5 of 7 — connect Telegram (optional)
+Would you like a morning digest and updates through Telegram?
+This step is optional — you can skip it and add it later.
+Yes/no (y/n), default n:   Telegram — skipped, you can add it later by running this installer again
+
+Step 6 of 7 — daily support sharing (optional)
+Daily support sharing — before asking, here is EXACTLY what would leave this
+computer, in plain words: short progress logs and cost summaries about HOW
+the work went (never WHAT you are building — no code, no specs, no product
+content). You can read the exact list and the script that sends it any time
+at: distribution/README.<lang>.md, section "What leaves this computer".
+Turn daily support sharing on? Yes/no (y/n), default n:   daily support sharing — OFF (nothing is ever sent while this stays off)
+
+Step 7 of 7 — morning digest (optional)
+Morning digest — a short daily message: what got done, what is waiting for
+you. Yes/no now, you can change your mind later. One honest line about how
+it works: it only READS your own workspace to build the summary — it never
+takes actions on its own and never sends anything anywhere except this
+digest to you. Recommended: yes.
+Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed but OFF. Turn it on any time with:
+      bash install.sh --enable-heartbeat
+
+
+== Setup finished. Nothing failed. ==
+
+Your assistant is ready. To start:
+  1. Open a terminal in: /private/tmp/qroky-install-dry-run.xJFApJ/w8no
+  2. Type: claude
+  3. Say: qroky start
+
+That single phrase — "qroky start" — is all you need; it works in any
+language you type it in.
+
+(total elapsed: 0s)
+
+plist generated (installed, but not loaded): yes (md.qroky.heartbeat.w8no)
+fake-launchctl saw ANY bootstrap call during this run: no (must be no)
+one-command enable instruction printed: yes

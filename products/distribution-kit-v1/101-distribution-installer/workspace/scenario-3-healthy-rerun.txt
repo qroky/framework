@@ -1,0 +1,50 @@
+Scenario 3 — rerun on the already-healthy Scenario-1 workspace
+Generated: 2026-07-09T22:25:21Z
+No answers should be needed — every step is already 'done'.
+
+== Qroky setup ==
+
+Step 1 of 7 — choose your language
+  language set: en
+
+Step 2 of 7 — choose your working folder
+  this folder is already your Qroky workspace — reusing it
+
+Step 3 of 7 — check the Claude Code assistant
+  already set up — nothing to do (health check)
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+
+Step 4 of 7 — check your subscription
+  already set up — nothing to do (health check)
+
+Step 5 of 7 — connect Telegram (optional)
+  already set up — nothing to do (health check)
+
+Step 6 of 7 — daily support sharing (optional)
+  already set up — nothing to do (health check)
+
+Step 7 of 7 — morning digest (optional)
+  already set up — nothing to do (health check)
+
+
+== Setup finished. Nothing failed. ==
+
+Your assistant is ready. To start:
+  1. Open a terminal in: /private/tmp/qroky-install-dry-run.xJFApJ/w1
+  2. Type: claude
+  3. Say: qroky start
+
+That single phrase — "qroky start" — is all you need; it works in any
+language you type it in.
+
+(total elapsed: 1s)
+
+--- exit code: 0 ---
+
+--- file tree diff (content hashes, excluding install.log which is append-only by design) ---
+(no differences — no file content changed)
+
+--- state diff (excluding the generated_at timestamp, which always updates on commit) ---
+(no differences — every field identical)
+
+'already done' health-check lines printed: 7 (expect 7, one per step)

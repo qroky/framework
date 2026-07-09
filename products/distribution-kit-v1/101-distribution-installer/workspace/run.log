@@ -1,0 +1,266 @@
+2026-07-10T00:00:00Z CYCLE-START ATOM-101; executor claude-sonnet-5 as pilot-toolsmith (tier M); budget ~330k tokens; recursion_allowance 0 (build inline, no sub-spawns)
+
+UNDERSTANDING RESTATEMENT
+Product: distribution/install.sh + lang/{en,ro,ru} + README.{en,ro,ru}.md + dry-run.sh
+  sandbox harness — the working, testable installer kit for a stranger with no
+  author contact. Acceptance = parent ATOM-100 H1-H11 (hard) + S1-S3 (soft,
+  judged by Verify/CEO, not self-closable). Deliver only under distribution/**
+  and this atom's own folder. No git commands. Blind verify (ATOM-101-VERIFY);
+  my products speak alone, no verifier conversation.
+Seven-point interview (closed list, H2): language(en/ro/ru) -> workdir ->
+  Claude Code check -> subscription check -> Telegram opt-in (BotFather walk,
+  live getMe) -> telemetry opt-in (show-what-leaves first) -> heartbeat
+  consent (benefit-framed, default hint yes). Zero questions outside these.
+State machine (H3/H8): install-state.json, check->do idempotent steps, rerun
+  resumes without re-asking, healthy rerun = free health-check.
+Failure ladder (H9): self-diagnose -> auto-attempt (network retry/lock/perm
+  hint) -> concrete human action; max 2 auto-attempts/step, 3rd always human.
+Secrets (H4): bot token file mode 600 in user's workspace; never in
+  state/log/telemetry/git; negative grep empty across all four.
+Finale (H5): print handoff to "qroky start" in chosen language.
+Self-update (H11): heartbeat pulse -> git fetch --tags (release tags only,
+  never main) -> digest (3-line changelog + да/позже/подробнее) -> apply only
+  on explicit да, mini-atom writes decisions/ record in USER's workspace,
+  reconciliation of local edits shown before apply, conflicts never silently
+  overwritten.
+Harness (INFO-025, 9-point checklist) must be walked and logged before any
+  scenario touches "real" data — sandbox only, Claude Code / Telegram probes
+  stubbed behind marked test hooks (QROKY_TEST_STUBS=1 and PATH-shadow fakes),
+  real code paths stay honest per role instructions.
+
+SOURCES CONSULTED (closed read list, INPUT.md section 1)
+1. products/distribution-kit-v1/100-distribution-kit/INPUT.md - parent H1-H11/S1-S3, mandate verbatim.
+2. products/pilot-prerequisites-v1/071-setup-kit/setup/{bootstrap.sh,dry-run.sh,QUICKSTART.ro.md,QUICKSTART.ru.md} - proven base: idempotent check->do steps, fail() with named fix, PATH-shadow stub pattern (fake claude/crontab), sandboxed dry-run with real transcript.
+3. products/pilot-prerequisites-v1/072-telemetry-showcase/{consent/CONSENT.ru.md,telemetry/push.sh,telemetry/negative-test.sh} - show-what-leaves-before-asking pattern, whitelist deny-by-default, filtered extraction, OFF-switch idiom, negative-test structure (planted secrets, grep for leak).
+4. ~/.claude/skills/qroky/SKILL.md - trigger grammar section 1, bridge/vendoring pattern section 4 (PROVENANCE.md: source+commit+date), finale handoff target ("qroky start").
+5. runtime/claude/heartbeat/{heartbeat.sh,install.sh,launchd/md.qroky.heartbeat.plist,uninstall.sh} - launchd idempotent install pattern (bootout then bootstrap), read-only scan shape, beat log discipline; adapted here for END USER paths (not this repo's).
+6. knowledge/reference/harness-checklist.md - 9-point checklist, walked below.
+7. runtime/claude/README.md section 1 - session start wording ("claude" in CLI, say hello) for finale phrasing baseline.
+Also read (not in closed list, needed for continuity): roles/pilot-toolsmith.md (role adopted fully); products/distribution-kit-v1/status.yaml (ATOM-101 registry entry); decisions/INFO-025 (harness-checklist origin, confirms 9-point content); 071-setup-kit/RESULT.md (self-check table format precedent for my own RESULT.md).
+
+DESIGN DECISIONS (executor, O9.1 - full list also in RESULT.md)
+D1. Workspace layout: QROKY_WORKSPACE_DIR default ./qroky (same variable name
+    and default as 071's bootstrap.sh for continuity). Inside it, TOP LEVEL
+    (not nested under another qroky/): framework/ (vendored, git checkout
+    pinned to a release tag once one exists, else pinned SHA - same known
+    limitation as 071), install-state.json, install.log, decisions/ (self-
+    update mini-atom records), .qroky/telegram.token (mode 600, the ONLY
+    place the bot token is ever written).
+D2. State file: hand-written flat-key JSON (no jq dependency - POSIX+curl+git
+    only, H1). Every key name is globally unique across the whole document
+    (step_* / answer_* prefixes) so a single grep -oE "\"KEY\": *\"...\"" per
+    field is unambiguous regardless of nesting - same "no YAML library,
+    template regular enough" reasoning push.sh already uses for status.yaml.
+    Whole file is rewritten fresh on every commit from the process's own
+    shell variables (no associative arrays - bash 3.2 compat, same
+    constraint 071/RESULT.md flagged for macOS stock bash).
+D3. Interactive prompts: real `read -r` (unlike 071's zero-question
+    bootstrap.sh) because THIS atom's mandate is explicitly an interview -
+    every read call is tagged inline with a comment `# IV-POINT:<n>:<name>`
+    so the harness can grep-count the question inventory against the closed
+    list of 7 (H2 check: "question inventory equals the closed list").
+D4. Test stubs: PATH-shadowing (fake claude / curl / launchctl binaries, and
+    a local offline git repo standing in for the framework remote) is the
+    primary stub mechanism, following 071's proven, already-reviewed
+    pattern, so install.sh needs zero test-mode branches for those three.
+    ONE explicit QROKY_TEST_STUBS=1 in-script hook exists, clearly marked,
+    for the "subscription/login" heuristic only (skips a soft credential-
+    file probe that would otherwise print a spurious NOTICE in every sandbox
+    run since the sandbox HOME never has real Claude Code credentials) -
+    matches INPUT's explicit instruction ("e.g., QROKY_TEST_STUBS=1") while
+    keeping every other path production-identical.
+D5. Self-update mechanics live inside install.sh itself as flags
+    (--check-update, --show-update-details, --apply-update) rather than a
+    separate always-running daemon script, because the deliverable list
+    (INPUT section 2) does not name a separate heartbeat file - install.sh
+    generates the user-facing heartbeat runner + launchd plist into the
+    workspace at Step 7 (heartbeat step), adapted from
+    runtime/claude/heartbeat/* with the END USER's own paths substituted (no
+    reference to this repo's paths), and that generated runner calls
+    `install.sh --check-update` daily. This keeps H1 "single entry point"
+    literally true - one script the user ever has to know about - while
+    still shipping a real, working self-update channel.
+D6. Kill-mid-install test hook: QROKY_TEST_DELAY_STEP / QROKY_TEST_DELAY_SECONDS
+    env vars, read only if set (absent by default = zero effect on
+    production runs), inserted before ONE step's state commit so the harness
+    has a deterministic window to SIGKILL the process mid-step and prove
+    resumability against real, already-committed prior-step state.
+
+HARNESS CHECKLIST (knowledge/reference/harness-checklist.md, 9 points) - walked
+before any sandbox scenario touches its stub data, per role's Harness
+Discipline (INFO-025).
+1. State-file and resumability: install-state.json (D2 above), lives in the
+   user's workspace, survives process death (plain file, not in-memory).
+   Rerun resumes at the first non-done step; answered steps never re-asked.
+2. Idempotency: every step function is check->do; a rerun on a healthy
+   workspace reports each step's check as already satisfied and changes
+   nothing (health-check no-op) - proven in dry-run scenario "healthy rerun".
+3. Auto-attempt limit: 2 per step (network retry / lock wait / permission
+   hint), 3rd failure of the same step always escalates to a concrete human
+   instruction - implemented as a shared run_with_ladder() wrapper, proven in
+   the "broken dependency" scenario.
+4. Secret redaction: bot token written ONLY to .qroky/telegram.token (mode
+   600); install-state.json stores telegram_token_stored=yes/no (boolean),
+   never the token value; install.log never echoes the raw token (masked
+   before any log line). Negative grep proven in its own dry-run scenario.
+5. Self-contained log + relay: install.log is human-readable, readable
+   without session context (each line: timestamp, step, verb, outcome);
+   critical events (step failed 3x, secret-adjacent action, self-update
+   applied) also land in the one-line delegation-style summary this run.log
+   captures per scenario, and self-update additionally relays into the
+   user's own decisions/ record (mini-atom, H11).
+6. Budget line: install.sh has no token/API cost of its own to track (it is
+   the user's local shell process, not an LLM call) - the budget line that
+   applies is THIS build's own (see BUDGET CHECKPOINTs + RESULT.md cost
+   block), logged here rather than invented for the artifact itself. Logged
+   as an explicit SKIP with this justification, not a silent omission.
+7. Dependencies: git (framework vendoring + self-update fetch) - official,
+   already a hard H1 dependency, no degradation path other than the existing
+   fail() message naming the install command; curl (Telegram getMe) -
+   official Bot API, opt-in step, degrades to "skip Telegram, continue" if
+   unreachable (skippable per H2); claude CLI - official, hard H1 dependency
+   per the parent framework's own binding; launchctl (heartbeat) - macOS-only
+   official tool, degradation path is documented (Windows/Linux: "no
+   launchctl" NOTICE + manual one-command instruction, same shape as 071's
+   crontab fallback).
+8. Verify before first live run: this atom's own products are blind-verified
+   (ATOM-101-VERIFY) before ANY real founder touches install.sh; inside this
+   build, every dry-run scenario is exercised against the sandbox before
+   RESULT.md is filed - no scenario is claimed passing without a captured
+   transcript.
+9. Happy-path question, three "what if"s: (a) killed mid-install -> rerun
+   completes from the first non-done step (scenario: kill-mid-install); (b)
+   run twice -> second run is a no-op health-check (scenario: healthy
+   rerun / double-run idempotency diff); (c) no network -> concrete human
+   instruction naming the exact blocked operation (scenario: broken
+   dependency). All three are scripted scenarios below, not asserted by
+   argument.
+
+BUDGET CHECKPOINT (after read phase + harness checklist)
+Estimated tokens consumed so far (read phase, bytes/3 per BC2): ~90k of ~330k.
+Proceeding to build.
+
+BUILD LOG
+- Wrote distribution/lang/{en,ro,ru}.sh (locale strings, substance-identical
+  across all three, verified by function-name diff). bash -n clean on all
+  three.
+- Wrote distribution/install.sh (734 lines, under the 800-line file cap).
+  bash -n clean. Fixed one real bug caught during writing: framework
+  submodule's .git is a FILE not a directory (git submodule gitlink), so the
+  original `[[ -d "$FRAMEWORK_DIR/.git" ]]` idempotency check would always
+  be false and re-run the vendor step pointlessly — changed to `-e`.
+- Ad hoc smoke test (NOT the harness — a manual pre-check before building
+  dry-run.sh) ran install.sh end-to-end in a throwaway /private/tmp sandbox
+  with a fake claude binary on PATH, a real local git repo standing in for
+  the framework (tagged v1.0.0), QROKY_TEST_STUBS=1, and piped stdin
+  answers. Result: completed in 2s, all 7 steps recorded done in
+  install-state.json, framework vendored and pinned to v1.0.0, telemetry/OFF
+  present (declined), heartbeat files generated. PASS.
+- FINDING (real near-miss, corrected before it reached the harness): this
+  smoke test did NOT shadow `launchctl` on PATH, and the answer sequence hit
+  "yes" on the heartbeat opt-in — install.sh's real `launchctl bootstrap`
+  call registered a real LaunchAgent (md.qroky.heartbeat.qroky) in THIS
+  machine's actual launchd session, even though $HOME was overridden to a
+  sandbox path (launchd's gui/<uid> target is session-scoped, not affected
+  by $HOME). Caught immediately, removed with `launchctl bootout`, verified
+  clean via `launchctl list`. Lesson applied: the real dry-run.sh harness
+  MUST shadow `launchctl` on PATH exactly like `claude`/`crontab` are
+  shadowed in 071's precedent — never let install.sh's real launchctl run
+  during any scripted scenario. Logged per harness-checklist point 8
+  (verify before first live run) — this IS that verification catching a
+  real defect before it reached a scenario transcript.
+- Wrote distribution/dry-run.sh (519 lines) implementing all 7 scenarios
+  named in INPUT section 2 (full clean run, kill-mid-install, healthy
+  rerun, broken dependency, idempotency diff, secrets negative grep,
+  self-update) plus the H2 question-inventory check, against a
+  fully-stubbed sandbox (claude/curl/launchctl shadowed on PATH, offline
+  tagged git repo standing in for the framework source, isolated HOME).
+  First run: 5/8 checks passed, 3 failed -- all three were real bugs in
+  either install.sh or dry-run.sh, not spec gaps:
+    (a) `VAR=val cmd1 | cmd2` in bash only exports VAR for cmd1, never for
+        cmd2 -- every `QROKY_WORKSPACE_DIR="$W" printf ... | install.sh`
+        one-liner in the harness silently failed to pass the workdir
+        override, so every scenario after the first was actually reusing
+        ONE real leftover workspace via install.sh's own pointer-file
+        fallback. This produced a REAL stray directory
+        (distribution/qroky/, with a real vendored framework, a real
+        token file, etc.) on THIS machine's actual disk during testing --
+        caught, understood, cleaned up (rm -rf distribution/qroky
+        distribution/.qroky-workdir-pointer), and fixed at the root:
+        every env-var-scoped call in dry-run.sh now goes through a
+        run_install() helper that uses a real subshell export.
+    (b) install.sh's four flag-driven commands (--check-update,
+        --show-update-details, --apply-update, --enable-heartbeat) called
+        state_load before STATE_FILE was ever computed for them (that
+        computation lived only in the interview's resume path) -- an
+        "unbound variable" crash under set -u. Fixed by factoring a
+        shared resolve_and_load_state() that resolves the workdir the
+        same way the interview does (env override > pointer file >
+        ./qroky default) before loading.
+    (c) the failure ladder (run_with_ladder) gave up after only 1 retry
+        instead of 2 (off-by-one in the attempt-counting condition) --
+        fixed (attempt >= 3, i.e. first try + 2 retries = 3 total tries,
+        matching H9's "max 2 auto-attempts, 3rd failure always to human"
+        literally).
+    (d) grep -rc on a single file (not a directory) printed a
+        "path:count" line on this machine's grep instead of a bare count,
+        breaking the secrets-negative-grep scenario's numeric comparison
+        -- fixed (dropped -r, the target was never a directory).
+    (e) L_UPDATE_AVAILABLE's `cat <<EOF ... %s ... EOF` never substitutes
+        %s (that is a printf idiom, not a heredoc one) -- the digest was
+        printing literal "%s -> %s" instead of the two version numbers.
+        Fixed in all three lang files: the function now takes real
+        positional args ($1/$2/$3) interpolated directly in the heredoc.
+  Second full run after all five fixes: 8/8 PASS, zero stray files, zero
+  real launchd agents registered (verified via launchctl list + ls
+  distribution/). Reran a third time to regenerate final transcripts
+  cleanly. All scenario transcripts + SUMMARY.txt now live in this
+  workspace folder.
+- Manually smoke-tested the Russian language path end-to-end (separate
+  from the harness, quick spot-check) to confirm the mid-run language
+  switch (English bootstrap prompt -> sourced ru.sh for every line after)
+  renders correctly, including Cyrillic headers/prompts. Clean.
+- Ran a repo-jargon self-check for S1 (grep -inE 'atom|DoD|FEV|verify|
+  gate' across lang/*.sh and README.*.md, then filtered out #-comment
+  lines): zero hits inside any actual user-facing string; the only hits
+  were in bash header COMMENTS (never shown to a founder), which
+  themselves explicitly document the no-jargon rule.
+
+BUDGET CHECKPOINT (final, before RESULT.md)
+Read-list bytes (closed list + role + a few directly-needed extras, wc -c):
+~152k. Deliverable + transcript + run.log bytes written: ~133k so far
+(before RESULT.md). Given the volume of interactive debugging (five real
+bugs found and fixed via repeated dry-run.sh executions, each producing
+substantial stdout captured into this transcript/conversation, which BC2's
+pure file-bytes formula undercounts), a more honest estimate including
+tool-call overhead and iteration is ~230k-260k of the ~330k budget --
+inside budget, no E4 breach projected. Final number recorded in
+RESULT.md's cost block.
+
+CYCLE-END pending RESULT.md write.
+
+- Added Scenario 8 (heartbeat consent, both branches) to dry-run.sh after
+  noticing the parent's H10 check text explicitly requires "both branches
+  exercised in the H6 harness" -- the original 7-scenario plan (from the
+  INPUT bullet list) did not separately name this. Verified: "yes" branch
+  -- plist generated AND fake-launchctl log shows a bootstrap call for its
+  label; "no" branch -- plist generated (file present) but fake-launchctl
+  log shows ZERO bootstrap calls during that run, plus the one-command
+  enable instruction is printed. Full harness rerun: 9/9 PASS.
+- Wrote RESULT.md (self-check table vs all 11 hard + 3 soft parent
+  criteria, decisions list, deviations, cost block) and a minimal
+  STATUS.md (not explicitly required by INPUT's deliverable list, added
+  for repo-convention continuity with 071's precedent, in-scope since it
+  lives inside this atom's own folder).
+- Final verification pass: reran dry-run.sh once more end to end (9/9
+  PASS), confirmed zero stray files under distribution/ and zero real
+  launchd agents registered beyond the pre-existing org heartbeat
+  (md.qroky.heartbeat, not mine). Deliverable tree and atom-folder tree
+  both listed clean.
+
+CYCLE-END 2026-07-10T01:26:00Z delivered. H1-H6, H8-H11 self-checked met;
+H7 pending blind verify (not self-closable); S1-S3 self-reviewed, final
+judge Verify/CEO per parent DoD. No escalation triggered (Rowan recon
+resolved every design gap encountered from the closed read list; the one
+genuine open question -- whether Scenario 8 needed to exist -- resolved by
+re-reading the parent's own H10 check clause, not by asking).

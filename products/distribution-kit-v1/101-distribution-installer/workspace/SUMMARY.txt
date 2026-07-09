@@ -1,0 +1,15 @@
+dry-run.sh — summary of all scenarios
+Generated: 2026-07-09T22:25:26Z
+Sandbox: /private/tmp/qroky-install-dry-run.xJFApJ (removed on exit)
+
+PASS — 1-full-clean-run: exit 0 in 0s
+PASS — 1-question-inventory: 6/6 prompts tagged, all within points 1-7
+PASS — 2-kill-mid-install: rerun after SIGKILL completed, exit 0, all steps done
+PASS — 3-healthy-rerun: exit 0, zero file/state changes, 7 health-check lines
+PASS — 4-broken-dependency: 2 auto-retries then a concrete human instruction, exit 1, prior steps' state preserved
+PASS — 5-idempotency-diff: identical file listing and state across two runs
+PASS — 6-secrets-negative-grep: zero leaks across state/log/telemetry/git; token file mode 600
+PASS — 7-self-update: digest shown, conflict shown before apply, tag advanced to v1.1.0, decisions record written
+PASS — 8-heartbeat-both-branches: yes branch bootstraps + enables, no branch installs disabled with a one-command enable instruction, no agent registered
+
+Totals: 9 passed, 0 failed

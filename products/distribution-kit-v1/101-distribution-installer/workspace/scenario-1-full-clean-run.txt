@@ -1,0 +1,78 @@
+Scenario 1 — full clean run (H6 baseline, H2 question inventory)
+Generated: 2026-07-09T22:25:19Z
+Command a founder actually types: bash install.sh   (no arguments)
+Answers fed (stdin, in order): en / <accept suggested folder> / y / GOODTOKEN123 / n / y
+
+== Qroky setup ==
+
+Step 1 of 7 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   language set: en
+
+Step 2 of 7 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.xJFApJ/w1
+>   working folder: /private/tmp/qroky-install-dry-run.xJFApJ/w1
+
+Step 3 of 7 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+
+Step 4 of 7 — check your subscription
+  subscription/login — looks active
+
+Step 5 of 7 — connect Telegram (optional)
+Would you like a morning digest and updates through Telegram?
+This step is optional — you can skip it and add it later.
+Yes/no (y/n), default n:   Let's create your own Telegram bot — this takes about 2 minutes:
+    1. Open the Telegram app.
+    2. In the search bar, type: BotFather (it has a blue checkmark).
+    3. Open the chat with BotFather and send: /newbot
+    4. It will ask for a name — type anything you like (e.g. "My Qroky").
+    5. It will ask for a username — must end in "bot" (e.g. "my_qroky_bot").
+    6. BotFather replies with a message containing a long code — this is
+       your bot's TOKEN. It looks like: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ
+    7. Copy that whole code.
+Paste the token here (or type "skip" to skip this step):   checking the token with Telegram...
+  token works — connected to bot: qroky_test_bot
+  token saved on this computer only (never sent anywhere else): ****N123
+
+Step 6 of 7 — daily support sharing (optional)
+Daily support sharing — before asking, here is EXACTLY what would leave this
+computer, in plain words: short progress logs and cost summaries about HOW
+the work went (never WHAT you are building — no code, no specs, no product
+content). You can read the exact list and the script that sends it any time
+at: distribution/README.<lang>.md, section "What leaves this computer".
+Turn daily support sharing on? Yes/no (y/n), default n:   daily support sharing — OFF (nothing is ever sent while this stays off)
+
+Step 7 of 7 — morning digest (optional)
+Morning digest — a short daily message: what got done, what is waiting for
+you. Yes/no now, you can change your mind later. One honest line about how
+it works: it only READS your own workspace to build the summary — it never
+takes actions on its own and never sends anything anywhere except this
+digest to you. Recommended: yes.
+Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed and ON
+
+
+== Setup finished. Nothing failed. ==
+
+Your assistant is ready. To start:
+  1. Open a terminal in: /private/tmp/qroky-install-dry-run.xJFApJ/w1
+  2. Type: claude
+  3. Say: qroky start
+
+That single phrase — "qroky start" — is all you need; it works in any
+language you type it in.
+
+(total elapsed: 0s)
+
+--- exit code: 0 ; elapsed: 0s (budget: 900s / 15min) ---
+
+--- Question inventory check (H2: zero questions outside the interview) ---
+read_answer call sites inside the seven step_* functions: 6
+of those, tagged with # IV-POINT\:<n>\:<name>: 6
+distinct interview points referenced: IV-POINT:1 IV-POINT:2 IV-POINT:3 IV-POINT:4 IV-POINT:5 IV-POINT:6 IV-POINT:7 (closed list is 1..7)
+PASS — every interactive prompt in the interview is accounted for in the closed list of 7.
