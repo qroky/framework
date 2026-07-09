@@ -177,3 +177,105 @@ One-line justification: the product is largely sound, but two hard-criterion pro
 vacuous or false in the committed evidence (H6a kill never happened; H11 3-line
 changelog not delivered), and blind verify cannot accept self-check rows its own
 transcripts refute.
+
+---
+
+# Round 2 — verdict on fix-round 1 (all 8 findings)
+
+ACCEPT
+
+Method this round: re-ran the full harness myself three consecutive times in an
+isolated copy (9/9 PASS every time — committed transcripts untouched, mine match);
+verified every fix against the artifact and transcript, not the claim; specifically
+attacked F1 (kill timing) and F2 (changelog edge cases); independently fault-injected
+the F8 path the executor honestly flagged as unexercised.
+
+## Fix-by-fix verification
+
+- **F1 (was blocking, H6a) — fixed and made non-vacuous.** RUN A now opts INTO
+  Telegram (`y` + GOODTOKEN456, `dry-run.sh` scenario 2) so the delay hook
+  (still after token storage, before the step commit) is deterministically reached;
+  15s window, SIGKILL at t+4s. Crucially, the scenario now HARD-FAILS unless: the kill
+  landed on a live process, post-kill state shows `step_workdir: done` +
+  `step_telegram` NOT done, the rerun exits 0 all-done, AND the language question is
+  not re-asked. Committed transcript line 51 shows "(process 45234 SIGKILLed mid-step,
+  as intended)"; my three re-runs all landed the kill. A slow machine could still miss
+  the window — but the assertion converts that into a loud FAIL, never a vacuous PASS.
+  Cannot silently regress. Verified.
+- **F2 (was blocking, H11) — fixed.** `install.sh:665-667`:
+  `%(contents:body)` + blank-line strip + `head -3`. Committed and my transcripts show
+  all three changelog lines verbatim in the digest; scenario 7 asserts each line
+  individually. My edge probes: subject-only annotated tag → graceful "(see the
+  release for details)" fallback; 1-line body → clean single line. Decisions record
+  and `--show-update-details` switched to `%(contents)` formats. Verified.
+- **F3 — fixed.** PROVENANCE.md added to the vendored checkout's `.git/info/exclude`
+  (`install.sh:312-313`) plus a porcelain filter (`install.sh:692`); scenario 7
+  asserts zero PROVENANCE lines in both conflict displays; conflict now shows
+  `M README.md` only. Verified.
+- **F4 — fixed by making the claim true.** `install.sh:450` now logs
+  `telegram TOKEN-STORED masked=****<last4> file_mode=600`; the harness flipped the
+  masked-line check to REQUIRED; raw-token greps remain all zero (committed transcript
+  and my re-run). Verified.
+- **F5 — fixed.** Scenario 7 now runs the "нет" cancel FIRST, against the genuinely
+  pending v1.0.0→v1.1.0 update, and asserts prompt-reached + cancel message +
+  `framework_tag` still v1.0.0 before the apply block. Verified in committed and my
+  transcripts.
+- **F6 — fixed.** The verbatim 5-item whitelist (STATUS.md / RESULT.md cost figures /
+  run.log timestamps+step names / status.yaml one-liners / VERDICT verdict-line-only)
+  is inlined in `L_TELEMETRY_ASK_OPTIN` in all three languages (5 items in each,
+  parity confirmed: 47 identical L_* functions per file) and in all three READMEs; the
+  dangling repo path is gone; the screen now also states plainly that no sending
+  mechanism is installed today — more honest than round 1. Scenario-1 transcript shows
+  the full list before the question. Verified.
+- **F7 — fixed.** Claude check runs first and visibly succeeds on its own "Step 3"
+  line; vendoring announces itself with its own plain-language line
+  (`L_FRAMEWORK_VENDORING`, 3 languages); git stderr routed to install.log
+  (`install.sh:277-291`); scenario 4 asserts no mis-attribution, zero `^fatal:`/
+  `^error:` on screen, and git details preserved in the log. Committed transcript
+  confirms. Verified.
+- **F8 — fixed, and I exercised the path the executor could not.** `launchctl
+  bootstrap` now runs through `run_with_ladder` inside `_heartbeat_enable_attempt`,
+  degrading to `L_HEARTBEAT_SCHEDULE_FAILED` (installed-but-off + the
+  `--enable-heartbeat` one-liner). The executor honestly noted this path is
+  code-reviewed only (their fake launchctl always succeeds). My fault injection
+  (launchctl stub exiting 1): exactly 2 auto-retries, then the NOTICE + one-liner,
+  install completes exit 0, `step_heartbeat: done`, `answer_heartbeat_optin: no` —
+  behaves precisely as documented. The honest deviation is accepted; the gap is now
+  covered by this verify's own transcript.
+
+## Round-2 findings
+
+### F9 — minor — RESULT.md deviations section, one-word slip
+
+- `RESULT.md` (Deviations, telemetry bullet): "The consent flag
+  (`answer_telegram_optin`)" — should read `answer_telemetry_optin` (the state file
+  and code use the correct key; only this prose names the wrong flag).
+- To pass: one-word correction next time the file is touched. Does not affect any
+  criterion.
+
+## Notes (no action required)
+
+- RESULT.md's Round 2 section is honest to the point of exemplary: it admits both
+  round-1 claims its transcripts refuted, discloses the intermediate 8/9 run where its
+  own new scenario-4 heuristic false-positived, and flags F8's unexercised path
+  unprompted.
+- Recommended (non-blocking) for any future round: add a failing-launchctl scenario so
+  F8's degradation path has a committed transcript of its own.
+- S1 re-checked over all changed strings (jargon grep clean; the new consent screen
+  names artifact filenames like VERDICT.md with plain-word glosses — acceptable).
+
+## Round-2 verdict
+
+ACCEPT. All 8 round-1 findings are genuinely fixed and evidenced by hardened,
+non-vacuous assertions; my independent re-runs (3× 9/9) and edge/fault probes
+(changelog subject-only and 1-line tags; forced launchctl failure) found no new
+defects beyond one documentation typo (F9, minor). H1–H6, H8–H11 all hold on
+re-verification; H7 closes with this verdict; S1/S2 stand as judged in round 1.
+
+Token cost (round 2): ~55k tokens (diff reads + 3 harness re-runs + 4 probes +
+transcript/RESULT verification) — within the ~60k round budget. Cumulative verify
+total: ~160k.
+
+One-line justification: every fix verified against the artifact and transcript rather
+than the claim, the two former blockers are now proven by assertions that cannot pass
+vacuously, and the one residual item is a one-word prose typo.
