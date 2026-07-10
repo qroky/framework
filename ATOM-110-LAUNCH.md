@@ -1,5 +1,16 @@
 # LAUNCH — ATOM-110 (telegram-head-v1: the phone-side voice of the instance)
 
+> AMENDED 2026-07-10 per INFO-033 (CEO final channel model, REPLACES the
+> feed+digest scheme below wherever they conflict): TWO CONTOURS. Dialogue
+> contour — event-driven, instant, bidirectional (user message answered ≤1 min
+> at least with an ack, listener WAKES processing; system events gate/E1/
+> result/overdue dependency delivered the moment they occur). Digest contour —
+> strictly scheduled (profile time, default morning; сделано / в работе /
+> ждёт тебя сегодня / расход; already-signaled events appear as status lines,
+> never as duplicate alarms). Both contours independently configured in the
+> profile (digest time; quiet hours for events). Hard: ack ≤1 min; blocker
+> events instant; digest at profile time ±5 min daily.
+
 > Runtime instruction. Starts on CEO «го» (G1). Accelerated per INFO-032:
 > does NOT wait for tree A closure — builds on a TEST bot token; the only
 > dependency on A is the production token registration step (kit interview
@@ -68,18 +79,40 @@ works from the bot exactly as from a chat window.
 
 ## 3. Mandate (closed decisions — formalize, do not reopen; full text INFO-032)
 
-1. **Composition v1 (closed list):** (a) gates/E1 as inline-button messages
-   with DECISION PARITY — press = record in `decisions/` (hard criterion);
-   (b) NARRATIVE.md feed by profile level; (c) morning digest via heartbeat
-   + the self-update 3-line changelog (INFO-023); (d) «что в работе» from
-   `products/*/status.yaml`; (e) free input → router-formulator with ONE
-   clarifying re-ask before accepting a task; (f) «кроки» gesture works from
-   the bot (message starting with кроки/qroky → skill protocol).
+1. **Channel model v1 — TWO CONTOURS (INFO-033, final, replaces the
+   feed+digest scheme of INFO-017/032):**
+   - **Dialogue contour** — event-driven, instant, bidirectional. User
+     message → answered immediately (listener wakes processing; a complex
+     ask gets an honest «принял, результат к N» — and N is kept: no loss,
+     no silence). System events — **gate / E1 / result / overdue
+     dependency** — go to the user THE MOMENT they occur, sent by the side
+     where the event was born (session or heartbeat) through the shared
+     send helper. Gates/E1 ride this contour as inline-button messages with
+     DECISION PARITY — press = record in `decisions/` (hard criterion).
+     NARRATIVE beats of the profile's detail level ride this contour as
+     result/beat events (open detail, not a G1 blocker: CEO may strike the
+     feed with one word — INFO-033 п.6).
+   - **Digest contour** — strictly scheduled: profile time (default
+     morning), content «сделано / в работе / ждёт тебя сегодня / расход»
+     (+ the self-update 3-line changelog when a release tag is new,
+     INFO-023). An event already signaled by the dialogue contour is NEVER
+     duplicated as an alarm — it appears as a status line.
+   - **Profile configures the contours independently:** digest time; quiet
+     hours for the dialogue contour (night) — events accumulate through
+     quiet hours and deliver when they end, blockers first.
+   - Commands stay: «что в работе»/`/status` from `products/*/status.yaml`;
+     free input → router-formulator with ONE clarifying re-ask; «кроки»
+     gesture works from the bot (message starting with кроки/qroky → skill
+     protocol).
 2. **Delivery physics:** local launchd listener, POLLING only (getUpdates)
-   — no inbound ports, no webhooks, no resident agent daemons. Incoming
-   answers land as files in `decisions/inbox/`; a live session or the next
-   heartbeat picks them up. The asynchrony is honest: nothing pretends to
-   listen continuously.
+   — no inbound ports, no webhooks, no resident agent daemons. The listener
+   stays a plain script, but per INFO-033 it WAKES processing: on an
+   incoming message it (a) sends the instant ack itself, (b) writes the
+   event to `decisions/inbox/`, (c) spawns/triggers the handler; the
+   polling cadence must sustain the ≤1 min ack criterion. The file bus and
+   the closed-session guarantee remain the safety net for when a handler
+   cannot be raised. The asynchrony is honest: nothing pretends to listen
+   continuously.
 3. **Security v1 (instead of 2FA):** chat_id binding — only the owner's
    chat_id is honored; any other chat_id is ignored AND flagged.
    Risk-level HUMAN-TASK confirmations require an EXPLICIT TYPED WORD — no
@@ -111,23 +144,45 @@ works from the bot exactly as from a chat window.
   (simulated session or heartbeat run) consumes it exactly once (no loss,
   no double-execution on re-run). Kill-mid-write also leaves either a
   complete file or none (atomic write via tmp+rename).
-- H3. **Listener physics:** launchd plist, polling interval sane (≥30s),
-  `lsof` in harness shows NO listening ports; offset/state file survives
-  restarts (no replayed old presses); listener is a plain script, not an
-  LLM agent.
+- H3. **Listener physics:** launchd plist, polling only, cadence tight
+  enough to sustain the ≤1 min ack (H13) — the listener itself sends the
+  instant ack, then wakes the handler; `lsof` in harness shows NO listening
+  ports; offset/state file survives restarts (no replayed old presses);
+  listener is a plain script, not an LLM agent (the LLM lives only in the
+  handler it wakes).
 - H4. **chat_id binding:** foreign chat_id message → no action, one flag
   line in the listener log + inbox quarantine entry; harness exercises it.
 - H5. **Risk-word rule:** messages that would confirm a risk-level
   HUMAN-TASK carry NO buttons; the prompt says the explicit word required;
   a button-press-style reply to such an item is rejected and re-asked.
-- H6. **Morning digest:** heartbeat output (incl. «За сутки» and the
-  3-line changelog when a new release tag exists) is delivered as ONE
-  message to the bound chat; heartbeat absent/disabled → no crash, listener
+- H6. **Digest contour (INFO-033):** ONE scheduled message at the profile
+  time (default morning), arriving at that time **±5 min, daily** (harness:
+  simulated clock or launchd StartCalendarInterval assertion); content =
+  «сделано / в работе / ждёт тебя сегодня / расход» (+ 3-line changelog
+  when a new release tag exists, INFO-023); an event already sent by the
+  dialogue contour appears ONLY as a status line — the harness plants a
+  same-day already-signaled gate and asserts no duplicate alarm; heartbeat
+  absent/disabled → digest still ships or degrades loudly, listener
   unaffected.
-- H7. **NARRATIVE feed:** new appended beats of live trees are sent
-  respecting the profile detail level (level from the human profile file;
-  level 1 = gates only, 2 = beats, 3 = full reasoning beats); no re-send of
-  old beats (offset per file).
+- H7. **Dialogue contour events:** system events (gate / E1 / result /
+  overdue dependency) are sent AT THE MOMENT they occur by the side that
+  produced them via the shared send helper — harness: event born with no
+  session running still reaches the chat (heartbeat/handler path) and a
+  BLOCKER event is never held back outside quiet hours. NARRATIVE beats
+  ride this contour per profile detail level (1 = gates only, 2 = beats,
+  3 = full reasoning beats), no re-send of old beats (offset per file);
+  this feed item is an open detail the CEO may strike (INFO-033 п.6).
+- H13. **≤1 min ack (INFO-033 hard):** a user message NEVER waits more than
+  1 minute for at least an acknowledgment; complex asks get the honest
+  «принял, результат к N» and N is kept (the pending-promise is recorded in
+  inbox so a restart cannot silently drop it). Harness proves: message →
+  ack within the polling budget; kill-between-ack-and-result → promise
+  survives and is answered after wake.
+- H14. **Quiet hours:** dialogue-contour events during profile quiet hours
+  (night) are queued, not sent; delivered when quiet hours end, blockers
+  first; digest time and quiet hours configured independently in the
+  profile; user messages still get the ack even in quiet hours (the human
+  initiated the exchange).
 - H8. **/status (or «что в работе»):** renders running/delivered atoms
   from `products/*/status.yaml` in plain language, ≤1 message.
 - H9. **Free input router:** a non-command text produces exactly ONE
@@ -149,8 +204,9 @@ works from the bot exactly as from a chat window.
 **Soft (judge — CEO at G2):**
 - S1. The CEO answers a REAL gate from his phone during the second-Mac test
   and the tree moves without him touching the Mac.
-- S2. Digest and feed read as plain human language on a phone screen (no
-  atom/verify jargon without a gloss).
+- S2. Digest and dialogue-contour messages read as plain human language on
+  a phone screen (no atom/verify jargon without a gloss); «принял,
+  результат к N» feels like a colleague's reply, not a ticket system.
 - S3. The re-ask of the router feels like one smart question, not a form.
 
 **Maturity target:** reviewed; validated on the first real phone-answered gate.
@@ -181,4 +237,7 @@ round-trip. Envelope breach → honest E4.
 ---
 *End of launch file. Formulated 2026-07-10 from INFO-032 (verbatim; tree B
 accelerated ahead of A closure — production-token step is the only A
-dependency and is already delivered in kit v0.1.1).*
+dependency and is already delivered in kit v0.1.1); amended same day per
+INFO-033 (final two-contour channel model: dialogue contour instant/
+bidirectional with ≤1 min ack, digest contour scheduled ±5 min, independent
+profile settings, quiet hours).*
