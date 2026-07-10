@@ -42,8 +42,11 @@ mkdir -p "$ROOT/decisions" "$ROOT/products/demo-product" "$TGH" "$BIN" "$FAKE"
 TEST_TOKEN="7777001234:TEST-SECRET-cafebabe-DO-NOT-LEAK"
 printf '%s\n' "$TEST_TOKEN" > "$TGH/.token"; chmod 600 "$TGH/.token"
 
+# DIGEST_TIME is 21:00 — LATER than the pinned harness clock (12:00), so the
+# listener's M4 digest safety net stays quiet through scenarios 1-11 and is
+# exercised deliberately in scenario 13.
 cat > "$TGH/profile.conf" <<EOF
-DIGEST_TIME="09:05"
+DIGEST_TIME="21:00"
 QUIET_START="23:00"
 QUIET_END="08:00"
 DETAIL_LEVEL="2"
@@ -94,6 +97,18 @@ UPDATE_SEQ="$FAKE/seq"; printf '100' > "$UPDATE_SEQ"
 cat > "$BIN/curl" <<EOF
 #!/usr/bin/env bash
 # fake curl — Telegram Bot API stub (dry-run only). No network, no ports.
+# Forced-failure hook (M5 scenario): while fail-remaining > 0, behave like a
+# real curl connection error — non-zero exit and a stderr line that DOES
+# contain the token-bearing URL, exactly the leak surface the masking must
+# scrub.
+if [[ -f "$FAKE/fail-remaining" ]]; then
+  n="\$(cat "$FAKE/fail-remaining")"
+  if [[ "\$n" -gt 0 ]]; then
+    echo \$((n-1)) > "$FAKE/fail-remaining"
+    echo "curl: (6) Could not resolve host: api.telegram.org (dry-run forced failure); request: \$*" >&2
+    exit 6
+  fi
+fi
 exec /usr/bin/python3 "$BIN/fake-api.py" "$FAKE" "$TGH/.token" "\$@"
 EOF
 chmod +x "$BIN/curl"
@@ -130,6 +145,20 @@ if method == "getUpdates":
         if u["update_id"] >= offset: out.append(u)
     print(json.dumps({"ok": True, "result": out}, ensure_ascii=False))
 else:
+    # Model the REAL Bot API's 64-BYTE callback_data cap (verify M1): an
+    # oversized button is rejected and NOT recorded — code truncating by
+    # characters instead of bytes fails loudly here.
+    if method == "sendMessage" and params.get("reply_markup"):
+        try:
+            rm = json.loads(params["reply_markup"])
+        except ValueError:
+            rm = {}
+        for row in rm.get("inline_keyboard", []):
+            for btn in row:
+                if len(btn.get("callback_data", "").encode("utf-8")) > 64:
+                    print(json.dumps({"ok": False, "error_code": 400,
+                                      "description": "Bad Request: BUTTON_DATA_INVALID"}))
+                    sys.exit(0)
     entry = {"method": method}; entry.update(params)
     with open(os.path.join(fake, "sent.jsonl"), "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
@@ -197,7 +226,7 @@ B0=$(sent_count)
 bash "$TG_DIR/send-event.sh" --kind gate --id GATE-T1 --text "$GATE_Q" --buttons "Да, принять|Вернуть" >> "$T" 2>&1
 GATE_SENT=$(sent_since "$B0" | grep -c '"reply_markup"' || true)
 PENDING_HAS_Q=$(grep -cF "принять план дерева demo" "$TGH/state/pending-gates/GATE-T1" 2>/dev/null || true)
-add_callback "$OWNER_CHAT" "GATE-T1|Да, принять"
+add_callback "$OWNER_CHAT" "GATE-T1|1"   # index format (M1); button1 = «Да, принять»
 B1=$(sent_count)
 listener >> "$T" 2>&1
 ACKED=$(sent_since "$B1" | grep -c "Принял: «Да, принять»" || true)
@@ -241,7 +270,7 @@ T="$ATOM_WS/scenario-2-closed-session.txt"
 { echo "Scenario 2 — the mandated DoD scenario (H2)"; echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"; } > "$T"
 GATE_Q2="Гейт GATE-T2: конверт исчерпан на 90% — поднять на 100k?"
 bash "$TG_DIR/send-event.sh" --kind gate --id GATE-T2 --text "$GATE_Q2" --buttons "Поднять|Стоп" >> "$T" 2>&1
-add_callback "$OWNER_CHAT" "GATE-T2|Поднять"
+add_callback "$OWNER_CHAT" "GATE-T2|1"   # button1 = «Поднять»
 listener >> "$T" 2>&1        # NO session runs; QROKY_TEST_NO_WAKE=1 = nothing picks up
 PERSISTED=$(ls "$INBOX"/*-gate-answer-GATE-T2.md 2>/dev/null | wc -l | tr -d ' ')
 { echo "press persisted while NO session runs: $PERSISTED file(s) in inbox"; } >> "$T"
@@ -255,7 +284,7 @@ SECOND_NOOP=$(grep -c "pass done, consumed=0" "$TGH/telegram.log" || true)
 # kill-mid-write: delay between tmp and rename, SIGKILL inside the window
 GATE_Q3="Гейт GATE-T3: kill-window проверка"
 bash "$TG_DIR/send-event.sh" --kind gate --id GATE-T3 --text "$GATE_Q3" --buttons "Ок|Нет" >> "$T" 2>&1
-add_callback "$OWNER_CHAT" "GATE-T3|Ок"
+add_callback "$OWNER_CHAT" "GATE-T3|1"   # button1 = «Ок»
 OFFSET_BEFORE=$(cat "$TGH/state/offset")
 QROKY_TEST_DELAY_INBOX=6 bash "$TG_DIR/listener.sh" >> "$T" 2>&1 &
 LPID=$!
@@ -268,9 +297,14 @@ wait "$LPID" 2>/dev/null
 PARTIAL=$(ls "$INBOX"/*-gate-answer-GATE-T3.md 2>/dev/null | wc -l | tr -d ' ')
 TMP_LEFT=$(ls "$INBOX"/.tmp.* 2>/dev/null | wc -l | tr -d ' ')
 OFFSET_AFTER_KILL=$(cat "$TGH/state/offset")
-rm -f "$INBOX"/.tmp.* ; rmdir "$TGH/state/listener.lock" 2>/dev/null
+LOCK_LEFT=0; [[ -d "$TGH/state/listener.lock" ]] && LOCK_LEFT=1
+rm -f "$INBOX"/.tmp.*
+# M2: do NOT clean the crashed pass's lock — the NEXT pass must detect the
+# dead holder itself and steal the lock immediately (no minutes-long blind
+# window after an abnormal listener death).
 listener >> "$T" 2>&1        # re-delivery pass (offset was not advanced)
 REDELIVERED=$(ls "$INBOX"/*-gate-answer-GATE-T3.md 2>/dev/null | wc -l | tr -d ' ')
+STALE_STOLEN=$(grep -c "stale lock removed" "$TGH/telegram.log" || true)
 {
   echo ""; echo "--- assertions ---"
   echo "record rendered after two wakes: $REC2 (must be 1 — exactly once)"
@@ -278,14 +312,17 @@ REDELIVERED=$(ls "$INBOX"/*-gate-answer-GATE-T3.md 2>/dev/null | wc -l | tr -d '
   echo "kill landed inside the tmp->rename window: $KILLED (must be 1 — otherwise the scenario is vacuous)"
   echo "complete-or-nothing: complete files after kill = $PARTIAL (0), tmp remnant = $TMP_LEFT (1, proves the window)"
   echo "offset NOT advanced by the killed pass: $OFFSET_BEFORE -> $OFFSET_AFTER_KILL (must be equal)"
-  echo "re-delivery on next pass persisted the press: $REDELIVERED (must be 1 — no loss)"
+  echo "SIGKILL left the lock behind: $LOCK_LEFT (must be 1 — otherwise the stale-lock check below is vacuous)"
+  echo "next pass stole the dead holder's lock immediately (M2): $STALE_STOLEN stale-lock log line(s) (must be >0)"
+  echo "re-delivery on next pass persisted the press: $REDELIVERED (must be 1 — no loss, no blind window)"
 } >> "$T"
 if [[ "$PERSISTED" -eq 1 && "$REC2" -eq 1 && "$LEFT" -eq 0 && "$DONE2" -eq 1 && $SECOND_NOOP -gt 0 \
-      && $KILLED -eq 1 && "$PARTIAL" -eq 0 && "$TMP_LEFT" -eq 1 \
+      && $KILLED -eq 1 && "$PARTIAL" -eq 0 && "$TMP_LEFT" -eq 1 && $LOCK_LEFT -eq 1 \
+      && "$STALE_STOLEN" -gt 0 \
       && "$OFFSET_BEFORE" == "$OFFSET_AFTER_KILL" && "$REDELIVERED" -eq 1 ]]; then
-  record "2-closed-session" PASS "press with no session persisted; consumed exactly once across two wakes; SIGKILL inside the write window left complete-or-nothing and the press was re-delivered, not lost"
+  record "2-closed-session" PASS "press with no session persisted; consumed exactly once across two wakes; SIGKILL inside the write window left complete-or-nothing; crashed pass's lock stolen IMMEDIATELY by the next pass (M2) and the press re-delivered, not lost"
 else
-  record "2-closed-session" FAIL "persisted=$PERSISTED rec=$REC2 left=$LEFT done=$DONE2 noop=$SECOND_NOOP killed=$KILLED partial=$PARTIAL tmp=$TMP_LEFT offset=$OFFSET_BEFORE/$OFFSET_AFTER_KILL redeliver=$REDELIVERED"
+  record "2-closed-session" FAIL "persisted=$PERSISTED rec=$REC2 left=$LEFT done=$DONE2 noop=$SECOND_NOOP killed=$KILLED partial=$PARTIAL tmp=$TMP_LEFT lock=$LOCK_LEFT stale=$STALE_STOLEN offset=$OFFSET_BEFORE/$OFFSET_AFTER_KILL redeliver=$REDELIVERED"
 fi
 bash "$TG_DIR/pickup.sh" >> "$T" 2>&1   # drain T3 so later scenarios start clean
 
@@ -318,10 +355,10 @@ WEEKDAY=$(grep -c '<key>Weekday</key>' "$SB/plists/md.qroky.telegram.digest.plis
   echo "restart with no updates re-sent nothing: $B3 -> $B3B sends (must be equal — offset survived)"
   echo "offset file: $OFFSET_NOW, last issued update_id: $MAX_UPDATE (must be equal)"
   echo "listener cadence in plist: ${INTERVAL}s (must be 30 — sustains the <=1 min ack)"
-  echo "digest plist time: $DHOUR:$DMIN (profile 09:05 -> must be 9:5), Weekday keys: $WEEKDAY (0 = daily)"
+  echo "digest plist time: $DHOUR:$DMIN (profile 21:00 -> must be 21:0), Weekday keys: $WEEKDAY (0 = daily)"
 } >> "$T"
 if [[ $ALIVE -eq 1 && -z "$PORTS" && "$B3" == "$B3B" && "$OFFSET_NOW" == "$MAX_UPDATE" \
-      && "$INTERVAL" == "30" && "$DHOUR" == "9" && "$DMIN" == "5" && "$WEEKDAY" -eq 0 ]]; then
+      && "$INTERVAL" == "30" && "$DHOUR" == "21" && "$DMIN" == "0" && "$WEEKDAY" -eq 0 ]]; then
   record "3-physics" PASS "no listening ports on a live pass; restart replays nothing (offset survives); cadence 30s; digest calendar = profile time, daily"
 else
   record "3-physics" FAIL "alive=$ALIVE ports=$([[ -n "$PORTS" ]] && echo YES || echo no) resend=$B3/$B3B offset=$OFFSET_NOW/$MAX_UPDATE interval=$INTERVAL digest=$DHOUR:$DMIN weekday=$WEEKDAY"
@@ -364,7 +401,7 @@ bash "$TG_DIR/send-event.sh" --kind gate --id GATE-RISK --risk --buttons "Да|�
 RISK_MSG="$(sent_since "$B5")"
 RISK_BUTTONS=$(printf '%s' "$RISK_MSG" | grep -c '"reply_markup"' || true)
 RISK_WORD_NAMED=$(printf '%s' "$RISK_MSG" | grep -c "ПОДТВЕРЖДАЮ" || true)
-add_callback "$OWNER_CHAT" "GATE-RISK|Да"     # button-style reply -> must be rejected
+add_callback "$OWNER_CHAT" "GATE-RISK|1"      # button-style reply -> must be rejected
 B5B=$(sent_count)
 listener >> "$T" 2>&1
 REJECTED=$(sent_since "$B5B" | grep -c "кнопкой его принять нельзя" || true)
@@ -646,6 +683,132 @@ if [[ $AUTH_USED -eq 1 && "$SENT_NONEMPTY" -gt 0 && "$LEAKS" -eq 0 && "$COMMITTE
   record "11-secrets" PASS "token flowed through every API call (stub-verified) yet appears nowhere: log, state, records, sent payloads, committed files, transcripts all clean"
 else
   record "11-secrets" FAIL "used=$AUTH_USED sent=$SENT_NONEMPTY leaks=$LEAKS committed=$COMMITTED_LEAKS transcripts=$TRANSCRIPT_LEAKS"
+fi
+
+# ============================================================================
+# SCENARIO 12 — M1: long button label — 64-BYTE callback_data cap, verbatim
+# label resolved from the registry. The stub now models the real API's
+# rejection, so the pre-fix chars-truncation code CANNOT pass this scenario.
+# ============================================================================
+T="$ATOM_WS/scenario-12-long-label.txt"
+{ echo "Scenario 12 — long-label gate (verify M1)"; echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"; } > "$T"
+LONG_LABEL="Вернуть на доработку с подробным комментарием по всем пунктам замечаний"
+OLD_CD_BYTES=$(printf '%s' "GATE-LL|$LONG_LABEL" | wc -c | tr -d ' ')
+# the stub's cap enforcement is itself proven live: an oversized callback_data
+# sent directly must come back rejected and unrecorded
+B12A=$(sent_count)
+BAD_RESP="$(curl -sS "https://api.telegram.org/bot$TEST_TOKEN/sendMessage" \
+  --data-urlencode "chat_id=1" --data-urlencode "text=probe" \
+  --data-urlencode "reply_markup={\"inline_keyboard\":[[{\"text\":\"x\",\"callback_data\":\"GATE-LL|$LONG_LABEL\"}]]}" 2>/dev/null)"
+STUB_REJECTS=$(printf '%s' "$BAD_RESP" | grep -c "BUTTON_DATA_INVALID" || true)
+STUB_RECORDED=$(( $(sent_count) - B12A ))
+B12=$(sent_count)
+bash "$TG_DIR/send-event.sh" --kind gate --id GATE-LL \
+  --text "Гейт GATE-LL: проверка длинных кнопок." --buttons "Принять|$LONG_LABEL" >> "$T" 2>&1
+SENT12=$(sent_since "$B12" | grep -c '"reply_markup"' || true)
+CD_STATS="$(sent_since "$B12" | /usr/bin/python3 -c '
+import sys, json
+max_cd = 0; label_ok = 0; want = sys.argv[1]
+for line in sys.stdin:
+    e = json.loads(line)
+    if "reply_markup" not in e: continue
+    for row in json.loads(e["reply_markup"]).get("inline_keyboard", []):
+        for b in row:
+            max_cd = max(max_cd, len(b["callback_data"].encode("utf-8")))
+            if b["text"] == want: label_ok = 1
+print(f"{max_cd} {label_ok}")' "$LONG_LABEL")"
+MAX_CD_BYTES="${CD_STATS%% *}"; LABEL_INTACT="${CD_STATS##* }"
+add_callback "$OWNER_CHAT" "GATE-LL|2"      # press the LONG button by index
+listener >> "$T" 2>&1
+LL_FILE=$(ls "$INBOX"/*-gate-answer-GATE-LL.md 2>/dev/null | head -1)
+LL_VERBATIM=0; [[ -n "$LL_FILE" ]] && grep -qF "answer: $LONG_LABEL" "$LL_FILE" && LL_VERBATIM=1
+bash "$TG_DIR/pickup.sh" >> "$T" 2>&1
+LL_REC=0; grep -qF "> $LONG_LABEL" "$ROOT/decisions/GATE-LL-decision.md" 2>/dev/null && LL_REC=1
+{
+  echo ""; echo "--- assertions ---"
+  echo "old label-in-callback_data scheme would need $OLD_CD_BYTES bytes (must be >64 — the scenario genuinely discriminates)"
+  echo "stub rejects oversized callback_data live: $STUB_REJECTS (must be 1), recorded by stub: $STUB_RECORDED (must be 0)"
+  echo "long-label gate sent with buttons: $SENT12 (must be 1 — no rejection, no queue loop)"
+  echo "max callback_data bytes actually sent: $MAX_CD_BYTES (must be <=64 and >0); full label intact as button text: $LABEL_INTACT (must be 1)"
+  echo "press by index -> recorded answer is the FULL label verbatim: $LL_VERBATIM; decision record carries it: $LL_REC"
+} >> "$T"
+if [[ "$OLD_CD_BYTES" -gt 64 && "$STUB_REJECTS" -eq 1 && "$STUB_RECORDED" -eq 0 \
+      && "$SENT12" -eq 1 && "$MAX_CD_BYTES" -le 64 && "$MAX_CD_BYTES" -gt 0 \
+      && "$LABEL_INTACT" -eq 1 && $LL_VERBATIM -eq 1 && $LL_REC -eq 1 ]]; then
+  record "12-long-label" PASS "111-byte-class label rides as button text; callback_data <=64 bytes (stub enforces the real API cap and its rejection was proven live); recorded answer = full label verbatim via registry resolution"
+else
+  record "12-long-label" FAIL "old=$OLD_CD_BYTES stub=$STUB_REJECTS/$STUB_RECORDED sent=$SENT12 maxcd=$MAX_CD_BYTES label=$LABEL_INTACT verbatim=$LL_VERBATIM rec=$LL_REC"
+fi
+
+# ============================================================================
+# SCENARIO 13 — M4: digest safety net — a missed/failed daily fire is retried
+# by the listener pass; before DIGEST_TIME nothing fires. + M6: no
+# contradictory «решений не ждём» next to real waiting items.
+# ============================================================================
+T="$ATOM_WS/scenario-13-digest-retry.txt"
+{ echo "Scenario 13 — digest safety net (verify M4) + section coherence (M6)"; echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"; } > "$T"
+rm -f "$TGH/state/digest-sent-"*        # simulate: today's fire was missed
+for g in "$TGH/state/pending-gates"/*; do   # M6 setup: waiting atoms, NO pending gates
+  [[ -f "$g" && "$g" != *.answered ]] && mv "$g" "$g.answered"
+done
+B13=$(sent_count)
+QROKY_TEST_NOW_HM="20:00" bash "$TG_DIR/listener.sh" >> "$T" 2>&1   # BEFORE digest time
+EARLY_SENT=$(( $(sent_count) - B13 ))
+EARLY_MARKER=0; ls "$TGH/state/digest-sent-"* >/dev/null 2>&1 && EARLY_MARKER=1
+B13B=$(sent_count)
+QROKY_TEST_NOW_HM="21:30" bash "$TG_DIR/listener.sh" >> "$T" 2>&1   # AFTER digest time
+RETRY_DIGEST="$(sent_since "$B13B")"
+RETRIED=$(printf '%s' "$RETRY_DIGEST" | grep -c "Дайджест за" || true)
+MARKER_AFTER=0; ls "$TGH/state/digest-sent-"* >/dev/null 2>&1 && MARKER_AFTER=1
+NET_LOG=$(grep -c "digest for today missing past" "$TGH/telegram.log" || true)
+HAS_WAITING=$(printf '%s' "$RETRY_DIGEST" | grep -c "ATOM-D3" || true)
+CONTRADICTION=$(printf '%s' "$RETRY_DIGEST" | grep -c "решений не ждём" || true)
+{
+  echo ""; echo "--- assertions ---"
+  echo "pass BEFORE digest time fired nothing: $EARLY_SENT sends (0), marker: $EARLY_MARKER (0)"
+  echo "pass AFTER digest time delivered the missed digest: $RETRIED (must be 1), marker restored: $MARKER_AFTER (1), safety-net log line: $NET_LOG (>0)"
+  echo "M6: waiting atom listed: $HAS_WAITING (>0) with NO contradictory «решений не ждём»: $CONTRADICTION (must be 0)"
+} >> "$T"
+if [[ "$EARLY_SENT" -eq 0 && $EARLY_MARKER -eq 0 && "$RETRIED" -eq 1 && $MARKER_AFTER -eq 1 \
+      && "$NET_LOG" -gt 0 && "$HAS_WAITING" -gt 0 && "$CONTRADICTION" -eq 0 ]]; then
+  record "13-digest-retry" PASS "missed daily fire recovered by the next listener pass after DIGEST_TIME (nothing before it); waiting section coherent — no «решений не ждём» beside real waiting items"
+else
+  record "13-digest-retry" FAIL "early=$EARLY_SENT/$EARLY_MARKER retried=$RETRIED marker=$MARKER_AFTER log=$NET_LOG wait=$HAS_WAITING contradiction=$CONTRADICTION"
+fi
+
+# ============================================================================
+# SCENARIO 14 — M5: token-bearing curl stderr is masked before it reaches the
+# log; the failure ladder queues the event and the next pass delivers it.
+# ============================================================================
+T="$ATOM_WS/scenario-14-masked-error.txt"
+{ echo "Scenario 14 — masked curl errors (verify M5) + failure ladder to queue"; echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"; } > "$T"
+LAST4="${TEST_TOKEN: -4}"
+printf '3' > "$FAKE/fail-remaining"      # 1 try + 2 retries, ALL fail
+B14=$(sent_count)
+bash "$TG_DIR/send-event.sh" --kind info --id FAIL-TEST --text "Тест сетевой деградации." >> "$T" 2>&1
+FAILED_SENDS=$(( $(sent_count) - B14 ))
+QUEUED14=$(ls "$TGH/state/queue"/*FAIL-TEST.ev 2>/dev/null | wc -l | tr -d ' ')
+MASKED=$(grep -c "bot\*\*\*\*$LAST4" "$TGH/telegram.log" || true)
+RAW_IN_LOG=$(grep -c "TEST-SECRET" "$TGH/telegram.log" || true)
+GAVE_UP=$(grep -c "GAVE UP after 2 retries" "$TGH/telegram.log" || true)
+B14B=$(sent_count)
+listener >> "$T" 2>&1                    # fail-remaining exhausted -> flush delivers
+DELIVERED14=$(sent_since "$B14B" | grep -c "Тест сетевой деградации" || true)
+# final sweep: raw token over the log and ALL transcripts written so far
+TRANSCRIPT_RAW=$(grep -rl "TEST-SECRET" "$ATOM_WS" 2>/dev/null | grep -cv "scenario-1[14]" || true)
+{
+  echo ""; echo "--- assertions ---"
+  echo "all 3 attempts failed (nothing sent): $FAILED_SENDS (0); event queued, not lost: $QUEUED14 (1); ladder gave up after 2 retries: $GAVE_UP (>0)"
+  echo "curl stderr CONTAINED the token-bearing URL (forced); masked bot****$LAST4 lines in log: $MASKED (must be >=3 — one per attempt, proves stderr flowed through the scrub)"
+  echo "raw token in telegram.log: $RAW_IN_LOG (must be 0)"
+  echo "next pass delivered the queued event: $DELIVERED14 (must be 1)"
+  echo "raw token across all committed transcripts: $TRANSCRIPT_RAW (must be 0)"
+} >> "$T"
+if [[ "$FAILED_SENDS" -eq 0 && "$QUEUED14" -eq 1 && "$GAVE_UP" -gt 0 && "$MASKED" -ge 3 \
+      && "$RAW_IN_LOG" -eq 0 && "$DELIVERED14" -eq 1 && "$TRANSCRIPT_RAW" -eq 0 ]]; then
+  record "14-masked-error" PASS "forced token-bearing curl errors x3: every log line masked to bot****$LAST4, zero raw-token traces; ladder queued the event and the next pass delivered it"
+else
+  record "14-masked-error" FAIL "failed=$FAILED_SENDS queued=$QUEUED14 gaveup=$GAVE_UP masked=$MASKED raw=$RAW_IN_LOG delivered=$DELIVERED14 transcripts=$TRANSCRIPT_RAW"
 fi
 
 # ============================================================================

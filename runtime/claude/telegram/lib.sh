@@ -57,17 +57,22 @@ tg_token() { # token from file path ONLY; never echoed into any log
 }
 
 tg_api() { # tg_api <component> <method> [--data-urlencode k=v ...] -> body
-  # curl only; the URL (which contains the token) is never logged.
+  # curl only. The token-bearing URL is NEVER logged: curl's stderr (which
+  # can echo the URL on connection errors) is captured and the token masked
+  # to bot****<last4> before any of it reaches the log (verify M5).
   local component="$1" method="$2"; shift 2
   local token; token="$(tg_token "$component")"
-  local body="" rc=0 attempt
+  local body="" rc=0 attempt err errfile="$STATE_DIR/.curl-err.$$"
   for attempt in 1 2 3; do            # 1 try + max 2 auto-retries (ladder)
-    body="$(curl -sS --max-time 20 "$API_BASE/bot$token/$method" "$@" 2>>"$LOG_FILE")" && rc=0 || rc=$?
+    body="$(curl -sS --max-time 20 "$API_BASE/bot$token/$method" "$@" 2>"$errfile")" && rc=0 || rc=$?
     if [[ $rc -eq 0 ]] && printf '%s' "$body" | grep -q '"ok"[[:space:]]*:[[:space:]]*true'; then
-      printf '%s' "$body"; return 0
+      rm -f "$errfile"; printf '%s' "$body"; return 0
     fi
-    log "$component" "api $method attempt $attempt failed rc=$rc"
+    err="$(cat "$errfile" 2>/dev/null || true)"
+    err="${err//"$token"/bot****${token: -4}}"   # mask — never the raw token
+    log "$component" "api $method attempt $attempt failed rc=$rc${err:+ err: ${err//$'\n'/ | }}"
   done
+  rm -f "$errfile"
   log "$component" "api $method GAVE UP after 2 retries — check network and the token file at $TOKEN_FILE"
   return 1
 }

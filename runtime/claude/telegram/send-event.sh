@@ -44,31 +44,50 @@ deliver() { # actually send one event (quiet hours already cleared)
   local chat; chat="$(bound_chat_id)"
   [[ -n "$chat" ]] || { log send-event "no bound chat_id — event $ID queued; run install.sh --bind first"; queue_event; return 0; }
 
-  local text="$TEXT" markup=""
+  local text="$TEXT" markup="" btn_lines=""
   if [[ "$RISK" == "1" ]]; then
     # H5: no buttons for risk-level HUMAN-TASKs — explicit typed word only.
     [[ -n "$BUTTONS" ]] && log send-event "risk item $ID: buttons refused by rule"
     markup=""
     text+=$'\n\n'"Это действие риск-уровня: кнопки не предлагаются. Чтобы подтвердить, набери слово $RISK_WORD (именно текстом)."
   elif [[ -n "$BUTTONS" ]]; then
-    markup="$(py - "$ID" "$BUTTONS" <<'PYEOF'
+    # callback_data = "<event-id>|<button-index>" — Telegram caps callback_data
+    # at 64 BYTES; labels of any length ride as button TEXT only and are
+    # resolved back from the pending-gates registry at press time (verbatim by
+    # construction — verify finding M1). An id too long for the 64-byte cap is
+    # a CALLER error and fails loudly right here, never a silent retry loop.
+    local btn_out
+    if ! btn_out="$(py - "$ID" "$BUTTONS" <<'PYEOF'
 import sys, json
 ev_id, raw = sys.argv[1], sys.argv[2]
-rows = [[{"text": b.strip(), "callback_data": f"{ev_id}|{b.strip()}"[:64]}]
-        for b in raw.split("|") if b.strip()]
+labels = [b.strip() for b in raw.split("|") if b.strip()]
+rows, lines = [], []
+for i, b in enumerate(labels, 1):
+    cd = f"{ev_id}|{i}"
+    if len(cd.encode("utf-8")) > 64:
+        sys.exit(3)
+    rows.append([{"text": b, "callback_data": cd}])
+    lines.append(f"button{i}: {b}")
 print(json.dumps({"inline_keyboard": rows}, ensure_ascii=False))
+print("\n".join(lines))
 PYEOF
-)"
+)"; then
+      fatal send-event "event id '$ID' is too long for button callback_data (Telegram 64-byte cap) — shorten the id; the event was NOT sent and NOT queued"
+    fi
+    markup="$(printf '%s\n' "$btn_out" | head -1)"
+    btn_lines="$(printf '%s\n' "$btn_out" | tail -n +2)"
   fi
 
-  # Persist the full question AS SENT for parity records BEFORE sending
-  # (H1): a crash after send still finds the question on disk at pickup
-  # time; risk items store the augmented text — exactly what the human saw.
+  # Persist the full question AS SENT — and the button labels for press-time
+  # resolution — for parity records BEFORE sending (H1): a crash after send
+  # still finds everything on disk at pickup time; risk items store the
+  # augmented text — exactly what the human saw.
   if [[ "$KIND" == "gate" || "$KIND" == "e1" ]]; then
     atomic_write "$STATE_DIR/pending-gates/$ID" <<EOF
 risk: $RISK
 sent: $(date -u +%Y-%m-%dT%H:%M:%SZ)
----
+${btn_lines:+$btn_lines
+}---
 $text
 EOF
   fi

@@ -22,19 +22,28 @@ set -euo pipefail
 require_python listener
 
 # ---- overlap guard: second concurrent pass exits quietly (run-twice answer) --
+# A crashed pass (SIGKILL — no trap runs) must not blind the next ones
+# (verify finding M2): the lock carries the holder's PID, and a dead holder
+# is stolen IMMEDIATELY — so the worst crash window without acks is one 30s
+# cadence, not minutes. A lock without a pid yet (holder died between mkdir
+# and the pid write) falls back to a 2-minute mtime bound.
 LOCK_DIR="$STATE_DIR/listener.lock"
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
-  # steal only a stale lock (dead pass), never a live one
-  if [[ -n "$(find "$LOCK_DIR" -maxdepth 0 -mmin +5 2>/dev/null)" ]]; then
-    log listener "stale lock (>5 min) removed"
-    rmdir "$LOCK_DIR" 2>/dev/null || true
-    mkdir "$LOCK_DIR" 2>/dev/null || { log listener "pass skipped: lock re-taken"; exit 0; }
-  else
-    log listener "pass skipped: another pass is running"
+  HOLDER="$(cat "$LOCK_DIR/pid" 2>/dev/null || true)"
+  if [[ -n "$HOLDER" ]] && kill -0 "$HOLDER" 2>/dev/null; then
+    log listener "pass skipped: another pass is running (pid $HOLDER)"
     exit 0
   fi
+  if [[ -z "$HOLDER" ]] && [[ -z "$(find "$LOCK_DIR" -maxdepth 0 -mmin +2 2>/dev/null)" ]]; then
+    log listener "pass skipped: young lock without pid yet"
+    exit 0
+  fi
+  log listener "stale lock removed (holder ${HOLDER:-unknown} is dead)"
+  rm -rf "$LOCK_DIR"
+  mkdir "$LOCK_DIR" 2>/dev/null || { log listener "pass skipped: lock re-taken"; exit 0; }
 fi
-trap 'rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
+printf '%s' "$$" > "$LOCK_DIR/pid"
+trap 'rm -rf "$LOCK_DIR" 2>/dev/null || true' EXIT
 
 OFFSET_FILE="$STATE_DIR/offset"
 OFFSET=0; [[ -f "$OFFSET_FILE" ]] && OFFSET="$(cat "$OFFSET_FILE")"
@@ -46,7 +55,7 @@ BODY="$(tg_api listener getUpdates --data-urlencode "offset=$((OFFSET + 1))" --d
 
 # ---- parse to shell-sourceable spool files (python = parser, not agent) -----
 SPOOL="$(mktemp -d "$STATE_DIR/.spool.XXXXXX")"
-trap 'rm -rf "$SPOOL"; rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
+trap 'rm -rf "$SPOOL"; rm -rf "$LOCK_DIR" 2>/dev/null || true' EXIT
 printf '%s' "$BODY" > "$SPOOL/body.json"
 py - "$SPOOL" <<'PYEOF'
 import sys, json, shlex, os
@@ -86,10 +95,13 @@ pending_risk_ids() { # gate ids awaiting the explicit word
 }
 
 handle_callback() { # button press → parity event or risk re-ask
-  local id label
-  id="${CB_DATA%%|*}"; label="${CB_DATA#*|}"
-  if [[ -f "$STATE_DIR/pending-gates/$id" ]] \
-     && head -1 "$STATE_DIR/pending-gates/$id" | grep -q '^risk: 1'; then
+  # callback_data is "<event-id>|<button-index>" (verify M1: 64-byte cap) —
+  # the verbatim label is resolved from the pending-gates registry, so the
+  # recorded answer is EXACTLY what the button displayed, at any length.
+  local id idx label pfile
+  id="${CB_DATA%%|*}"; idx="${CB_DATA#*|}"
+  pfile="$STATE_DIR/pending-gates/$id"
+  if [[ -f "$pfile" ]] && head -1 "$pfile" | grep -q '^risk: 1'; then
     # H5: button-press-style reply to a risk item → rejected and re-asked
     tg_api listener answerCallbackQuery --data-urlencode "callback_query_id=$CB_ID" >/dev/null || true
     ack "$CHAT_ID" "Это подтверждение риск-уровня — кнопкой его принять нельзя. Набери слово $RISK_WORD текстом."
@@ -97,6 +109,12 @@ handle_callback() { # button press → parity event or risk re-ask
     return 0
   fi
   tg_api listener answerCallbackQuery --data-urlencode "callback_query_id=$CB_ID" >/dev/null || true
+  label="$(sed -n "s/^button$idx: //p" "$pfile" 2>/dev/null | head -1)"
+  if [[ -z "$label" ]]; then
+    ack "$CHAT_ID" "Не нашёл этот вопрос — возможно, он уже закрыт. Если он всё ещё ждёт решения, напиши ответ текстом."
+    log listener "callback for unknown gate/button id=$id idx=$idx — no record made"
+    return 0
+  fi
   inbox_write gate-answer "$id" >/dev/null <<EOF
 kind: gate-answer
 gate: $id
@@ -230,6 +248,16 @@ fi
 
 # ---- quiet-hours queue: flush when the window has ended (H14) ---------------
 "$TG_LIB_DIR/send-event.sh" --flush-queue || log listener "queue flush failed — retry next pass"
+
+# ---- digest safety net (verify M4): a failed or missed daily fire must not --
+# cost the whole day. If today's sent-marker is absent past DIGEST_TIME (send
+# failed at fire time, or the Mac slept through it), retry from this pass —
+# digest.sh's own marker keeps this idempotent, so at most one digest a day.
+if [[ ! -f "$STATE_DIR/digest-sent-$(date +%Y-%m-%d)" ]] && [[ "$(now_hm)" > "$DIGEST_TIME" ]]; then
+  log listener "digest for today missing past $DIGEST_TIME — safety-net retry"
+  bash "$TG_LIB_DIR/digest.sh" >> "$LOG_FILE" 2>&1 \
+    || log listener "digest safety-net retry failed — next pass retries"
+fi
 
 # ---- wake the handler (the LLM side) for anything that needs thinking -------
 if [[ $NEED_WAKE -eq 1 && -z "${QROKY_TEST_NO_WAKE:-}" ]]; then

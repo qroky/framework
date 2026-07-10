@@ -199,3 +199,62 @@ BUDGET CHECKPOINT (end): ~140k estimated this run (inputs ~35k + build ~55k +
 2026-07-10T14:10:00Z CYCLE-END ATOM-110 executor; RESULT.md filed; STATUS.md
 appended; NARRATIVE.md closing beat written; handoff to blind verify (L, code
 + harness, mandated scenario exercised).
+
+## Fix round — after blind verify ACCEPT r1 (VERDICT.md: 0 blocking, 6 minor)
+
+2026-07-10T14:25:00Z fix round opened per coordinator instruction; budget ~50k.
+All six findings accepted as valid. Per finding:
+- M1 (send-event.sh): callback_data = "<id>|<button-index>" (64-BYTE cap
+  checked in bytes at build time; an oversized ID fails LOUDLY, never queues);
+  button labels persisted as buttonN: lines in state/pending-gates/<id>;
+  listener resolves the verbatim label from the registry at press time —
+  verbatim is now exact by construction at any label length. Unknown
+  gate/button press → polite reply + log, no record.
+- M2 (listener.sh): lock carries the holder PID; a dead holder is stolen
+  IMMEDIATELY (kill -0 check), pid-less young locks fall back to a 2-min
+  mtime bound. Crash blind window is now one 30s cadence, not ~5.5 min.
+- M3 (handler.sh): orphan-promise detector checks THE promise's own work
+  file ($INBOX/<work>.md), not "any traffic" — an orphan can no longer hide
+  behind unrelated inbox files.
+- M4 (listener.sh): digest safety net — sent-marker absent AND now past
+  DIGEST_TIME → the pass re-fires digest.sh (idempotent via its own marker).
+  Covers both a failed fire and a Mac asleep at fire time; a transient
+  outage now costs minutes, not the day.
+- M5 (lib.sh): curl stderr captured per attempt, token masked to
+  bot****<last4> BEFORE anything reaches telegram.log — the run.log
+  checklist answer 4 claim («log line shows bot<masked>») is now TRUE in
+  code, closing the record/code discrepancy the verifier found. CORRECTION
+  for the record: at build time that claim described intent, not code — the
+  verifier was right; behavior was safe (nothing logged) but the claim was
+  ahead of the implementation.
+- M6 (digest.sh): «Ждёт тебя сегодня» renders one combined list; «решений
+  не ждём» appears only when BOTH waiting atoms and pending gates are empty.
+
+Harness: stub upgraded to model the REAL Bot API 64-byte callback_data cap
+(oversized → BUTTON_DATA_INVALID, unrecorded) and to force token-bearing
+curl stderr failures on demand (fail-remaining hook). Scenario 2 extended:
+the crashed pass's lock is deliberately LEFT and the next pass must steal it
+(lock-left asserted =1 so the check cannot pass vacuously). New scenarios:
+12-long-label (old scheme needs 111 bytes — asserted >64; stub rejection
+proven live; press by index; recorded answer = full label verbatim),
+13-digest-retry (nothing before DIGEST_TIME, missed fire recovered after;
+M6 coherence asserted on the same digest), 14-masked-error (3 forced
+failures with token in stderr → >=3 masked bot****<last4> lines, zero raw
+tokens in log and across all transcripts; ladder queued, next pass
+delivered). Existing callback fixtures moved to the index format.
+
+Full re-run: 14/14 PASS, first attempt after fixes (SUMMARY.txt regenerated,
+all transcripts from the final run). DIGEST_TIME fixture moved to 21:00 so
+the M4 safety net stays inert through scenarios 1-11 (documented in the
+harness header comment).
+
+breath: core-card reread, phase close (fix round). Secrets: the fix round
+STRENGTHENED the perimeter (masked stderr); records honest — M5 correction
+written above, not papered over.
+
+BUDGET CHECKPOINT: fix round ~45k (verdict read ~8k, six fixes ~15k, harness
+extensions ~15k, re-run + records ~7k), inside the ~50k round budget.
+Cumulative executor total: ~185k of ~350k.
+
+2026-07-10T14:40:00Z CYCLE-END fix round; RESULT.md fix-round section filed;
+STATUS.md appended. Ready for G2 (CEO live smoke).

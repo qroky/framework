@@ -1,5 +1,5 @@
 Scenario 7 — dialogue-contour events + NARRATIVE feed (H7)
-Generated: 2026-07-10T13:53:29Z
+Generated: 2026-07-10T14:35:58Z
 
 --- assertions ---
 result + blocker events sent the moment they occur (no session, no listener): 2 (must be 2)

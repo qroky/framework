@@ -86,6 +86,12 @@ else
   log digest "changelog skipped: framework is not a git checkout here (or git missing) — honest degradation"
 fi
 
+# verify M6: blocked atoms and pending gates are ONE section — the
+# «решений не ждём» line appears only when BOTH are empty, so a phone screen
+# never shows waiting items and «ничего не ждёт» together.
+WAIT_COMBINED="$WAIT_LINES$PENDING_LINES"
+[[ -n "${WAIT_COMBINED//[$'\n' ]/}" ]] || WAIT_COMBINED="• решений не ждём"$'\n'
+
 MSG="Доброе утро. Дайджест за $TODAY:
 
 Сделано:
@@ -93,7 +99,7 @@ ${DONE_LINES:-• пока пусто}
 В работе:
 ${RUN_LINES:-• ничего не бежит}
 Ждёт тебя сегодня:
-${WAIT_LINES}${PENDING_LINES:-• решений не ждём}
+${WAIT_COMBINED}
 ${SIGNALED_LINES:+Уже в ленте сегодня (статус, не тревога):
 $SIGNALED_LINES}
 $SPEND_LINE${CHANGELOG:+

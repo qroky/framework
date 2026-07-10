@@ -1,6 +1,6 @@
 Scenario 3 — listener physics (H3) + schedule assertions (H6/H13)
-Generated: 2026-07-10T13:53:24Z
-plists rendered to /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.OmfD3Q/plists (digest at 09:05)
+Generated: 2026-07-10T14:35:52Z
+plists rendered to /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.TLvupA/plists (digest at 21:00)
 
 --- assertions ---
 listener alive when sampled: 1 (must be 1 — otherwise lsof proves nothing)
@@ -9,4 +9,4 @@ listening TCP ports of the live listener (must be empty):
 restart with no updates re-sent nothing: 11 -> 11 sends (must be equal — offset survived)
 offset file: 103, last issued update_id: 103 (must be equal)
 listener cadence in plist: 30s (must be 30 — sustains the <=1 min ack)
-digest plist time: 9:5 (profile 09:05 -> must be 9:5), Weekday keys: 0 (0 = daily)
+digest plist time: 21:0 (profile 21:00 -> must be 21:0), Weekday keys: 0 (0 = daily)

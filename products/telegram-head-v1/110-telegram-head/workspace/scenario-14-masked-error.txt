@@ -1,0 +1,9 @@
+Scenario 14 — masked curl errors (verify M5) + failure ladder to queue
+Generated: 2026-07-10T14:36:02Z
+
+--- assertions ---
+all 3 attempts failed (nothing sent): 0 (0); event queued, not lost: 1 (1); ladder gave up after 2 retries: 1 (>0)
+curl stderr CONTAINED the token-bearing URL (forced); masked bot****LEAK lines in log: 3 (must be >=3 — one per attempt, proves stderr flowed through the scrub)
+raw token in telegram.log: 0 (must be 0)
+next pass delivered the queued event: 1 (must be 1)
+raw token across all committed transcripts: 0 (must be 0)

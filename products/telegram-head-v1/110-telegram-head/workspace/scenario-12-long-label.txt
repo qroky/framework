@@ -1,0 +1,9 @@
+Scenario 12 — long-label gate (verify M1)
+Generated: 2026-07-10T14:36:01Z
+
+--- assertions ---
+old label-in-callback_data scheme would need 141 bytes (must be >64 — the scenario genuinely discriminates)
+stub rejects oversized callback_data live: 1 (must be 1), recorded by stub: 0 (must be 0)
+long-label gate sent with buttons: 1 (must be 1 — no rejection, no queue loop)
+max callback_data bytes actually sent: 9 (must be <=64 and >0); full label intact as button text: 1 (must be 1)
+press by index -> recorded answer is the FULL label verbatim: 1; decision record carries it: 1

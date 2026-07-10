@@ -112,3 +112,22 @@ atom's `workspace/` transcripts, INPUT.md. The mandated DoD scenario is
 harness-exercised (scenario-2), not code-read. After verify: G2 live
 round-trip from the CEO's phone closes S1 and flips maturity toward
 validated on the first real phone-answered gate.
+
+## Fix round — verify ACCEPT r1, 6 minor findings (VERDICT.md), all fixed
+
+| Finding | Fix | New evidence (workspace/) |
+| :---- | :---- | :---- |
+| M1 — callback_data truncated to 64 chars, not bytes; a long-label gate would be rejected by the real API and loop in the retry queue | callback_data = `<id>\|<button-index>` (byte-checked at build; an oversized ID fails LOUDLY and is never queued); labels persisted as `buttonN:` lines in `state/pending-gates/`; the listener resolves the verbatim label from the registry at press time — DR5-verbatim exact by construction at any length; a press with no matching registry entry gets a polite reply and no record | scenario-12: old scheme proven to need >64 bytes (111-byte class, asserted); the stub now models the REAL API cap and its rejection was proven live on an oversized payload; gate sent, max callback_data ≤64 bytes, full label intact as button TEXT; press by index → recorded answer = full label verbatim; decision record carries it |
+| M2 — SIGKILL'd pass left the lock: ack-blind window up to ~5.5 min | the lock carries the holder PID; a dead holder is stolen IMMEDIATELY (`kill -0`); pid-less young locks fall back to a 2-min mtime bound — crash blind window is now one 30s cadence | scenario-2 extended: the crashed pass's lock is deliberately LEFT (lock-left asserted =1 so the check cannot pass vacuously); the next pass logs «stale lock removed (holder … dead)» and re-delivers the press |
+| M3 — orphan-promise detector globbed ANY work file | checks THE promise's own `work:` file (`$INBOX/<work>.md`) — unrelated inbox traffic can no longer hide an orphan | code fix in handler.sh; the branch stays code-read-only as declared, but the logic gap the verifier found inside that declared branch is closed |
+| M4 — failed or missed digest fire = silently lost day | digest safety net in the listener pass: sent-marker absent AND now past `DIGEST_TIME` → re-fire digest.sh (idempotent via its own marker); also covers a Mac asleep at fire time | scenario-13: a pass BEFORE digest time fires nothing; a pass after it delivers the missed digest, marker restored, safety-net log line asserted |
+| M5 — run.log claimed masked-URL logging that did not exist; curl stderr (which can carry the token URL) flowed raw into telegram.log | curl stderr captured per attempt and the token masked to `bot****<last4>` BEFORE anything is logged — the checklist claim is now true in code; the record discrepancy is corrected in run.log (the original claim described intent, not code — the verifier was right) | scenario-14: 3 forced curl failures with the token-bearing URL in stderr → ≥3 masked lines in the log, ZERO raw-token occurrences in the log and across all committed transcripts; the ladder queued the event and the next pass delivered it — this also closes the previously undemonstrated tg_api failure-ladder deviation |
+| M6 — «Ждёт тебя сегодня» could show waiting items AND «решений не ждём» together | one combined waiting list; the «решений не ждём» line appears only when BOTH waiting atoms and pending gates are empty | scenario-13 asserts a digest with a waiting atom present and zero «решений не ждём» occurrences |
+
+Harness after the fix round: **14/14 PASS** — scenarios 1–11 unchanged in
+intent (callback fixtures moved to the new index format; digest-time fixture
+moved to 21:00 so the M4 safety net stays inert until deliberately exercised,
+documented in the harness), scenarios 12–14 new. First run after the fixes
+was green. All committed transcripts are from the final run. Fix-round cost
+~45k (inside the ~50k round budget); cumulative executor total ~185k of
+~350k. Same perimeter, no git operations. Ready for G2.

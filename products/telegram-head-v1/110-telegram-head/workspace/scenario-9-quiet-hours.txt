@@ -1,5 +1,5 @@
 Scenario 9 — quiet hours (H14)
-Generated: 2026-07-10T13:53:31Z
+Generated: 2026-07-10T14:35:59Z
 
 --- assertions ---
 night events sent at 02:xx: 0 (must be 0), queued: 2 (must be 2)

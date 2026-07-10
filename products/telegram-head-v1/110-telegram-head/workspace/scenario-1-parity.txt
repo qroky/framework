@@ -1,12 +1,12 @@
 Scenario 1 — decision parity (H1)
-Generated: 2026-07-10T13:53:22Z
-/var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.OmfD3Q/parity/GATE-T1-decision.md
+Generated: 2026-07-10T14:35:51Z
+/var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.TLvupA/parity/GATE-T1-decision.md
 
 --- assertions ---
 gate sent with inline buttons: 1 (must be 1)
 full question persisted for pickup: 1 (must be >0)
 press acked with the verbatim label: 1 (must be 1)
-inbox gate-answer file: /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.OmfD3Q/root/decisions/inbox/1783691602-27621-1216-gate-answer-GATE-T1.md
+inbox gate-answer file: /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.TLvupA/root/decisions/inbox/1783694151-68440-14696-gate-answer-GATE-T1.md
 record carries gate id + full question + verbatim label + ts + channel: 1
 diff telegram-vs-session record: 2 changed lines, 2 of them channel (must be 2 and 2 — the ONLY diff, and not empty)
 
@@ -20,7 +20,7 @@ diff telegram-vs-session record: 2 changed lines, 2 of them channel (must be 2 a
 # DECISION — GATE-T1
 
 - gate: GATE-T1
-- timestamp: 2026-07-10T13:53:22Z
+- timestamp: 2026-07-10T14:35:51Z
 - channel: telegram
 
 ## Question (full text as sent)

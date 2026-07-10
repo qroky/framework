@@ -1,9 +1,9 @@
 Scenario 8 — ack + promise survival (H13), «кроки» routing (H9)
-Generated: 2026-07-10T13:53:30Z
+Generated: 2026-07-10T14:35:58Z
 
 --- assertions ---
-listener pass wall time: 0s; cadence 30s (scenario 3) => worst-case ack = pass + cadence < 60s
-instant ack sent by the listener itself: 1 (must be 1); durable kroky event: /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.OmfD3Q/root/decisions/inbox/1783691610-29101-24472-kroky-1783691610.md
+listener pass wall time: 1s; cadence 30s (scenario 3) => worst-case ack = pass + cadence < 60s
+instant ack sent by the listener itself: 1 (must be 1); durable kroky event: /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.TLvupA/root/decisions/inbox/1783694159-69982-12855-kroky-1783694159.md
 promise message «результат к N» sent: 1 (1); result before kill: 0 (0)
 kill -9 delivered to the working handler: rc=0 (must be 0 — otherwise vacuous)
 promise file survives the kill: 1 (must be 1)

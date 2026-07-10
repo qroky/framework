@@ -1,0 +1,7 @@
+Scenario 13 — digest safety net (verify M4) + section coherence (M6)
+Generated: 2026-07-10T14:36:01Z
+
+--- assertions ---
+pass BEFORE digest time fired nothing: 0 sends (0), marker: 0 (0)
+pass AFTER digest time delivered the missed digest: 1 (must be 1), marker restored: 1 (1), safety-net log line: 1 (>0)
+M6: waiting atom listed: 1 (>0) with NO contradictory «решений не ждём»: 0 (must be 0)

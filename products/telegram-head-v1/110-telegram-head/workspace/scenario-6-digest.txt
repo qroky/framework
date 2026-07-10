@@ -1,5 +1,5 @@
 Scenario 6 — digest contour (H6)
-Generated: 2026-07-10T13:53:29Z
+Generated: 2026-07-10T14:35:57Z
 
 --- assertions ---
 all four sections present: 1; running atom listed: 1; pending gate in 'ждёт тебя': 1

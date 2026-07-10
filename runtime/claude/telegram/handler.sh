@@ -133,13 +133,14 @@ case "${1:---pass}" in
   --pass)
     bash "$TG_LIB_DIR/pickup.sh"                   # mechanical parity records first
 
-    # resume promises whose work file is gone but promise is open (crash window)
+    # resume promises whose OWN work item is gone (crash window). Precision
+    # per verify M3: check the exact work file this promise names — unrelated
+    # inbox traffic must never hide an orphan.
     for p in "$INBOX_DIR"/*-promise-*.md; do
       [[ -f "$p" ]] || continue
       work="$(sed -n 's/^work: //p' "$p" | head -1)"
-      if ! compgen -G "$INBOX_DIR/*-kroky-*.md" >/dev/null \
-         && ! compgen -G "$INBOX_DIR/*-user-message-*.md" >/dev/null; then
-        # promise without its work item: the result was never sent — say so
+      if [[ -n "$work" && ! -f "$INBOX_DIR/$work.md" ]]; then
+        # promise without ITS work item: the result was never sent — say so
         send_to_owner "По обещанию «результат к $(sed -n 's/^due: //p' "$p" | head -1)»: работа была прервана и её вход утерян — повтори запрос, пожалуйста. Это честный сбой, он записан."
         log handler "orphan promise $work — owner notified, promise closed"
         mv "$p" "$INBOX_DIR/done/$(basename "$p")"

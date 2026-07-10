@@ -1,5 +1,5 @@
 Scenario 2 — the mandated DoD scenario (H2)
-Generated: 2026-07-10T13:53:23Z
+Generated: 2026-07-10T14:35:51Z
 press persisted while NO session runs: 1 file(s) in inbox
 
 --- assertions ---
@@ -8,4 +8,6 @@ inbox residue: 0 (0), consumed ledger: 1 (1), second wake was a no-op: yes
 kill landed inside the tmp->rename window: 1 (must be 1 — otherwise the scenario is vacuous)
 complete-or-nothing: complete files after kill = 0 (0), tmp remnant = 1 (1, proves the window)
 offset NOT advanced by the killed pass: 102 -> 102 (must be equal)
-re-delivery on next pass persisted the press: 1 (must be 1 — no loss)
+SIGKILL left the lock behind: 1 (must be 1 — otherwise the stale-lock check below is vacuous)
+next pass stole the dead holder's lock immediately (M2): 1 stale-lock log line(s) (must be >0)
+re-delivery on next pass persisted the press: 1 (must be 1 — no loss, no blind window)

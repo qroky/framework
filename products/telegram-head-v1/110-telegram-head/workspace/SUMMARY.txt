@@ -1,8 +1,8 @@
 dry-run.sh — Telegram head, summary of all scenarios
-Generated: 2026-07-10T13:53:22Z
+Generated: 2026-07-10T14:35:51Z
 
 PASS — 1-parity: press -> inbox -> record with full question + verbatim label; session record differs in channel line only (diff non-empty)
-PASS — 2-closed-session: press with no session persisted; consumed exactly once across two wakes; SIGKILL inside the write window left complete-or-nothing and the press was re-delivered, not lost
+PASS — 2-closed-session: press with no session persisted; consumed exactly once across two wakes; SIGKILL inside the write window left complete-or-nothing; crashed pass's lock stolen IMMEDIATELY by the next pass (M2) and the press re-delivered, not lost
 PASS — 3-physics: no listening ports on a live pass; restart replays nothing (offset survives); cadence 30s; digest calendar = profile time, daily
 PASS — 4-foreign-chat: foreign message AND foreign button press: zero replies, zero events, flagged + quarantined
 PASS — 5-risk-word: no buttons on the risk item; button-style reply rejected + re-asked; only the typed word produced a record (verbatim)
@@ -12,7 +12,10 @@ PASS — 8-ack-promise: ack within the polling budget; promise recorded in inbox
 PASS — 9-quiet-hours: night events queued (0 sent), user acked even at night, morning flush delivered blocker FIRST
 PASS — 10-status-router: /status + «что в работе» render from status.yaml in <=1 message; router asked exactly one question then filed a task-proposal; the bot executed nothing
 PASS — 11-secrets: token flowed through every API call (stub-verified) yet appears nowhere: log, state, records, sent payloads, committed files, transcripts all clean
+PASS — 12-long-label: 111-byte-class label rides as button text; callback_data <=64 bytes (stub enforces the real API cap and its rejection was proven live); recorded answer = full label verbatim via registry resolution
+PASS — 13-digest-retry: missed daily fire recovered by the next listener pass after DIGEST_TIME (nothing before it); waiting section coherent — no «решений не ждём» beside real waiting items
+PASS — 14-masked-error: forced token-bearing curl errors x3: every log line masked to bot****LEAK, zero raw-token traces; ladder queued the event and the next pass delivered it
 
-Totals: 11 passed, 0 failed
-Sandbox: /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.OmfD3Q (removed on exit)
+Totals: 14 passed, 0 failed
+Sandbox: /var/folders/pd/mlvnqxbj7tj0h1qb5qv78_l00000gn/T//qroky-tg-dry.TLvupA (removed on exit)
 Budget line: harness burns ~0 tokens (no LLM — stubbed), ~60s wall time, 0 network calls
