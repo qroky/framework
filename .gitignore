@@ -12,3 +12,4 @@ desktop.ini
 # heartbeat local state (runtime/claude/heartbeat)
 runtime/claude/heartbeat/out/
 runtime/claude/heartbeat/heartbeat.log
+runtime/claude/telegram/profile.conf
