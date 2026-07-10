@@ -18,3 +18,10 @@ atoms:
     maturity: —
     opened: 2026-07-10
     parent: ATOM-100
+  ATOM-102:
+    folder: 102-kit-amendment
+    status: reviewed (kit v0.1.1, verify ACCEPT r1 zero findings)
+    maturity: —
+    opened: 2026-07-10
+    parent: ATOM-100
+    mandate: INFO-030 p.3-4 (backup interview point 8 + disclaimer layer)

@@ -2,10 +2,10 @@
 name: pilot-toolsmith
 description: Builds founder-facing setup scripts, telemetry, and showcase renderers; needed by ATOM-007 (Pilot Prerequisites), ATOM-071 (Setup Kit), ATOM-072 (Telemetry & Consent), ATOM-101 (Distribution Installer).
 maturity:
-  runs: 1  # T1 precedent recording starts here (INFO-014); pre-existing 071/072 runs predate the discipline and are not back-filled
-  verify_returns: 1  # ATOM-101 r1 RETURN (2 blocking + 6 minor) -> r2 ACCEPT
+  runs: 2  # T1 precedent recording starts here (INFO-014); pre-existing 071/072 runs predate the discipline and are not back-filled
+  verify_returns: 1  # ATOM-101 r1 RETURN (2 blocking + 6 minor) -> r2 ACCEPT; ATOM-102 ACCEPT r1 zero findings
   rowan_fails: 0
-  envelope_accuracy: "324,949 spent vs ~410k allowed (0.79)"
+  envelope_accuracy: "ATOM-101: 324,949 vs ~410k (0.79); ATOM-102: ~70k vs ~150k (0.47)"
   updated: 2026-07-10
 ---
 
