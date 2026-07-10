@@ -3,12 +3,13 @@
 ## What this installer does
 
 One script, `install.sh`, takes a clean computer to a working assistant in
-under 15 minutes. It asks you exactly **eight questions** (listed below),
-sets up a private folder on your own computer, and ends with the words you
-say to start your first conversation. It never asks anything beyond those
-eight questions — every other line it prints is either progress, a check
-result, or (on a real problem) a plain-language fix instruction naming the
-exact next step.
+under 15 minutes. It asks you exactly **nine questions** (listed below),
+sets up a private folder on your own computer, and ends with a ready
+copy-paste block for your first conversation. It never asks anything beyond
+those nine questions — every other line it prints is either progress, a
+check result, or (on a real problem) a plain-language fix instruction
+naming the exact next step. The very first screen is a map of the whole
+road: 9 questions, ~3 minutes, two lines at the end.
 
 ## The one-liner
 
@@ -22,22 +23,37 @@ tells you exactly what to install and how — then you run the same command
 again, and it continues from exactly where it stopped. Nothing is repeated,
 nothing you already answered is asked twice.
 
-## Your first conversation
+## Your first 5 minutes
 
-When setup finishes, start like this:
+Setup is done — here is a hand on the shoulder for the very first
+conversation.
 
-1. Open a terminal **in your working folder** (the one you chose at
-   question 2). In VS Code instead: File → Open Folder → your working
-   folder, then start a new chat.
-2. Type: `claude`
-3. Say: `qroky start`
+**What to do.** The setup finale already gave you a ready block — copy it:
 
-One honest note: the starting phrase lives **in the working folder** — the
-installer wires it into that folder (a small rules file plus a note the
-assistant reads there). A chat opened anywhere else on the computer will
-not know it.
+```
+cd <your working folder> && claude
+```
 
-## The eight questions
+The **first** time `claude` starts, it asks a couple of its own questions
+(color theme, login) — that is normal; answer them and continue. Then say:
+`qroky start`.
+
+**What happens.** The system looks around the folder (read-only), asks you
+about the two "whys" of your work, and proposes a plan on one screen. You
+answer **"go"** ("го") — or correct it in plain words, like you would a
+person. Until your explicit go, it does nothing.
+
+**What success looks like.** After the first conversation your working
+folder gains: `qroky/mission.md` — your two whys, recorded verbatim; and,
+next to the work in progress, `NARRATIVE.md` — a live, human-language
+account of what is being done and why. Tasks and their statuses accumulate
+in the same folder — everything is plain text you can open and read.
+
+One honest note: the starting phrase lives **in the working folder**
+(question 2); if you said yes at question 9, it works in any chat on this
+machine.
+
+## The nine questions
 
 1. **Language** — English, Română, or Русский. Everything after this point
    is shown in the language you pick.
@@ -50,10 +66,17 @@ not know it.
 4. **Subscription check** — a quick, non-blocking check that your Claude
    Code login/subscription looks active. This is a check, not a purchase
    flow — if it can't tell, it just reminds you, it never stops you.
-5. **Telegram (optional)** — want a morning digest and updates through
-   Telegram? If yes, the installer walks you through creating your own bot
-   with BotFather, step by step, and checks the token works live before
-   saving it. Skippable any time — type "skip".
+5. **Telegram (optional)** — the assistant in your pocket: a morning
+   digest, updates, and questions it can ask you on your phone. Skipping is
+   zero effort: just press Enter (connect later with one command:
+   `bash install.sh --enable-telegram`). If you say yes, the installer
+   walks you through creating your own bot with BotFather, checks the token
+   live, asks you to press **Start** on your bot — and the bot
+   **immediately writes back** ("I am connected; tomorrow morning you get
+   your first digest"). The whole link goes live right there: a message
+   check every 30 seconds and a daily digest at 09:05. If nobody presses
+   Start in time, nothing breaks: the token is saved, setup continues, and
+   the same one command finishes the connection later.
 6. **Daily support sharing (optional)** — see "What leaves this computer"
    below before you're asked. Off by default.
 7. **Morning digest (optional)** — a short daily message: what got done,
@@ -66,6 +89,14 @@ not know it.
    way as the Telegram bot. **The backup goes to YOUR account** — a private
    copy visible only to you, never to us or anyone else. Your secret files
    (like the Telegram token) are excluded from every backup, automatically.
+9. **Starting phrase everywhere on this machine (optional, recommended)** —
+   make "qroky start" work in ANY chat on this machine, not only in your
+   working folder. One honest line: a yes writes exactly **two files**
+   under `~/.claude` — a copy of the phrase's rules page
+   (`~/.claude/skills/qroky/SKILL.md`) and a marked trigger block in
+   `~/.claude/CLAUDE.md`. Nothing else, ever. Both are easy to remove (see
+   "Don't touch my instance" below). An explicit "y" is required — Enter
+   means "no, working folder only".
 
 ## What leaves this computer
 
@@ -104,6 +135,18 @@ optional piece it turns on can be turned off just as easily:
 - **Enable the morning digest later:** `bash install.sh --enable-heartbeat`
 - **Enable the backup later** (if you said no at question 8):
   `bash install.sh --enable-backup`
+- **Connect (or finish connecting) Telegram later** (if you skipped
+  question 5 or Start wasn't pressed in time):
+  `bash install.sh --enable-telegram`
+- **Disable the Telegram assistant:** delete the two files
+  `md.qroky.telegram.listener.plist` and `md.qroky.telegram.digest.plist`
+  from `~/Library/LaunchAgents/` (its working files live in
+  `.qroky/telegram/` inside your workspace and do nothing by themselves).
+- **Remove the machine-wide starting phrase** (if you said yes at
+  question 9): delete exactly the two files that were written — the file
+  `~/.claude/skills/qroky/SKILL.md` and the marked block between the
+  `qroky-machinewide` markers in `~/.claude/CLAUDE.md`. The installer wrote
+  nothing else under `~`.
 - **Check for a framework update (read-only, changes nothing):**
   `bash install.sh --check-update`
 - **See more detail on a pending update:**

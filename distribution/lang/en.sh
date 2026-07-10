@@ -12,8 +12,18 @@
 
 L_SETUP_TITLE() { printf '== Qroky setup ==\n'; }
 
-L_STEP_HEADER() { printf 'Step %s of 8 — %s\n' "$1" "$2"; }
+L_STEP_HEADER() { printf 'Step %s of 9 — %s\n' "$1" "$2"; }
 L_STEP_ALREADY_DONE() { printf '  already set up — nothing to do (health check)\n'; }
+
+# v0.2 (GATE-027): the whole road in one paragraph, up front.
+L_JOURNEY_MAP() {
+  cat <<'EOF'
+Here is the whole road: 9 questions, about 3 minutes of setup, and at the
+end you get two ready lines to copy-paste for your first conversation.
+Every question says which number it is; optional ones can be skipped with
+a single Enter. Nothing installs behind your back.
+EOF
+}
 
 L_STEP_LANGUAGE_NAME() { printf 'choose your language'; }
 L_STEP_WORKDIR_NAME() { printf 'choose your working folder'; }
@@ -22,6 +32,7 @@ L_STEP_SUBSCRIPTION_NAME() { printf 'check your subscription'; }
 L_STEP_TELEGRAM_NAME() { printf 'connect Telegram (optional)'; }
 L_STEP_TELEMETRY_NAME() { printf 'daily support sharing (optional)'; }
 L_STEP_HEARTBEAT_NAME() { printf 'morning digest (optional)'; }
+L_STEP_MACHINEWIDE_NAME() { printf 'starting phrase everywhere on this machine (optional)'; }
 
 L_ASK_LANGUAGE() {
   printf 'Which language do you want to use?\n'
@@ -63,11 +74,11 @@ L_SUBSCRIPTION_SOFT_NOTICE() {
 }
 
 L_TELEGRAM_ASK_OPTIN() {
-  printf 'Would you like a morning digest and updates through Telegram?\n'
-  printf 'This step is optional — you can skip it and add it later.\n'
-  printf 'Yes/no (y/n), default n: '
+  printf 'Enter = skip, connect later (one command: bash install.sh --enable-telegram).\n'
+  printf 'Or: would you like your assistant on Telegram — a morning digest, updates,\n'
+  printf 'and questions it can ask you on your phone? Type y to connect now: '
 }
-L_TELEGRAM_SKIPPED() { printf '  Telegram — skipped, you can add it later by running this installer again\n'; }
+L_TELEGRAM_SKIPPED() { printf '  Telegram — skipped. Connect any time with one command:\n      bash install.sh --enable-telegram\n'; }
 L_TELEGRAM_WALKTHROUGH() {
   cat <<'EOF'
   Let's create your own Telegram bot — this takes about 2 minutes:
@@ -91,6 +102,48 @@ L_TELEGRAM_TOKEN_BAD() {
   printf '  Try again, or type "skip" to skip this step.\n'
 }
 L_TELEGRAM_STORED() { printf '  token saved on this computer only (never sent anywhere else): %s\n' "$1"; }
+
+# --- v0.2 (GATE-027 «дал ключ — бот пнул»): the loop closes inside question 5 ---
+L_TELEGRAM_PRESS_START() {
+  printf '  Now open your bot in Telegram — @%s — and press Start\n' "$1"
+  printf '  (or send it any message). I am waiting for it here, up to %s seconds...\n' "$2"
+}
+L_TELEGRAM_BOUND() { printf '  got you — your Telegram is now linked to this assistant (only YOUR chat will ever be served)\n'; }
+L_TG_HELLO_TEXT() { printf 'I am connected. Tomorrow morning I will send your first digest. — Qroky'; }
+L_TELEGRAM_HELLO_SENT() { printf '  the bot just wrote back to you — check your phone\n'; }
+L_TELEGRAM_HELLO_FAILED() {
+  printf '  the link is set, but the hello message could not be sent right now (often a\n'
+  printf '  network hiccup) — the bot will reach you on its next scheduled message.\n'
+}
+L_TELEGRAM_NO_START() {
+  printf '  nobody pressed Start within the wait — that is fine, nothing broke.\n'
+  printf '  Your token is saved; the bot connects later with one command:\n'
+  printf '      bash install.sh --enable-telegram\n'
+  printf '  Setup continues.\n'
+}
+L_TELEGRAM_HEAD_MISSING() {
+  printf '  the Telegram assistant files are not in the downloaded rulebook (its version\n'
+  printf '  predates this installer). Your token and link are saved. Try:\n'
+  printf '      bash install.sh --apply-update   and then: bash install.sh --enable-telegram\n'
+  printf '  Setup continues.\n'
+}
+L_TELEGRAM_DEPLOYING() { printf '  connecting the bot to this computer (checks every 30 seconds; daily digest at 09:05)...\n'; }
+L_TELEGRAM_DEPLOYED() { printf '  Telegram assistant — ON (listener every 30 s, digest daily at 09:05; its files live in .qroky/telegram/ inside your workspace)\n'; }
+L_TELEGRAM_LISTENER_OK() { printf '  first listener pass — healthy\n'; }
+L_TELEGRAM_LISTENER_WARN() {
+  printf '  NOTICE: the first listener pass reported a problem (details saved to the\n'
+  printf '  install log). The scheduled jobs are still installed and will keep trying.\n'
+}
+L_TELEGRAM_SCHEDULE_FAILED() {
+  printf '  NOTICE: the Telegram jobs could not be scheduled automatically right now.\n'
+  printf '  Everything else is fine — your bot link is saved. Try again later with:\n'
+  printf '      bash install.sh --enable-telegram\n'
+}
+L_TELEGRAM_NO_LAUNCHD() {
+  printf 'NOTICE: this machine has no "launchctl" (common outside macOS), so the\n'
+  printf 'Telegram jobs cannot be scheduled automatically. Your link is set — run\n'
+  printf '%s/run-listener.sh every 30 s and %s/run-digest.sh daily with your own scheduler.\n' "$1" "$1"
+}
 
 L_TELEMETRY_ASK_OPTIN() {
   cat <<'EOF'
@@ -146,15 +199,20 @@ L_FINALE() {
 
 == Setup finished. Nothing failed. ==
 
-Your assistant is ready. To start:
-  1. Open a terminal in: $1
-     (In VS Code instead: File → Open Folder → $1, then start a new chat.)
-  2. Type: claude
-  3. Say: qroky start
+Copy-paste this into your terminal:
 
-That single phrase — "qroky start" — is all you need; it works in any
-language you type it in. One honest note: the phrase lives in that folder —
-a chat opened anywhere else will not know it.
+    cd $1 && claude
+
+then say:
+
+    qroky start
+
+(In VS Code instead: File → Open Folder → $1 → start a new chat — same phrase.)
+
+One honest note: the FIRST time claude starts, it asks a couple of its own
+questions (color theme, login) — that is normal; answer them and continue.
+Your first 5 minutes are described in the README next to this installer
+("Your first 5 minutes").
 EOF
 }
 
@@ -242,4 +300,29 @@ L_DISCLAIMER() {
   printf 'A note on responsibility: the system produces drafts and analysis; legal,\n'
   printf 'financial, and medical decisions and signatures are always made by a human.\n'
   printf 'Not professional advice.\n'
+}
+
+# --- v0.2 (ATOM-104, GATE-028): question 9 — machine-wide starting phrase ---
+L_MACHINEWIDE_ASK_OPTIN() {
+  cat <<'EOF'
+Make "qroky start" work in ANY chat on this machine, not only in your
+working folder? [we recommend: yes] One honest line about what that means:
+we would write exactly two files into ~/.claude (a copy of the phrase's
+rulebook page and a short trigger note) — nothing else, and both are named
+to you and easy to remove.
+EOF
+  printf 'Type y for machine-wide; Enter = no, working folder only: '
+}
+L_MACHINEWIDE_DONE() {
+  printf '  done — "qroky start" now works in any chat on this machine.\n'
+  printf '  Exactly two files were written (to remove, delete them):\n'
+  printf '    ~/.claude/skills/qroky/SKILL.md\n'
+  printf '    the marked block in ~/.claude/CLAUDE.md (between the qroky-machinewide markers)\n'
+}
+L_MACHINEWIDE_SKIPPED() { printf '  as you chose: the phrase works in your working folder only. Nothing was written outside it.\n'; }
+L_MACHINEWIDE_FAILED() {
+  printf '  NOTICE: the machine-wide setup did not succeed (most often: the rulebook\n'
+  printf '  version predates this installer, or ~/.claude is not writable). Nothing\n'
+  printf '  else is affected — the phrase still works in your working folder, and you\n'
+  printf '  can re-run this installer any time to try again.\n'
 }

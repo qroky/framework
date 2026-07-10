@@ -7,8 +7,18 @@
 
 L_SETUP_TITLE() { printf '== Instalare Qroky ==\n'; }
 
-L_STEP_HEADER() { printf 'Pasul %s din 8 — %s\n' "$1" "$2"; }
+L_STEP_HEADER() { printf 'Pasul %s din 9 — %s\n' "$1" "$2"; }
 L_STEP_ALREADY_DONE() { printf '  deja configurat — nimic de făcut (verificare de sănătate)\n'; }
+
+# v0.2 (GATE-027): tot drumul într-un singur paragraf, de la început.
+L_JOURNEY_MAP() {
+  cat <<'EOF'
+Iată tot drumul: 9 întrebări, aproximativ 3 minute de instalare, iar la
+final primești două linii gata de copiat și lipit pentru prima conversație.
+Fiecare întrebare spune a câta este; cele opționale se sar cu un singur
+Enter. Nimic nu se instalează pe la spatele tău.
+EOF
+}
 
 L_STEP_LANGUAGE_NAME() { printf 'alege limba'; }
 L_STEP_WORKDIR_NAME() { printf 'alege folderul de lucru'; }
@@ -17,6 +27,7 @@ L_STEP_SUBSCRIPTION_NAME() { printf 'verifică abonamentul'; }
 L_STEP_TELEGRAM_NAME() { printf 'conectează Telegram (opțional)'; }
 L_STEP_TELEMETRY_NAME() { printf 'partajarea sprijinului zilnic (opțional)'; }
 L_STEP_HEARTBEAT_NAME() { printf 'rezumatul de dimineață (opțional)'; }
+L_STEP_MACHINEWIDE_NAME() { printf 'fraza de pornire oriunde pe acest calculator (opțional)'; }
 
 L_ASK_LANGUAGE() {
   printf 'Ce limbă dorești să folosești?\n'
@@ -58,11 +69,11 @@ L_SUBSCRIPTION_SOFT_NOTICE() {
 }
 
 L_TELEGRAM_ASK_OPTIN() {
-  printf 'Vrei un rezumat de dimineață și actualizări prin Telegram?\n'
-  printf 'Acest pas este opțional — poți sări peste el și îl adaugi mai târziu.\n'
-  printf 'Da/nu (y/n), implicit n: '
+  printf 'Enter = sari peste, conectezi mai târziu (o comandă: bash install.sh --enable-telegram).\n'
+  printf 'Sau: vrei asistentul pe Telegram — un rezumat de dimineață, noutăți și\n'
+  printf 'întrebări pe care ți le poate pune direct pe telefon? Scrie y ca să conectezi acum: '
 }
-L_TELEGRAM_SKIPPED() { printf '  Telegram — omis, îl poți adăuga mai târziu rulând din nou acest instalator\n'; }
+L_TELEGRAM_SKIPPED() { printf '  Telegram — omis. Conectezi oricând cu o singură comandă:\n      bash install.sh --enable-telegram\n'; }
 L_TELEGRAM_WALKTHROUGH() {
   cat <<'EOF'
   Hai să creăm propriul tău bot de Telegram — durează aproximativ 2 minute:
@@ -86,6 +97,48 @@ L_TELEGRAM_TOKEN_BAD() {
   printf '  Încearcă din nou, sau scrie "skip" pentru a sări peste acest pas.\n'
 }
 L_TELEGRAM_STORED() { printf '  token salvat doar pe acest calculator (nu e trimis nicăieri altundeva): %s\n' "$1"; }
+
+# --- v0.2 (GATE-027 «am dat cheia — botul a răspuns»): bucla se închide în întrebarea 5 ---
+L_TELEGRAM_PRESS_START() {
+  printf '  Acum deschide botul tău în Telegram — @%s — și apasă Start\n' "$1"
+  printf '  (sau trimite-i orice mesaj). Îl aștept aici, până la %s secunde...\n' "$2"
+}
+L_TELEGRAM_BOUND() { printf '  te-am prins — Telegram-ul tău este acum legat de acest asistent (doar chat-ul TĂU va fi servit)\n'; }
+L_TG_HELLO_TEXT() { printf 'Sunt conectat. Mâine dimineață îți trimit primul rezumat. — Qroky'; }
+L_TELEGRAM_HELLO_SENT() { printf '  botul tocmai ți-a scris înapoi — uită-te pe telefon\n'; }
+L_TELEGRAM_HELLO_FAILED() {
+  printf '  legătura e stabilită, dar salutul nu a putut fi trimis chiar acum (adesea o\n'
+  printf '  problemă de rețea) — botul te va găsi la următorul mesaj programat.\n'
+}
+L_TELEGRAM_NO_START() {
+  printf '  nimeni nu a apăsat Start în timpul așteptării — e în regulă, nimic nu s-a stricat.\n'
+  printf '  Token-ul tău e salvat; botul se conectează mai târziu cu o singură comandă:\n'
+  printf '      bash install.sh --enable-telegram\n'
+  printf '  Instalarea continuă.\n'
+}
+L_TELEGRAM_HEAD_MISSING() {
+  printf '  fișierele asistentului Telegram nu sunt în regulamentul descărcat (versiunea\n'
+  printf '  lui e mai veche decât acest instalator). Token-ul și legătura sunt salvate. Încearcă:\n'
+  printf '      bash install.sh --apply-update   apoi: bash install.sh --enable-telegram\n'
+  printf '  Instalarea continuă.\n'
+}
+L_TELEGRAM_DEPLOYING() { printf '  conectez botul la acest calculator (verificare la fiecare 30 de secunde; rezumat zilnic la 09:05)...\n'; }
+L_TELEGRAM_DEPLOYED() { printf '  asistentul Telegram — PORNIT (ascultător la fiecare 30 s, rezumat zilnic la 09:05; fișierele lui stau în .qroky/telegram/ din spațiul tău de lucru)\n'; }
+L_TELEGRAM_LISTENER_OK() { printf '  prima trecere a ascultătorului — sănătoasă\n'; }
+L_TELEGRAM_LISTENER_WARN() {
+  printf '  NOTĂ: prima trecere a ascultătorului a raportat o problemă (detaliile sunt\n'
+  printf '  salvate în jurnalul de instalare). Sarcinile programate rămân instalate și vor încerca în continuare.\n'
+}
+L_TELEGRAM_SCHEDULE_FAILED() {
+  printf '  NOTĂ: sarcinile Telegram nu au putut fi programate automat acum.\n'
+  printf '  Tot restul e în regulă — legătura cu botul e salvată. Încearcă mai târziu:\n'
+  printf '      bash install.sh --enable-telegram\n'
+}
+L_TELEGRAM_NO_LAUNCHD() {
+  printf 'NOTĂ: acest calculator nu are "launchctl" (frecvent în afara macOS), deci\n'
+  printf 'sarcinile Telegram nu pot fi programate automat. Legătura e stabilită — rulează\n'
+  printf '%s/run-listener.sh la fiecare 30 s și %s/run-digest.sh zilnic cu propriul tău planificator.\n' "$1" "$1"
+}
 
 L_TELEMETRY_ASK_OPTIN() {
   cat <<'EOF'
@@ -142,15 +195,20 @@ L_FINALE() {
 
 == Instalare terminată. Nimic nu a eșuat. ==
 
-Asistentul tău e gata. Ca să începi:
-  1. Deschide un terminal în: $1
-     (În VS Code: File → Open Folder → $1, apoi începe o conversație nouă.)
-  2. Scrie: claude
-  3. Spune: qroky start
+Copiază și lipește asta în terminal:
 
-Această singură frază — "qroky start" — este tot ce ai nevoie; funcționează
-în orice limbă o scrii. O notă sinceră: fraza trăiește în acel folder — o
-conversație deschisă altundeva nu o va cunoaște.
+    cd $1 && claude
+
+apoi spune:
+
+    qroky start
+
+(În VS Code: File → Open Folder → $1 → o conversație nouă — aceeași frază.)
+
+O notă sinceră: la PRIMA pornire, claude îți pune câteva întrebări proprii
+(tema de culori, autentificarea) — e normal; răspunde-le și continuă.
+Primele tale 5 minute sunt descrise în README-ul de lângă acest instalator
+(secțiunea „Primele 5 minute").
 EOF
 }
 
@@ -239,4 +297,29 @@ L_DISCLAIMER() {
   printf 'O notă despre responsabilitate: sistemul produce ciorne și analize;\n'
   printf 'deciziile și semnăturile juridice, financiare și medicale aparțin\n'
   printf 'întotdeauna omului. Nu constituie consultanță profesională.\n'
+}
+
+# --- v0.2 (ATOM-104, GATE-028): întrebarea 9 — fraza de pornire pe tot calculatorul ---
+L_MACHINEWIDE_ASK_OPTIN() {
+  cat <<'EOF'
+Faci ca "qroky start" să funcționeze în ORICE conversație pe acest
+calculator, nu doar în folderul de lucru? [recomandăm: da] O linie sinceră
+despre ce înseamnă asta: am scrie exact două fișiere în ~/.claude (o copie
+a paginii de reguli a frazei și o scurtă notă-declanșator) — nimic altceva,
+ambele îți sunt numite și sunt ușor de șters.
+EOF
+  printf 'Scrie y — pe tot calculatorul; Enter = nu, doar folderul de lucru: '
+}
+L_MACHINEWIDE_DONE() {
+  printf '  gata — "qroky start" funcționează acum în orice conversație pe acest calculator.\n'
+  printf '  Au fost scrise exact două fișiere (ca să le elimini, șterge-le):\n'
+  printf '    ~/.claude/skills/qroky/SKILL.md\n'
+  printf '    blocul marcat din ~/.claude/CLAUDE.md (între marcajele qroky-machinewide)\n'
+}
+L_MACHINEWIDE_SKIPPED() { printf '  cum ai ales: fraza funcționează doar în folderul de lucru. Nimic nu a fost scris în afara lui.\n'; }
+L_MACHINEWIDE_FAILED() {
+  printf '  NOTĂ: configurarea pe tot calculatorul nu a reușit (cel mai adesea: versiunea\n'
+  printf '  regulamentului e mai veche decât acest instalator, sau ~/.claude nu poate fi\n'
+  printf '  scrisă). Nimic altceva nu e afectat — fraza funcționează în continuare în\n'
+  printf '  folderul de lucru; rulează din nou instalatorul oricând ca să încerci iar.\n'
 }

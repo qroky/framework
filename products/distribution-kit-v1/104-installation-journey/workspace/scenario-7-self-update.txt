@@ -1,0 +1,76 @@
+Scenario 7 — self-update channel, against Scenario-1's workspace
+(already installed and pinned to v1.0.0)
+Generated: 2026-07-10T17:02:11Z
+
+--- check-update (read-only) ---
+A new version of the framework your assistant follows is available: v1.0.0 -> v1.1.0
+What improves for you:
+fixes the stub thing
+improves the other stub thing
+adds a third stub improvement
+To accept now:   bash install.sh --apply-update
+To see more:     bash install.sh --show-update-details
+To decide later: do nothing — you will see this again next time
+
+--- apply-update with the update PENDING, answering 'нет' (must cancel, tag must stay v1.0.0) ---
+
+Your own copy has local changes that the update would touch. Nothing was
+overwritten. Here is exactly what differs:
+ M README.md
+Apply this update now? Type "yes" to confirm, anything else cancels:   update cancelled — nothing changed
+
+cancel check: confirm prompt reached: yes; cancelled message shown: yes; framework_tag still v1.0.0: yes
+
+--- apply-update, answering 'да' (yes) ---
+
+Your own copy has local changes that the update would touch. Nothing was
+overwritten. Here is exactly what differs:
+ M README.md
+Apply this update now? Type "yes" to confirm, anything else cancels:   update applied: v1.0.0 -> v1.1.0. A record was written to: /private/tmp/qroky-install-dry-run.wHmxkU/w1/decisions/UPDATE-2026-07-10-v1.1.0.md
+
+--- state after apply ---
+{
+  "version": 1,
+  "generated_at": "2026-07-10T17:02:11Z",
+  "answer_language": "en",
+  "answer_workdir": "/private/tmp/qroky-install-dry-run.wHmxkU/w1",
+  "answer_telegram_optin": "yes",
+  "answer_telegram_token_stored": "yes",
+  "answer_telegram_bound": "yes",
+  "answer_machinewide_optin": "no",
+  "answer_telemetry_optin": "no",
+  "answer_heartbeat_optin": "yes",
+  "answer_backup_optin": "no",
+  "step_language": "done",
+  "step_workdir": "done",
+  "step_framework": "done",
+  "step_gesture": "done",
+  "step_claude_code": "done",
+  "step_subscription": "done",
+  "step_telegram": "done",
+  "step_telemetry": "done",
+  "step_heartbeat": "done",
+  "step_backup": "done",
+  "step_machinewide": "done",
+  "backup_repo": "",
+  "framework_source": "/private/tmp/qroky-install-dry-run.wHmxkU/fake-framework-origin",
+  "framework_ref": "85bd2c434df23133a95fd62720234c85e302f3e2",
+  "framework_tag": "v1.1.0"
+}
+
+--- decisions record ---
+# Framework update applied
+
+- From: v1.0.0 (dadd579751003f23e8244402994cfb5820e07e37)
+- To: v1.1.0 (85bd2c434df23133a95fd62720234c85e302f3e2)
+- Confirmed by: you (explicit yes), 2026-07-10T17:02:11Z
+- Local edits: local edits re-applied cleanly after the update
+
+v1.1.0
+
+fixes the stub thing
+improves the other stub thing
+adds a third stub improvement
+
+all 3 changelog lines reached the digest: yes
+PROVENANCE.md false-alarm lines in conflict displays (must be 0): 0

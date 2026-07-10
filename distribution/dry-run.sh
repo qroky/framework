@@ -13,13 +13,21 @@
 # permission) and the wall-clock timing of the full-clean-run scenario.
 #
 # What is STUBBED, and how (all sandbox-only, zero effect on a real
-# install.sh — see its own header comment for the two extra in-script test
-# hooks, QROKY_TEST_STUBS and QROKY_TEST_DELAY_*):
+# install.sh — see its own header comment for the in-script test hooks,
+# QROKY_TEST_STUBS, QROKY_TEST_DELAY_* and QROKY_TEST_START_WAIT):
 #   - `claude`      — a two-line fake answering only --version (071 pattern)
-#   - `curl`        — a fake answering ONLY Telegram's getMe endpoint (the
-#                     one external call install.sh makes); GOODTOKEN* is
-#                     accepted, anything else is rejected, exactly like the
-#                     real Bot API would reject a bad token
+#   - `curl`        — a fake answering Telegram's getMe, getUpdates and
+#                     sendMessage endpoints (the only external calls the
+#                     v0.2 install.sh makes — same modelling approach as
+#                     the Telegram head's own harness stub); GOODTOKEN* is
+#                     accepted, anything else rejected exactly like the real
+#                     Bot API; getUpdates returns the owner's /start press
+#                     (update_id 111, chat 424242) only while
+#                     QROKY_STUB_TG_START=1 AND the requested offset has not
+#                     advanced past it — so the offset handoff to the head's
+#                     listener is proven for real, not simulated; every
+#                     sendMessage is appended to a sent-log the scenarios
+#                     assert against (the actual hello, not a claim)
 #   - `launchctl`   — a fake that logs bootout/bootstrap calls to a sandbox
 #                     file instead of touching this machine's real launchd
 #                     (a real near-miss during manual smoke-testing is what
@@ -34,8 +42,8 @@
 #                     real founder's https default; see 071's dry-run.sh)
 #
 # Transcripts are written next to this comment's sibling folder
-# (v0.1.2 / ATOM-103 — records live in the CURRENT atom's workspace):
-#   products/distribution-kit-v1/103-gesture-fix/workspace/
+# (v0.2 / ATOM-104 — records live in the CURRENT atom's workspace):
+#   products/distribution-kit-v1/104-installation-journey/workspace/
 #   scenario-1-full-clean-run.txt
 #   scenario-2-kill-mid-install.txt
 #   scenario-3-healthy-rerun.txt
@@ -46,6 +54,8 @@
 #   scenario-8-heartbeat-both-branches.txt
 #   scenario-9-backup-optin-optout.txt
 #   scenario-10-gesture-wiring.txt
+#   scenario-11-telegram-journey.txt
+#   scenario-12-machinewide-both-branches.txt
 #   SUMMARY.txt
 #
 # Usage: ./dry-run.sh   (no arguments; self-contained; safe to re-run)
@@ -53,7 +63,7 @@
 set -uo pipefail   # NOT -e: scenarios intentionally capture non-zero exits
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ATOM_WORKSPACE="$(cd "$HERE/../products/distribution-kit-v1/103-gesture-fix/workspace" && pwd)"
+ATOM_WORKSPACE="$(cd "$HERE/../products/distribution-kit-v1/104-installation-journey/workspace" && pwd)"
 SANDBOX="$(mktemp -d /private/tmp/qroky-install-dry-run.XXXXXX)"
 cleanup() { rm -rf "$SANDBOX"; }
 trap cleanup EXIT
@@ -88,19 +98,60 @@ EOF
 chmod +x "$BIN/claude"
 
 CURL_REAL="$(command -v curl)"
+TG_SENT_LOG="$SANDBOX/tg-sent.log"
+touch "$TG_SENT_LOG"
 cat > "$BIN/curl" <<EOF
 #!/usr/bin/env bash
+# Fake Bot API (v0.2): getMe + getUpdates + sendMessage — the only external
+# calls install.sh makes. Reuses the modelling approach of the Telegram
+# head's harness stub: token checked like the real API, /start delivered as
+# a real update only while QROKY_STUB_TG_START=1 and the requested offset
+# has not advanced past update_id 111, every sendMessage recorded verbatim.
+SENT_LOG="$TG_SENT_LOG"
+URL=""; DATA=(); prev=""
 for a in "\$@"; do
-  case "\$a" in
-    *api.telegram.org/bot*/getMe*)
-      token="\$(printf '%s' "\$a" | sed -E 's#.*/bot([^/]*)/getMe.*#\1#')"
-      case "\$token" in
-        GOODTOKEN*) echo '{"ok":true,"result":{"id":123456789,"username":"qroky_test_bot","first_name":"Qroky Test"}}'; exit 0 ;;
-        *) echo '{"ok":false,"error_code":401,"description":"Unauthorized"}'; exit 0 ;;
-      esac
-      ;;
-  esac
+  case "\$a" in *api.telegram.org*) URL="\$a" ;; esac
+  [[ "\$prev" == "--data-urlencode" ]] && DATA+=("\$a")
+  prev="\$a"
 done
+tg_token_from_url() { printf '%s' "\$URL" | sed -E 's#.*/bot([^/]*)/(getMe|getUpdates|sendMessage).*#\1#'; }
+case "\$URL" in
+  *api.telegram.org/bot*/getMe*)
+    case "\$(tg_token_from_url)" in
+      GOODTOKEN*) echo '{"ok":true,"result":{"id":123456789,"username":"qroky_test_bot","first_name":"Qroky Test"}}' ;;
+      *) echo '{"ok":false,"error_code":401,"description":"Unauthorized"}' ;;
+    esac
+    exit 0 ;;
+  *api.telegram.org/bot*/getUpdates*)
+    case "\$(tg_token_from_url)" in
+      GOODTOKEN*) : ;;
+      *) echo '{"ok":false,"error_code":401,"description":"Unauthorized"}'; exit 0 ;;
+    esac
+    offset=""
+    for d in "\${DATA[@]:-}"; do case "\$d" in offset=*) offset="\${d#offset=}" ;; esac; done
+    [[ "\$URL" == *offset=* ]] && offset="\$(printf '%s' "\$URL" | sed -E 's/.*offset=([0-9]+).*/\1/')"
+    if [[ "\${QROKY_STUB_TG_START:-0}" == "1" ]] && { [[ -z "\$offset" ]] || (( offset <= 111 )); }; then
+      echo '{"ok":true,"result":[{"update_id":111,"message":{"message_id":1,"from":{"id":424242,"is_bot":false,"first_name":"Owner"},"chat":{"id":424242,"type":"private"},"date":1770000000,"text":"/start"}}]}'
+    else
+      echo '{"ok":true,"result":[]}'
+    fi
+    exit 0 ;;
+  *api.telegram.org/bot*/sendMessage*)
+    case "\$(tg_token_from_url)" in
+      GOODTOKEN*) : ;;
+      *) echo '{"ok":false,"error_code":401,"description":"Unauthorized"}'; exit 0 ;;
+    esac
+    chat=""; text=""
+    for d in "\${DATA[@]:-}"; do
+      case "\$d" in
+        chat_id=*) chat="\${d#chat_id=}" ;;
+        text=*) text="\${d#text=}" ;;
+      esac
+    done
+    printf 'sendMessage chat_id=%s text=%s\n' "\$chat" "\$text" >> "\$SENT_LOG"
+    echo '{"ok":true,"result":{"message_id":42}}'
+    exit 0 ;;
+esac
 exec "$CURL_REAL" "\$@"
 EOF
 chmod +x "$BIN/curl"
@@ -182,6 +233,13 @@ echo "# stub framework — dry-run only, not the real rulebook" > "$FAKE_FW/READ
 VENDORED_SKILL="$HERE/../runtime/claude/skill/qroky/SKILL.md"
 mkdir -p "$FAKE_FW/runtime/claude/skill/qroky"
 cp "$VENDORED_SKILL" "$FAKE_FW/runtime/claude/skill/qroky/SKILL.md"
+# v0.2 (ATOM-104): the framework repo also ships the reviewed Telegram head
+# that question 5 deploys — again the REAL files from this repo (listener,
+# digest, lib, send-event, handler, pickup, record-decision, plist
+# templates), so scenario 11's deploy + listener health pass runs the
+# genuine head, byte-identical, against the stubbed Bot API.
+cp -R "$HERE/../runtime/claude/telegram" "$FAKE_FW/runtime/claude/telegram"
+rm -rf "$FAKE_FW/runtime/claude/telegram/state" "$FAKE_FW/runtime/claude/telegram/telegram.log" 2>/dev/null || true
 git -C "$FAKE_FW" -c user.email=dryrun@qroky.local -c user.name="Qroky dry run" add -A
 git -C "$FAKE_FW" -c user.email=dryrun@qroky.local -c user.name="Qroky dry run" commit -q -m "stub commit 1"
 git -C "$FAKE_FW" -c user.email=dryrun@qroky.local -c user.name="Qroky dry run" \
@@ -201,6 +259,11 @@ export PATH="$BIN:$PATH"
 export HOME="$FAKE_HOME"
 export QROKY_FRAMEWORK_SOURCE="$FAKE_FW"
 export QROKY_TEST_STUBS=1
+# v0.2: by default the fake owner presses Start (the stub delivers the
+# /start update), and the honest ~60 s wait is shrunk to 4 s — scenario 11's
+# no-Start branch overrides both in its own subshell.
+export QROKY_STUB_TG_START=1
+export QROKY_TEST_START_WAIT=4
 
 run_install() {
   # $1 = workdir, $2 = stdin content (answers, one per line), $3.. = extra
@@ -221,14 +284,17 @@ run_install() {
 T1="$ATOM_WORKSPACE/scenario-1-full-clean-run.txt"
 W1="$SANDBOX/w1"
 {
-  echo "Scenario 1 — full clean run (H6 baseline, H2 question inventory)"
+  echo "Scenario 1 — full clean run (H6 baseline, H2 question inventory; v0.2 = 9 answers)"
   echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "Command a founder actually types: bash install.sh   (no arguments)"
-  echo "Answers fed (stdin, in order): en / <accept suggested folder> / y / GOODTOKEN123 / n / y"
+  echo "Answers fed (stdin, in order): en / <accept suggested folder> / y (telegram) /"
+  echo "GOODTOKEN123 / n (sharing) / y (digest) / n (backup) / n (machine-wide);"
+  echo "the fake owner presses Start (QROKY_STUB_TG_START=1), so this run also"
+  echo "walks the full bind+hello+deploy path inside question 5."
   echo ""
 } > "$T1"
 START1=$(date +%s)
-OUT1="$(run_install "$W1" $'en\n\ny\nGOODTOKEN123\nn\ny\nn\n')"
+OUT1="$(run_install "$W1" $'en\n\ny\nGOODTOKEN123\nn\ny\nn\nn\n')"
 STATUS1=$?
 END1=$(date +%s)
 ELAPSED1=$((END1 - START1))
@@ -244,6 +310,38 @@ else
   record "1-full-clean-run" FAIL "exit $STATUS1, elapsed ${ELAPSED1}s"
 fi
 
+# --- v0.2 journey checks (GATE-027 findings 2-3): the map, the numbered
+# headers, and the finale copy-paste block with the REAL workdir path
+# substituted (not a placeholder). Each greps the actual founder-facing
+# output; each fails on the v0.1.2 build by construction. ------------------
+MAP_SHOWN1=$(printf '%s' "$OUT1" | grep -c "Here is the whole road" || true)
+MAP_SAYS_9=$(printf '%s' "$OUT1" | grep -c "9 questions" || true)
+HDR_5OF9=$(printf '%s' "$OUT1" | grep -c "Step 5 of 9" || true)
+HDR_9OF9=$(printf '%s' "$OUT1" | grep -c "Step 9 of 9" || true)
+HDR_OF8_LEFTOVER=$(printf '%s' "$OUT1" | grep -c "of 8 —" || true)
+FINALE_CMD1=$(printf '%s' "$OUT1" | grep -cF "cd $W1 && claude" || true)
+FINALE_PHRASE1=$(printf '%s' "$OUT1" | grep -c "qroky start" || true)
+FINALE_VSCODE1=$(printf '%s' "$OUT1" | grep -c "Open Folder" || true)
+FINALE_FIRSTRUN1=$(printf '%s' "$OUT1" | grep -c "color theme" || true)
+{
+  echo ""
+  echo "--- v0.2 journey checks ---"
+  echo "journey map shown on the fresh install: $([[ "$MAP_SHOWN1" -gt 0 ]] && echo yes || echo NO-DEFECT)"
+  echo "map names 9 questions: $([[ "$MAP_SAYS_9" -gt 0 ]] && echo yes || echo NO-DEFECT)"
+  echo "headers say 'of 9' (step 5 seen: $HDR_5OF9, step 9 seen: $HDR_9OF9); leftover 'of 8' headers (must be 0): $HDR_OF8_LEFTOVER"
+  echo "finale copy-paste block carries the REAL workdir path (cd $W1 && claude): $([[ "$FINALE_CMD1" -gt 0 ]] && echo yes || echo NO-DEFECT)"
+  echo "finale says the phrase (qroky start): $([[ "$FINALE_PHRASE1" -gt 0 ]] && echo yes || echo NO-DEFECT)"
+  echo "finale carries the VS Code line: $([[ "$FINALE_VSCODE1" -gt 0 ]] && echo yes || echo NO-DEFECT)"
+  echo "finale warns about claude's own first-run questions: $([[ "$FINALE_FIRSTRUN1" -gt 0 ]] && echo yes || echo NO-DEFECT)"
+} >> "$T1"
+if [[ "$MAP_SHOWN1" -gt 0 && "$MAP_SAYS_9" -gt 0 && "$HDR_5OF9" -gt 0 && "$HDR_9OF9" -gt 0 \
+      && "$HDR_OF8_LEFTOVER" -eq 0 && "$FINALE_CMD1" -gt 0 && "$FINALE_PHRASE1" -gt 0 \
+      && "$FINALE_VSCODE1" -gt 0 && "$FINALE_FIRSTRUN1" -gt 0 ]]; then
+  record "1-journey-map-and-finale" PASS "map up front, 'N of 9' headers, finale = real-path copy-paste block + VS Code + first-run honesty"
+else
+  record "1-journey-map-and-finale" FAIL "map=$MAP_SHOWN1 says9=$MAP_SAYS_9 hdr5=$HDR_5OF9 hdr9=$HDR_9OF9 of8=$HDR_OF8_LEFTOVER cmd=$FINALE_CMD1 phrase=$FINALE_PHRASE1 vscode=$FINALE_VSCODE1 firstrun=$FINALE_FIRSTRUN1"
+fi
+
 # Question inventory (H2, v0.1.1: EIGHT points): every interactive read in
 # the eight step functions is tagged; count call sites vs tags — must match
 # exactly, AND point 8 must actually be present (the amendment's own check
@@ -253,23 +351,23 @@ fi
 # later, not part of the eight-point interview (main_interview).
 {
   echo ""
-  echo "--- Question inventory check (H2: zero questions outside the interview; v0.1.1 = exactly 8 points) ---"
+  echo "--- Question inventory check (H2: zero questions outside the interview; v0.2 = exactly 9 points, NEVER 10+) ---"
   STEP_BLOCK="$(awk '/^step_language\(\)/,/^cmd_enable_heartbeat\(\)/' "$INSTALL")"
   READ_SITES=$(printf '%s' "$STEP_BLOCK" | grep -cE 'read_answer' || true)
   TAGGED_SITES=$(printf '%s' "$STEP_BLOCK" | grep -cE '# IV-POINT:' || true)
-  echo "read_answer call sites inside the eight step_* functions: $READ_SITES"
+  echo "read_answer call sites inside the interview step functions (incl. the shared telegram connect flow): $READ_SITES"
   echo "of those, tagged with # IV-POINT\\:<n>\\:<name>: $TAGGED_SITES"
   DISTINCT_POINTS="$(printf '%s' "$STEP_BLOCK" | grep -oE 'IV-POINT:[0-9]+' | sort -u | tr '\n' ' ')"
-  echo "distinct interview points referenced: $DISTINCT_POINTS(closed list is 1..8)"
-  HAS_POINT8=$(printf '%s' "$STEP_BLOCK" | grep -c 'IV-POINT:8:backup_optin' || true)
+  echo "distinct interview points referenced: $DISTINCT_POINTS(closed list is 1..9)"
+  HAS_POINT9=$(printf '%s' "$STEP_BLOCK" | grep -c 'IV-POINT:9:machinewide_optin' || true)
   MAX_POINT="$(printf '%s' "$STEP_BLOCK" | grep -oE 'IV-POINT:[0-9]+' | sed 's/IV-POINT://' | sort -n | tail -1)"
-  echo "point 8 (backup) present: $([[ "$HAS_POINT8" -gt 0 ]] && echo yes || echo no); highest point referenced: $MAX_POINT (must be 8, never 9+)"
-  if [[ "$READ_SITES" -eq "$TAGGED_SITES" && "$HAS_POINT8" -gt 0 && "$MAX_POINT" == "8" ]]; then
-    echo "PASS — every interactive prompt in the interview is accounted for in the closed list of 8 (v0.1.1)."
-    record "1-question-inventory" PASS "$READ_SITES/$READ_SITES prompts tagged, all within points 1-8, point 8 = backup present, none beyond 8"
+  echo "point 9 (machine-wide) present: $([[ "$HAS_POINT9" -gt 0 ]] && echo yes || echo no); highest point referenced: $MAX_POINT (must be 9, never 10+)"
+  if [[ "$READ_SITES" -eq "$TAGGED_SITES" && "$HAS_POINT9" -gt 0 && "$MAX_POINT" == "9" ]]; then
+    echo "PASS — every interactive prompt in the interview is accounted for in the closed list of 9 (v0.2)."
+    record "1-question-inventory" PASS "$READ_SITES/$READ_SITES prompts tagged, all within points 1-9, point 9 = machine-wide present, none beyond 9"
   else
-    echo "FAIL — an untagged prompt exists, point 8 is missing, or a point beyond 8 was found."
-    record "1-question-inventory" FAIL "$TAGGED_SITES/$READ_SITES prompts tagged, point8=$HAS_POINT8, max=$MAX_POINT"
+    echo "FAIL — an untagged prompt exists, point 9 is missing, or a point beyond 9 was found."
+    record "1-question-inventory" FAIL "$TAGGED_SITES/$READ_SITES prompts tagged, point9=$HAS_POINT9, max=$MAX_POINT"
   fi
 } >> "$T1"
 
@@ -297,7 +395,7 @@ W2="$SANDBOX/w2"
   export QROKY_WORKSPACE_DIR="$W2"
   export QROKY_TEST_DELAY_STEP="telegram"
   export QROKY_TEST_DELAY_SECONDS="15"
-  printf 'en\n\ny\nGOODTOKEN456\nn\ny\nn\n' | "$INSTALL" >> "$T2" 2>&1 &
+  printf 'en\n\ny\nGOODTOKEN456\nn\ny\nn\nn\n' | "$INSTALL" >> "$T2" 2>&1 &
   echo $! > "$SANDBOX/killpid"
 )
 sleep 4
@@ -328,7 +426,7 @@ WORKDIR_DONE_AT_KILL=$(printf '%s' "$STATE_AFTER_KILL" | grep -c '"step_workdir"
   echo ""
   echo "--- RUN B (rerun; language/workdir must NOT be re-asked — telegram, cut down mid-flight, is asked again) ---"
 } >> "$T2"
-OUT2B="$(run_install "$W2" $'n\nn\ny\nn\n')"
+OUT2B="$(run_install "$W2" $'n\nn\ny\nn\nn\n')"
 STATUS2B=$?
 {
   echo "$OUT2B"
@@ -382,14 +480,17 @@ HEALTH_LINES=$(printf '%s' "$OUT3" | grep -c "already set up\|already your Qroky
   echo "--- state diff (excluding the generated_at timestamp, which always updates on commit) ---"
   diff <(printf '%s' "$BEFORE_STATE_NO_TS") <(printf '%s' "$AFTER_STATE_NO_TS") && echo "(no differences — every field identical)"
   echo ""
-  echo "'already done' health-check lines printed: $HEALTH_LINES (expect 9 — one per step incl. the v0.1.2 gesture step)"
+  echo "'already done' health-check lines printed: $HEALTH_LINES (expect 10 — one per step incl. the v0.2 machine-wide question)"
+  echo ""
+  echo "journey map on a healthy RERUN (must be 0 — the map is a fresh-install screen): $(printf '%s' "$OUT3" | grep -c "Here is the whole road" || true)"
 } >> "$T3"
 TREE_DIFF="$(diff <(printf '%s' "$BEFORE_TREE") <(printf '%s' "$AFTER_TREE"))"
 STATE_DIFF="$(diff <(printf '%s' "$BEFORE_STATE_NO_TS") <(printf '%s' "$AFTER_STATE_NO_TS"))"
-if [[ $STATUS3 -eq 0 && -z "$TREE_DIFF" && -z "$STATE_DIFF" ]]; then
-  record "3-healthy-rerun" PASS "exit 0, zero file/state changes, $HEALTH_LINES health-check lines"
+MAP_ON_RERUN3=$(printf '%s' "$OUT3" | grep -c "Here is the whole road" || true)
+if [[ $STATUS3 -eq 0 && -z "$TREE_DIFF" && -z "$STATE_DIFF" && "$MAP_ON_RERUN3" -eq 0 ]]; then
+  record "3-healthy-rerun" PASS "exit 0, zero file/state changes, $HEALTH_LINES health-check lines, no journey map on a rerun"
 else
-  record "3-healthy-rerun" FAIL "exit $STATUS3, tree_diff_empty=$([[ -z "$TREE_DIFF" ]] && echo yes || echo no), state_diff_empty=$([[ -z "$STATE_DIFF" ]] && echo yes || echo no)"
+  record "3-healthy-rerun" FAIL "exit $STATUS3, tree_diff_empty=$([[ -z "$TREE_DIFF" ]] && echo yes || echo no), state_diff_empty=$([[ -z "$STATE_DIFF" ]] && echo yes || echo no), map_on_rerun=$MAP_ON_RERUN3"
 fi
 
 # ---------------------------------------------------------------------------
@@ -462,7 +563,7 @@ W5="$SANDBOX/w5"
   echo ""
   echo "--- RUN 1 ---"
 } > "$T5"
-OUT5A="$(run_install "$W5" $'en\n\nn\nn\ny\nn\n')"; STATUS5A=$?
+OUT5A="$(run_install "$W5" $'en\n\nn\nn\ny\nn\nn\n')"; STATUS5A=$?
 LIST5A="$(find "$W5" -type f | sed "s|$W5/||" | sort)"
 STATE5A="$(grep -v generated_at "$W5/install-state.json")"
 {
@@ -471,7 +572,7 @@ STATE5A="$(grep -v generated_at "$W5/install-state.json")"
   echo ""
   echo "--- RUN 2 (identical answers) ---"
 } >> "$T5"
-OUT5B="$(run_install "$W5" $'en\n\nn\nn\ny\nn\n')"; STATUS5B=$?
+OUT5B="$(run_install "$W5" $'en\n\nn\nn\ny\nn\nn\n')"; STATUS5B=$?
 LIST5B="$(find "$W5" -type f | sed "s|$W5/||" | sort)"
 STATE5B="$(grep -v generated_at "$W5/install-state.json")"
 {
@@ -512,6 +613,11 @@ TOKEN_PLAINTEXT="GOODTOKEN123"
 LEAK_STATE=$(grep -c "$TOKEN_PLAINTEXT" "$W1/install-state.json" 2>/dev/null || true)
 LEAK_LOG=$(grep -c "$TOKEN_PLAINTEXT" "$W1/install.log" 2>/dev/null || true)
 LEAK_TELEMETRY=$(grep -rc "$TOKEN_PLAINTEXT" "$W1/telemetry" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
+# v0.2: the deployed Telegram head's home (profile.conf, wrappers, plists,
+# state, its own telegram.log) must hold the token PATH only, never the
+# token — this dir did not exist before v0.2, so the check is new surface.
+LEAK_TGHOME=$(grep -rc "$TOKEN_PLAINTEXT" "$W1/.qroky/telegram" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
+TGHOME_NONEMPTY=$(find "$W1/.qroky/telegram" -type f 2>/dev/null | wc -l | tr -d ' ')
 LEAK_GIT=$( (cd "$W1" && git grep -c "$TOKEN_PLAINTEXT" $(git rev-list --all 2>/dev/null) 2>/dev/null; cd "$W1/framework" && git grep -c "$TOKEN_PLAINTEXT" $(git rev-list --all 2>/dev/null) 2>/dev/null) | awk -F: '{s+=$NF} END{print s+0}')
 TOKEN_FILE_PERMS="$(stat -f '%Lp' "$W1/.qroky/telegram.token" 2>/dev/null || stat -c '%a' "$W1/.qroky/telegram.token" 2>/dev/null)"
 TOKEN_FILE_CONTENT="$(cat "$W1/.qroky/telegram.token" 2>/dev/null)"
@@ -524,6 +630,7 @@ MASKED_IN_LOG=$(grep -c "TOKEN-STORED masked=\*\*\*\*" "$W1/install.log" 2>/dev/
   echo "grep hits in install-state.json: ${LEAK_STATE:-0}"
   echo "grep hits in install.log: ${LEAK_LOG:-0}"
   echo "grep hits in telemetry/: ${LEAK_TELEMETRY:-0}"
+  echo "grep hits in the deployed head's home .qroky/telegram/ (v0.2; must be 0): ${LEAK_TGHOME:-0} (files checked: $TGHOME_NONEMPTY — non-vacuous)"
   echo "grep hits across all git history (workspace + framework): ${LEAK_GIT:-0}"
   echo ""
   echo "masked-token confirmation line present in install.log (REQUIRED): $([[ "$MASKED_IN_LOG" -gt 0 ]] && echo yes || echo no)"
@@ -531,11 +638,12 @@ MASKED_IN_LOG=$(grep -c "TOKEN-STORED masked=\*\*\*\*" "$W1/install.log" 2>/dev/
   echo "token file contains the real token (expected — this is the ONE sanctioned place): $([[ "$TOKEN_FILE_CONTENT" == "$TOKEN_PLAINTEXT" ]] && echo yes || echo no)"
 } >> "$T6"
 if [[ "${LEAK_STATE:-0}" -eq 0 && "${LEAK_LOG:-0}" -eq 0 && "${LEAK_TELEMETRY:-0}" -eq 0 && "${LEAK_GIT:-0}" -eq 0 \
+      && "${LEAK_TGHOME:-0}" -eq 0 && "$TGHOME_NONEMPTY" -gt 0 \
       && "$MASKED_IN_LOG" -gt 0 \
       && "$TOKEN_FILE_PERMS" == "600" && "$TOKEN_FILE_CONTENT" == "$TOKEN_PLAINTEXT" ]]; then
-  record "6-secrets-negative-grep" PASS "zero raw-token leaks across state/log/telemetry/git; masked line present in log; token file mode 600"
+  record "6-secrets-negative-grep" PASS "zero raw-token leaks across state/log/telemetry/git AND the deployed head's home ($TGHOME_NONEMPTY files, non-vacuous); masked line in log; token file mode 600"
 else
-  record "6-secrets-negative-grep" FAIL "state=$LEAK_STATE log=$LEAK_LOG telemetry=$LEAK_TELEMETRY git=$LEAK_GIT masked_in_log=$MASKED_IN_LOG perms=$TOKEN_FILE_PERMS"
+  record "6-secrets-negative-grep" FAIL "state=$LEAK_STATE log=$LEAK_LOG telemetry=$LEAK_TELEMETRY tghome=$LEAK_TGHOME/$TGHOME_NONEMPTY git=$LEAK_GIT masked_in_log=$MASKED_IN_LOG perms=$TOKEN_FILE_PERMS"
 fi
 
 # ---------------------------------------------------------------------------
@@ -649,7 +757,7 @@ W8NO="$SANDBOX/w8no"
   echo "--- fresh install answering 'y' at the heartbeat question ---"
 } > "$T8"
 : > "$LAUNCHCTL_STATE"
-OUT8Y="$(run_install "$W8YES" $'en\n\nn\nn\ny\nn\n')"
+OUT8Y="$(run_install "$W8YES" $'en\n\nn\nn\ny\nn\nn\n')"
 echo "$OUT8Y" >> "$T8"
 LABEL8Y="$(basename "$(ls "$W8YES"/.qroky/launchd/*.plist 2>/dev/null | head -1)" .plist)"
 BOOTSTRAPPED_Y=$(grep -c "bootstrap.*$LABEL8Y" "$LAUNCHCTL_STATE" 2>/dev/null || true)
@@ -661,7 +769,7 @@ BOOTSTRAPPED_Y=$(grep -c "bootstrap.*$LABEL8Y" "$LAUNCHCTL_STATE" 2>/dev/null ||
   echo "--- fresh install answering 'n' at the heartbeat question ---"
 } >> "$T8"
 : > "$LAUNCHCTL_STATE"
-OUT8N="$(run_install "$W8NO" $'en\n\nn\nn\nn\nn\n')"
+OUT8N="$(run_install "$W8NO" $'en\n\nn\nn\nn\nn\nn\n')"
 echo "$OUT8N" >> "$T8"
 LABEL8N="$(basename "$(ls "$W8NO"/.qroky/launchd/*.plist 2>/dev/null | head -1)" .plist)"
 BOOTSTRAPPED_N=$(grep -c "bootstrap" "$LAUNCHCTL_STATE" 2>/dev/null || true)
@@ -705,7 +813,7 @@ rm -f "$FAKE_GH_STATE/authed"   # start un-authed so the walkthrough path runs
   echo ""
   echo "--- OPT-IN branch: fresh install, Telegram token $BACKUP_TOKEN stored, backup = yes ---"
 } > "$T9"
-OUT9A="$(run_install "$W9A" $'en\n\ny\nGOODTOKEN789\nn\nn\ny\n')"
+OUT9A="$(run_install "$W9A" $'en\n\ny\nGOODTOKEN789\nn\nn\ny\nn\n')"
 STATUS9A=$?
 echo "$OUT9A" >> "$T9"
 STATE9A="$(cat "$W9A/install-state.json" 2>/dev/null || echo MISSING)"
@@ -741,7 +849,7 @@ fi
   echo "--- OPT-OUT branch: fresh install, backup = no ---"
 } >> "$T9"
 REPOS_BEFORE9B=$(ls -d "$FAKE_GITHUB"/*.git 2>/dev/null | wc -l | tr -d ' ')
-OUT9B="$(run_install "$W9B" $'en\n\nn\nn\nn\nn\n')"
+OUT9B="$(run_install "$W9B" $'en\n\nn\nn\nn\nn\nn\n')"
 STATUS9B=$?
 echo "$OUT9B" >> "$T9"
 REPOS_AFTER9B=$(ls -d "$FAKE_GITHUB"/*.git 2>/dev/null | wc -l | tr -d ' ')
@@ -792,7 +900,7 @@ W10="$SANDBOX/w10"
   echo ""
   echo "--- RUN 1 (fresh install) ---"
 } > "$T10"
-OUT10A="$(run_install "$W10" $'en\n\nn\nn\ny\nn\n')"
+OUT10A="$(run_install "$W10" $'en\n\nn\nn\ny\nn\nn\n')"
 STATUS10A=$?
 {
   echo "$OUT10A"
@@ -840,6 +948,232 @@ if [[ $STATUS10A -eq 0 && $STATUS10B -eq 0 && $SKILL_EXISTS10 -eq 1 \
   record "10-gesture-wiring" PASS "skill file landed non-empty, ONE trigger block after re-run, workdir copy identical to vendored source, default workdir outside the clone"
 else
   record "10-gesture-wiring" FAIL "exit_a=$STATUS10A exit_b=$STATUS10B skill=$SKILL_EXISTS10 markers_run1=$MARKERS_RUN1 markers_run2=$MARKERS_RUN2 trigger_ref=$TRIGGER_MENTIONS_SKILL10 md5_stable=$([[ "$SKILL_MD5_RUN1" == "$SKILL_MD5_RUN2" ]] && echo yes || echo no) vendor_diff_empty=$([[ -z "$VENDOR_DIFF10" ]] && echo yes || echo no) default_outside=$DEFAULT_OUTSIDE10"
+fi
+
+# ---------------------------------------------------------------------------
+# SCENARIO 11 — the Telegram journey (v0.2, ATOM-104, GATE-027 finding 1:
+# «дал ключ, но ничего не произошло»). Two branches.
+# Branch A (Start pressed): token accepted -> installer catches the /start
+# press from the stub -> chat_id BOUND in the head's own state file ->
+# offset handed off past the consumed update -> the hello ACTUALLY sent
+# (asserted in the stub's sent-log, not claimed) -> head deployed:
+# profile.conf points at the kit's token file, wrappers + BOTH plists
+# rendered and bootstrapped, one listener pass healthy.
+# Branch B (Start never pressed): honest timeout -> token stays stored,
+# head NOT deployed, install CONTINUES to a green finish -> then the
+# documented one command (--enable-telegram) genuinely completes the whole
+# loop end-to-end. Every assertion fails on the v0.1.2 build by construction.
+# ---------------------------------------------------------------------------
+T11="$ATOM_WORKSPACE/scenario-11-telegram-journey.txt"
+W11A="$SANDBOX/w11a"
+W11B="$SANDBOX/w11b"
+{
+  echo "Scenario 11 — Telegram journey (v0.2): «дал ключ — бот пнул», both branches"
+  echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "Stub: getUpdates delivers the owner's /start (update_id 111, chat 424242)"
+  echo "only while QROKY_STUB_TG_START=1 and offset <= 111; every sendMessage is"
+  echo "recorded verbatim in tg-sent.log. QROKY_TEST_START_WAIT=4 shrinks the"
+  echo "honest 60 s wait for the harness."
+  echo ""
+  echo "--- BRANCH A: token + Start pressed ---"
+} > "$T11"
+: > "$LAUNCHCTL_STATE"
+SENT_BEFORE_A=$(wc -l < "$TG_SENT_LOG" | tr -d ' ')
+OUT11A="$(run_install "$W11A" $'en\n\ny\nGOODTOKEN111\nn\nn\nn\nn\n')"
+STATUS11A=$?
+SENT_AFTER_A=$(wc -l < "$TG_SENT_LOG" | tr -d ' ')
+SENT_DURING_A=$((SENT_AFTER_A - SENT_BEFORE_A))
+echo "$OUT11A" >> "$T11"
+TGH11="$W11A/.qroky/telegram"
+CHATID11="$(cat "$TGH11/state/chat_id" 2>/dev/null || echo MISSING)"
+OFFSET11="$(cat "$TGH11/state/offset" 2>/dev/null || echo MISSING)"
+HELLO_LOGGED11=0
+if [[ "$SENT_DURING_A" -gt 0 ]]; then
+  HELLO_LOGGED11=$(tail -n "$SENT_DURING_A" "$TG_SENT_LOG" 2>/dev/null | grep -c "chat_id=424242 text=I am connected" || true)
+fi
+PROFILE_TOKENPATH11=$(grep -c "TOKEN_FILE=\"$W11A/.qroky/telegram.token\"" "$TGH11/profile.conf" 2>/dev/null || true)
+PROFILE_DIGEST11=$(grep -c 'DIGEST_TIME="09:05"' "$TGH11/profile.conf" 2>/dev/null || true)
+PROFILE_QUIET11=$(grep -c 'QUIET_START="23:00"' "$TGH11/profile.conf" 2>/dev/null || true)
+WRAPPERS11=0
+[[ -x "$TGH11/run-listener.sh" && -x "$TGH11/run-digest.sh" ]] && WRAPPERS11=1
+PLISTS11=$(ls "$TGH11"/launchd/md.qroky.telegram.*.plist 2>/dev/null | wc -l | tr -d ' ')
+BOOT_LISTENER11=$(grep -c "bootstrap.*md.qroky.telegram.listener" "$LAUNCHCTL_STATE" 2>/dev/null || true)
+BOOT_DIGEST11=$(grep -c "bootstrap.*md.qroky.telegram.digest" "$LAUNCHCTL_STATE" 2>/dev/null || true)
+LISTENER_OK11=$(grep -c "LISTENER-PASS-OK" "$W11A/install.log" 2>/dev/null || true)
+PRESS_PROMPT11=$(printf '%s' "$OUT11A" | grep -c "press Start" || true)
+BOT_NAMED11=$(printf '%s' "$OUT11A" | grep -c "@qroky_test_bot" || true)
+DIGEST_PREMARK11=$(ls "$TGH11"/state/digest-sent-* 2>/dev/null | wc -l | tr -d ' ')
+{
+  echo ""
+  echo "--- branch A assertions ---"
+  echo "exit code: $STATUS11A"
+  echo "press-Start prompt shown, bot named: prompt=$PRESS_PROMPT11 named=$BOT_NAMED11"
+  echo "chat_id bound in the HEAD's state file (must be 424242): $CHATID11"
+  echo "offset handed off past the consumed /start (must be 111): $OFFSET11"
+  echo "hello ACTUALLY sent (stub sent-log, this run): $HELLO_LOGGED11 (sends during run: $SENT_DURING_A — must be exactly 1: the hello, and nothing else)"
+  echo "profile.conf points at the kit's token file: $PROFILE_TOKENPATH11; digest 09:05: $PROFILE_DIGEST11; quiet 23:00: $PROFILE_QUIET11"
+  echo "wrapper scripts present + executable: $([[ $WRAPPERS11 -eq 1 ]] && echo yes || echo NO-DEFECT)"
+  echo "plists rendered (must be 2): $PLISTS11; bootstrapped: listener=$BOOT_LISTENER11 digest=$BOOT_DIGEST11"
+  echo "one listener pass health-checked OK (install.log): $LISTENER_OK11"
+  echo "today's digest pre-marked (first digest arrives next morning, as the hello says): $DIGEST_PREMARK11"
+  echo ""
+  echo "--- BRANCH B: token given, Start NEVER pressed (stub delivers nothing) ---"
+} >> "$T11"
+: > "$LAUNCHCTL_STATE"
+OUT11B="$( ( export QROKY_STUB_TG_START=0; run_install "$W11B" $'en\n\ny\nGOODTOKEN222\nn\nn\nn\nn\n' ) )"
+STATUS11B=$?
+echo "$OUT11B" >> "$T11"
+HONEST11B=$(printf '%s' "$OUT11B" | grep -c "nobody pressed Start" || true)
+ENABLE_LATER11B=$(printf '%s' "$OUT11B" | grep -c -- "--enable-telegram" || true)
+TOKEN_KEPT11B=0; [[ -s "$W11B/.qroky/telegram.token" ]] && TOKEN_KEPT11B=1
+DEPLOYED11B=0; [[ -f "$W11B/.qroky/telegram/profile.conf" ]] && DEPLOYED11B=1
+BOOT11B=$(grep -c "bootstrap.*md.qroky.telegram" "$LAUNCHCTL_STATE" 2>/dev/null || true)
+BOUND11B=$(grep -c '"answer_telegram_bound": "no"' "$W11B/install-state.json" 2>/dev/null || true)
+FINALE11B=$(printf '%s' "$OUT11B" | grep -cF "cd $W11B && claude" || true)
+{
+  echo ""
+  echo "--- branch B assertions (timeout path) ---"
+  echo "exit code (install must CONTINUE to green): $STATUS11B"
+  echo "honest no-Start line shown: $HONEST11B; enable-later command named: $ENABLE_LATER11B"
+  echo "token kept for later: $TOKEN_KEPT11B; state records bound=no: $BOUND11B"
+  echo "head NOT deployed (no half-alive unbound listener): profile.conf absent: $([[ $DEPLOYED11B -eq 0 ]] && echo yes || echo NO-DEFECT); telegram bootstraps this run (must be 0): $BOOT11B"
+  echo "finale still reached with the real path: $FINALE11B"
+  echo ""
+  echo "--- BRANCH B part 2: bash install.sh --enable-telegram (Start pressed now) completes the loop ---"
+} >> "$T11"
+SENT_BEFORE_B2=$(wc -l < "$TG_SENT_LOG" | tr -d ' ')
+OUT11B2="$(run_install "$W11B" '' --enable-telegram)"
+STATUS11B2=$?
+SENT_AFTER_B2=$(wc -l < "$TG_SENT_LOG" | tr -d ' ')
+SENT_DURING_B2=$((SENT_AFTER_B2 - SENT_BEFORE_B2))
+echo "$OUT11B2" >> "$T11"
+CHATID11B2="$(cat "$W11B/.qroky/telegram/state/chat_id" 2>/dev/null || echo MISSING)"
+DEPLOYED11B2=0; [[ -f "$W11B/.qroky/telegram/profile.conf" ]] && DEPLOYED11B2=1
+HELLO11B2=0
+if [[ "$SENT_DURING_B2" -gt 0 ]]; then
+  HELLO11B2=$(tail -n "$SENT_DURING_B2" "$TG_SENT_LOG" 2>/dev/null | grep -c "chat_id=424242 text=I am connected" || true)
+fi
+REASKED_TOKEN11B2=$(printf '%s' "$OUT11B2" | grep -c "Paste the token here" || true)
+{
+  echo ""
+  echo "--- branch B part 2 assertions ---"
+  echo "exit code: $STATUS11B2"
+  echo "stored token REUSED, not re-asked: $([[ $REASKED_TOKEN11B2 -eq 0 ]] && echo yes || echo NO-DEFECT)"
+  echo "chat_id now bound: $CHATID11B2; head now deployed: $DEPLOYED11B2; hello sent: $HELLO11B2"
+} >> "$T11"
+
+if [[ $STATUS11A -eq 0 && "$CHATID11" == "424242" && "$OFFSET11" == "111" \
+      && "$HELLO_LOGGED11" -eq 1 && "$SENT_DURING_A" -eq 1 \
+      && "$PRESS_PROMPT11" -gt 0 && "$BOT_NAMED11" -gt 0 \
+      && "$PROFILE_TOKENPATH11" -gt 0 && "$PROFILE_DIGEST11" -gt 0 && "$PROFILE_QUIET11" -gt 0 \
+      && $WRAPPERS11 -eq 1 && "$PLISTS11" == "2" \
+      && "$BOOT_LISTENER11" -gt 0 && "$BOOT_DIGEST11" -gt 0 \
+      && "$LISTENER_OK11" -gt 0 && "$DIGEST_PREMARK11" -gt 0 \
+      && $STATUS11B -eq 0 && "$HONEST11B" -gt 0 && "$ENABLE_LATER11B" -gt 0 \
+      && $TOKEN_KEPT11B -eq 1 && "$BOUND11B" -gt 0 && $DEPLOYED11B -eq 0 && "$BOOT11B" -eq 0 \
+      && "$FINALE11B" -gt 0 \
+      && $STATUS11B2 -eq 0 && "$CHATID11B2" == "424242" && $DEPLOYED11B2 -eq 1 \
+      && "$HELLO11B2" -eq 1 && "$REASKED_TOKEN11B2" -eq 0 ]]; then
+  record "11-telegram-journey" PASS "A: Start caught, bound 424242, offset 111, hello really sent (exactly 1 send), head deployed (profile+wrappers+2 plists+bootstrap), listener pass OK, digest pre-marked; B: honest timeout, no deploy, install green, --enable-telegram then completes bind+hello+deploy reusing the stored token"
+else
+  record "11-telegram-journey" FAIL "a_exit=$STATUS11A chat=$CHATID11 off=$OFFSET11 hello=$HELLO_LOGGED11 sends=$SENT_DURING_A prompt=$PRESS_PROMPT11 named=$BOT_NAMED11 prof=$PROFILE_TOKENPATH11/$PROFILE_DIGEST11/$PROFILE_QUIET11 wrap=$WRAPPERS11 plists=$PLISTS11 boot=$BOOT_LISTENER11/$BOOT_DIGEST11 pass=$LISTENER_OK11 premark=$DIGEST_PREMARK11 b_exit=$STATUS11B honest=$HONEST11B later=$ENABLE_LATER11B tok=$TOKEN_KEPT11B bound_no=$BOUND11B dep=$DEPLOYED11B boot_b=$BOOT11B finale=$FINALE11B b2_exit=$STATUS11B2 b2_chat=$CHATID11B2 b2_dep=$DEPLOYED11B2 b2_hello=$HELLO11B2 b2_reask=$REASKED_TOKEN11B2"
+fi
+
+# ---------------------------------------------------------------------------
+# SCENARIO 12 — machine-wide gesture, both branches (v0.2, ATOM-104,
+# GATE-028 «да, спрашивать при установке»). Each branch runs against its OWN
+# fake HOME so the ~-writes are provable by exhaustive listing.
+# «Да»: EXACTLY two files appear under fake-HOME/.claude — the skill copy
+# (byte-identical to the vendored source, which must carry the recorded I3
+# exception) and CLAUDE.md with exactly ONE marker block; a re-run changes
+# nothing (marker still 1, hash stable, still exactly two files).
+# «Нет» (Enter): fake HOME untouched — and this negative assert is
+# non-vacuous because the yes-branch just proved the same machinery writes
+# when told to.
+# ---------------------------------------------------------------------------
+T12="$ATOM_WORKSPACE/scenario-12-machinewide-both-branches.txt"
+W12A="$SANDBOX/w12a"
+W12B="$SANDBOX/w12b"
+HOME_C="$SANDBOX/home-mw-yes"
+HOME_D="$SANDBOX/home-mw-no"
+for h in "$HOME_C" "$HOME_D"; do
+  mkdir -p "$h"
+  git config --file "$h/.gitconfig" protocol.file.allow always
+  git config --file "$h/.gitconfig" user.email "dryrun@qroky.local"
+  git config --file "$h/.gitconfig" user.name "Qroky dry run"
+done
+{
+  echo "Scenario 12 — machine-wide gesture opt-in/opt-out (v0.2, question 9)"
+  echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "Each branch gets its own fake HOME; the '~-writes' are proven by"
+  echo "exhaustively listing every file under it."
+  echo ""
+  echo "--- YES branch (fake HOME: $HOME_C) ---"
+} > "$T12"
+OUT12A="$( ( export HOME="$HOME_C"; run_install "$W12A" $'en\n\nn\nn\nn\nn\ny\n' ) )"
+STATUS12A=$?
+echo "$OUT12A" >> "$T12"
+MW_SKILL="$HOME_C/.claude/skills/qroky/SKILL.md"
+MW_CLAUDEMD="$HOME_C/.claude/CLAUDE.md"
+FILES_UNDER_CLAUDE_A=$(find "$HOME_C/.claude" -type f 2>/dev/null | wc -l | tr -d ' ')
+FILES_UNDER_HOME_A=$(find "$HOME_C" -type f 2>/dev/null | wc -l | tr -d ' ')
+MARKERS_A1=$(grep -cF '<!-- qroky-machinewide:start -->' "$MW_CLAUDEMD" 2>/dev/null || true)
+SKILL_DIFF12="$(diff "$VENDORED_SKILL" "$MW_SKILL" 2>&1)"
+I3_EXCEPTION12=$(grep -c "GATE-028" "$MW_SKILL" 2>/dev/null || true)
+REMOVAL_NAMED12=$(printf '%s' "$OUT12A" | grep -c "to remove, delete them" || true)
+SKILL_MD5_A1="$( (md5 -q "$MW_SKILL" 2>/dev/null || md5sum "$MW_SKILL" 2>/dev/null | cut -d' ' -f1) || true)"
+{
+  echo ""
+  echo "--- YES branch, re-run (idempotency: still exactly two files, ONE marker) ---"
+} >> "$T12"
+OUT12A2="$( ( export HOME="$HOME_C"; run_install "$W12A" '' ) )"
+STATUS12A2=$?
+echo "$OUT12A2" >> "$T12"
+MARKERS_A2=$(grep -cF '<!-- qroky-machinewide:start -->' "$MW_CLAUDEMD" 2>/dev/null || true)
+FILES_UNDER_CLAUDE_A2=$(find "$HOME_C/.claude" -type f 2>/dev/null | wc -l | tr -d ' ')
+SKILL_MD5_A2="$( (md5 -q "$MW_SKILL" 2>/dev/null || md5sum "$MW_SKILL" 2>/dev/null | cut -d' ' -f1) || true)"
+{
+  echo ""
+  echo "--- YES branch assertions ---"
+  echo "exit codes: run1=$STATUS12A rerun=$STATUS12A2"
+  echo "files under fake-HOME/.claude after run 1 (must be EXACTLY 2): $FILES_UNDER_CLAUDE_A"
+  echo "total files under fake HOME (must be 3: .gitconfig + the two): $FILES_UNDER_HOME_A"
+  echo "full listing of every file under the fake HOME:"
+  find "$HOME_C" -type f | sed "s|$HOME_C|~|"
+  echo "marker blocks in ~/.claude/CLAUDE.md after run 1 (must be 1): $MARKERS_A1; after re-run (must still be 1): $MARKERS_A2"
+  echo "files under .claude after re-run (must still be 2): $FILES_UNDER_CLAUDE_A2"
+  echo "skill copy byte-identical to the vendored source: $([[ -z "$SKILL_DIFF12" ]] && echo yes || echo NO-DEFECT)"
+  echo "skill copy carries the recorded I3 exception (GATE-028): $I3_EXCEPTION12"
+  echo "removal paths named to the human: $REMOVAL_NAMED12"
+  echo "skill hash stable across the re-run: $([[ -n "$SKILL_MD5_A1" && "$SKILL_MD5_A1" == "$SKILL_MD5_A2" ]] && echo yes || echo NO-DEFECT)"
+  echo ""
+  echo "--- NO branch (Enter; fake HOME: $HOME_D) ---"
+} >> "$T12"
+OUT12B="$( ( export HOME="$HOME_D"; run_install "$W12B" $'en\n\nn\nn\nn\nn\n\n' ) )"
+STATUS12B=$?
+echo "$OUT12B" >> "$T12"
+FILES_UNDER_HOME_B=$(find "$HOME_D" -type f 2>/dev/null | wc -l | tr -d ' ')
+CLAUDE_DIR_B=0; [[ -e "$HOME_D/.claude" ]] && CLAUDE_DIR_B=1
+PROJECT_ONLY_LINE_B=$(printf '%s' "$OUT12B" | grep -c "working folder only" || true)
+{
+  echo ""
+  echo "--- NO branch assertions ---"
+  echo "exit code: $STATUS12B"
+  echo "fake HOME untouched — total files (must be 1, the .gitconfig): $FILES_UNDER_HOME_B"
+  echo "~/.claude exists (must be no): $([[ $CLAUDE_DIR_B -eq 0 ]] && echo no || echo YES-DEFECT)"
+  echo "project-only choice acknowledged: $PROJECT_ONLY_LINE_B"
+  echo "(non-vacuous: the YES branch above proved this same machinery writes when told to)"
+} >> "$T12"
+if [[ $STATUS12A -eq 0 && $STATUS12A2 -eq 0 \
+      && "$FILES_UNDER_CLAUDE_A" == "2" && "$FILES_UNDER_HOME_A" == "3" \
+      && "$MARKERS_A1" -eq 1 && "$MARKERS_A2" -eq 1 && "$FILES_UNDER_CLAUDE_A2" == "2" \
+      && -z "$SKILL_DIFF12" && "$I3_EXCEPTION12" -gt 0 && "$REMOVAL_NAMED12" -gt 0 \
+      && -n "$SKILL_MD5_A1" && "$SKILL_MD5_A1" == "$SKILL_MD5_A2" \
+      && $STATUS12B -eq 0 && "$FILES_UNDER_HOME_B" == "1" && $CLAUDE_DIR_B -eq 0 \
+      && "$PROJECT_ONLY_LINE_B" -gt 0 ]]; then
+  record "12-machinewide-both-branches" PASS "yes: exactly 2 files under ~/.claude, one marker after re-run, skill identical to vendored (I3 exception aboard), removal named; no: fake HOME untouched (negative assert non-vacuous)"
+else
+  record "12-machinewide-both-branches" FAIL "a=$STATUS12A a2=$STATUS12A2 claude_files=$FILES_UNDER_CLAUDE_A/$FILES_UNDER_CLAUDE_A2 home_files=$FILES_UNDER_HOME_A markers=$MARKERS_A1/$MARKERS_A2 diff_empty=$([[ -z "$SKILL_DIFF12" ]] && echo yes || echo no) i3=$I3_EXCEPTION12 removal=$REMOVAL_NAMED12 md5=$([[ "$SKILL_MD5_A1" == "$SKILL_MD5_A2" ]] && echo stable || echo CHANGED) b=$STATUS12B b_files=$FILES_UNDER_HOME_B b_claude=$CLAUDE_DIR_B b_ack=$PROJECT_ONLY_LINE_B"
 fi
 
 # ---------------------------------------------------------------------------

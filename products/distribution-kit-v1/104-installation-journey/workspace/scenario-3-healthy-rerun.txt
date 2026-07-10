@@ -1,0 +1,70 @@
+Scenario 3 — rerun on the already-healthy Scenario-1 workspace
+Generated: 2026-07-10T17:02:07Z
+No answers should be needed — every step is already 'done'.
+
+== Qroky setup ==
+
+Step 1 of 9 — choose your language
+  language set: en
+
+Step 2 of 9 — choose your working folder
+  this folder is already your Qroky workspace — reusing it
+
+Step 3 of 9 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  the rulebook is already in place — nothing to do (health check)
+  the starting phrase is already in place — nothing to do (health check)
+
+Step 4 of 9 — check your subscription
+  already set up — nothing to do (health check)
+
+Step 5 of 9 — connect Telegram (optional)
+  already set up — nothing to do (health check)
+
+Step 6 of 9 — daily support sharing (optional)
+  already set up — nothing to do (health check)
+
+Step 7 of 9 — morning digest (optional)
+  already set up — nothing to do (health check)
+
+Step 8 of 9 — backup to your own GitHub (optional)
+  already set up — nothing to do (health check)
+
+Step 9 of 9 — starting phrase everywhere on this machine (optional)
+  already set up — nothing to do (health check)
+
+
+== Setup finished. Nothing failed. ==
+
+Copy-paste this into your terminal:
+
+    cd /private/tmp/qroky-install-dry-run.wHmxkU/w1 && claude
+
+then say:
+
+    qroky start
+
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.wHmxkU/w1 → start a new chat — same phrase.)
+
+One honest note: the FIRST time claude starts, it asks a couple of its own
+questions (color theme, login) — that is normal; answer them and continue.
+Your first 5 minutes are described in the README next to this installer
+("Your first 5 minutes").
+
+A note on responsibility: the system produces drafts and analysis; legal,
+financial, and medical decisions and signatures are always made by a human.
+Not professional advice.
+
+(total elapsed: 0s)
+
+--- exit code: 0 ---
+
+--- file tree diff (content hashes, excluding install.log which is append-only by design) ---
+(no differences — no file content changed)
+
+--- state diff (excluding the generated_at timestamp, which always updates on commit) ---
+(no differences — every field identical)
+
+'already done' health-check lines printed: 10 (expect 10 — one per step incl. the v0.2 machine-wide question)
+
+journey map on a healthy RERUN (must be 0 — the map is a fresh-install screen): 0

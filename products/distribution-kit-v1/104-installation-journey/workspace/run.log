@@ -1,0 +1,126 @@
+# run.log — ATOM-104 (kit v0.2, installation journey) — pilot-toolsmith (warm)
+# Contract: 104-installation-journey/INPUT.md; mandate GATE-027 (CEO G2 return, verbatim ×3) + GATE-028 (go).
+# Acceptance bar = the CEO's own sentences: «понятно, что делать и в каком порядке»; «дал ключ — бот пнул».
+
+2026-07-10 breath: core-card reread, phase formulate
+
+## Understanding restatement (before any build)
+The kit passed machines and failed the human. Three causes, three fixes plus one follow-up:
+1. «Дал ключ, но ничего не произошло» → question 5 must CLOSE THE LOOP inside itself:
+   token → «нажмите Start» → getUpdates poll (~60s honest) → chat_id captured = the head's
+   H4 binding → the bot IMMEDIATELY says «я на связи; утром пришлю первый дайджест» →
+   the r3-accepted head deployed (profile.conf + both plists + one healthy listener pass).
+   Skip = zero effort, stated FIRST.
+2. No journey map → first screen: «9 вопросов → ~3 минуты → в конце две строки»; headers «N из 9».
+3. Finale abandoned → READY copy-paste block with the REAL workdir (`cd <workdir> && claude`,
+   «скажите: qroky start») + VS Code line + honesty about claude's own first-run questions.
+4. GATE-028 «да, спрашивать при установке» → question 9: machine-wide gesture opt-in,
+   exactly two files under ~/.claude, idempotent, removable; I3 amended in the VENDORED skill.
+
+## Design decisions (locked, each declared — not silent)
+D1. Head gets ZERO edits. TG_HOME = <workdir>/.qroky/telegram/ — NOT inside framework/
+    (state/log inside the vendored checkout would raise phantom «local changes» on every
+    update; the F3 lesson). Wiring = profile.conf rendered there + two wrapper scripts
+    (export QROKY_TG_HOME/QROKY_TG_ROOT, exec the head's own listener.sh/digest.sh
+    unmodified) + two KIT-RENDERED plists pointing at the wrappers. The head's own
+    install.sh is not called: its --bind is interactive (read -r) and its plists would
+    home state inside framework/. Both plists ARE installed; the head's SCRIPTS run
+    byte-identical. DECLARED LOUDLY here and in RESULT.md per INPUT §6.
+D2. Binding = write state/chat_id (tmp+mv) — the exact file the head's bound_chat_id()
+    reads: this IS the head's H4 binding, done non-interactively by the installer.
+    Offset handoff: the consumed /start update_id is written to state/offset so the
+    listener's first pass does NOT re-process the owner's Start press.
+D3. Today's digest-sent-<date> marker is pre-written before the health-check pass:
+    the listener's M4 safety net would otherwise fire a digest AT INSTALL TIME whenever
+    the install happens after 09:05 — contradicting the hello's own promise «утром
+    пришлю первый дайджест». First digest genuinely arrives next morning.
+D4. Timeout / Start never pressed → token stays stored, head NOT deployed (stricter S6
+    reading of INPUT §1: a bound-to-nobody listener polling every 30s is a half-alive
+    state the founder cannot see). One command completes everything later:
+    bash install.sh --enable-telegram (mirrors --enable-heartbeat, as INPUT asks).
+D5. The installer speaks Bot API directly via curl for getMe/getUpdates/sendMessage —
+    lib.sh is NOT sourced into install.sh (both define log(); a source would silently
+    shadow one of them). Token handling identical to v0.1.x: file mode 600, masked
+    everywhere, negative grep stays the harness gate.
+D6. chat_id parse: sed/grep over the Bot API's machine-generated compact JSON
+    ("chat":{"id":N) — keeps the kit's H1 dependency contract (bash+POSIX+curl+git,
+    no python requirement in the interview path). The head keeps its python parser.
+D7. New sandbox-only test hook QROKY_TEST_START_WAIT (seconds; default 60 in
+    production, unset = 60) so the no-Start timeout scenario need not wait a real
+    minute. Same class as QROKY_TEST_DELAY_*; declared in install.sh's header.
+D8. Machine-wide markers: <!-- qroky-machinewide:start/end --> in ~/.claude/CLAUDE.md
+    (created if absent); skill copy cmp -s guarded. ONLY these two paths ever touch ~.
+    Removal = delete the block between markers + delete the skill file; documented in
+    READMEs and in the installer's own confirmation line.
+
+## Harness-checklist (INFO-025) — 9 answers for the v0.2 additions
+1. Failure modes named? — Start never pressed (timeout, honest skip); head absent from
+   older vendored rulebook (degrade + enable-later); sendMessage hello fails (retry
+   ladder then honest line — binding kept, deploy continues); launchctl bootstrap fails
+   (ladder + degrade, install continues); ~/.claude/CLAUDE.md unwritable (loud fail of
+   Q9 only, install continues project-only).
+2. Resume/kill safety? — same state machine: step_telegram/step_machinewide commit
+   'done' only after their work; kill mid-step re-asks that step only (scenario 2 keeps
+   proving it with the delay hook).
+3. Failure ladder? — every new remedy-able action (getUpdates poll, sendMessage,
+   bootstrap) runs ≤2 auto-retries then a concrete human line; the Start-wait itself is
+   a TIMED HONEST WAIT, not a retry loop (waiting longer is not a remedy — a human line
+   with the enable-later command is).
+4. Logs self-contained? — every new log line carries step + outcome; token only masked.
+5. Secrets? — token file remains the ONE sanctioned place; hello/getUpdates URLs never
+   logged raw (curl stderr captured + masked, same as validation); negative grep over
+   state/log/telemetry/git extended to the new flow's transcripts.
+6. Idempotency? — Q9 marker-guarded + cmp; telegram deploy check→do (profile.conf/
+   wrappers/plists rewritten only when differing; binding never overwritten silently);
+   healthy rerun stays a zero-write health check (scenario 3 diff proves it).
+7. Question inventory? — EXACTLY NINE: tags IV-POINT:1..9, hardened count assert
+   updated (point 9 present, max = 9, never 10+).
+8. Real-data perimeter? — harness runs in mktemp sandboxes with fake HOME; the two
+   ~-writes are exercised ONLY against fake HOMEs; nothing sent to real Telegram (stub).
+9. Human hand-off points? — Start press (physical phone action, can't be automated —
+   honest wait + skip); claude's own first-run questions (finale says so honestly);
+   BotFather creation (unchanged walkthrough).
+
+2026-07-10 phase: build begins — install.sh first, then lang ×3, skill I3, READMEs, harness.
+2026-07-10 note: network interruption mid-build (connection closed while inserting harness
+scenarios 11/12) — transcript intact, no work lost; resuming exactly at the dry-run.sh edit.
+2026-07-10 breath: core-card reread, phase execute (post-interruption re-entry)
+
+2026-07-10 build story (condensed):
+- install.sh v0.2: step_telegram rebuilt around _telegram_connect_flow (shared with the new
+  --enable-telegram command): skip-first prompt (Enter = skip, stated FIRST) -> BotFather
+  walkthrough -> live getMe -> token stored (unchanged H4 discipline) -> «нажмите Start»
+  -> _telegram_wait_for_start polls getUpdates every 2 s up to QROKY_TEST_START_WAIT (60 s
+  production) -> chat_id written to the head's state/chat_id + offset handoff (consumed
+  update_id -> state/offset) -> hello sent with ≤2 retries -> _telegram_deploy_head:
+  profile.conf (kit token path, digest 09:05, quiet 23:00-08:00), run-listener.sh/
+  run-digest.sh wrappers (two env lines, exec the head unmodified), digest pre-mark,
+  ONE listener health pass BEFORE launchd, two kit-rendered plists bootstrapped via ladder.
+- step_machinewide (IV-POINT:9): explicit typed yes -> exactly two files under ~/.claude
+  (skill copy cmp-guarded + marker block, created-if-absent CLAUDE.md); failure leaves the
+  step PENDING so «re-run to try again» is a true sentence; Enter/no -> project-only.
+- Journey map (L_JOURNEY_MAP) prints on FRESH installs right after the language question —
+  INTERPRETATION DECLARED: the map must arrive in the human's own language; question 1 is
+  announced as «1 из 9» by its own header, so the road is numbered from the first screen.
+- Finale = copy-paste block with the REAL workdir (`cd <workdir> && claude`), «скажите:
+  qroky start», VS Code line, claude first-run honesty, pointer to README «Первые 5 минут».
+- Vendored skill I3: recorded exception appended (provenance row GATE-028/ATOM-104);
+  author-machine copy is the orchestrator's job, untouched here.
+- READMEs ×3: nine questions, Q5 journey rewrite, Q9, «Первые 5 минут» (one screen: what
+  to say, what happens, what success looks like, where mission/NARRATIVE appear), telegram
+  off/on + machine-wide removal paths in «Не трогайте мой инстанс».
+
+2026-07-10 harness: run 1 = 12/14 — BOTH failures were the new assertions catching real
+conditions (falsifiability proven live, r1-F1 bar):
+  (1) 11-telegram-journey FAILED because the fake framework origin did not ship the head —
+      install.sh degraded honestly via L_TELEGRAM_HEAD_MISSING exactly as designed; fixture
+      extended to carry the REAL runtime/claude/telegram/** so the genuine head deploys.
+  (2) 1-journey-map-and-finale FAILED on a grep spanning a line wrap («its own questions»);
+      assert re-anchored to «color theme». Production code needed NO change for either.
+Run 2 = FULL RE-RUN GREEN: 14/14 (12 scenarios + question inventory + journey checks).
+Spot probes: doubled machinewide marker counts 2 (would FAIL c-assert); an extra file under
+fake-HOME/.claude counts 3 (would FAIL the exactly-2 assert). Scenario 11's «exactly 1 send»
+is armed by the offset guard in the stub — a broken offset handoff re-delivers /start to the
+listener pass and the send count moves.
+2026-07-10 budget checkpoint: ~100k in / ~32k out (~132k of ~150k) — inside envelope, no E4.
+2026-07-10 breath: core-card reread, phase closure

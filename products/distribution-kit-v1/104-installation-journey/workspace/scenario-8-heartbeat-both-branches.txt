@@ -1,0 +1,220 @@
+Scenario 8 — heartbeat consent, both branches (H10)
+Generated: 2026-07-10T17:02:11Z
+
+--- fresh install answering 'y' at the heartbeat question ---
+== Qroky setup ==
+
+Step 1 of 9 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   language set: en
+
+Here is the whole road: 9 questions, about 3 minutes of setup, and at the
+end you get two ready lines to copy-paste for your first conversation.
+Every question says which number it is; optional ones can be skipped with
+a single Enter. Nothing installs behind your back.
+
+Step 2 of 9 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.wHmxkU/w8yes
+>   working folder: /private/tmp/qroky-install-dry-run.wHmxkU/w8yes
+
+Step 3 of 9 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  downloading the rulebook the assistant follows (pinned to one fixed version, so it never changes without asking you)...
+  teaching this folder the starting phrase ("qroky start")...
+  starting phrase wired — a chat opened IN THIS FOLDER will understand "qroky start"
+
+Step 4 of 9 — check your subscription
+  subscription/login — looks active
+
+Step 5 of 9 — connect Telegram (optional)
+Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Or: would you like your assistant on Telegram — a morning digest, updates,
+and questions it can ask you on your phone? Type y to connect now:   Telegram — skipped. Connect any time with one command:
+      bash install.sh --enable-telegram
+
+Step 6 of 9 — daily support sharing (optional)
+Daily support sharing — before asking, here is EXACTLY what would leave this
+computer if you say yes. The complete list — nothing else is ever read:
+  1. task progress files (STATUS.md)  — status word, date, task id only
+  2. cost summaries (RESULT.md)       — token/time cost figures ONLY; the
+                                        summary and content sections, where
+                                        your product would be described,
+                                        are never copied
+  3. step logs (run.log)              — timestamps and step names only
+  4. the status board (status.yaml)   — one line per task, free-text notes
+                                        stripped
+  5. independent check results (VERDICT.md) — the verdict line only, never
+                                        the findings text
+Free-text sentences are stripped from every one of these before copying.
+Your code, specs, and product content are not on this list and are never
+read. Note: saying yes today only records your choice — no sending
+mechanism is installed by this installer, so nothing can leave yet; you
+will be shown the sending script itself, line by line, before it is ever
+added.
+Turn daily support sharing on? Yes/no (y/n), default n:   daily support sharing — OFF (nothing is ever sent while this stays off)
+
+Step 7 of 9 — morning digest (optional)
+Morning digest — a short daily message: what got done, what is waiting for
+you. Yes/no now, you can change your mind later. One honest line about how
+it works: it only READS your own workspace to build the summary — it never
+takes actions on its own and never sends anything anywhere except this
+digest to you. Recommended: yes.
+Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed and ON
+
+Step 8 of 9 — backup to your own GitHub (optional)
+Backup — keep a private, off-computer copy of your workspace, so a lost or
+broken computer never means lost work. One honest line about where it goes:
+the backup is stored in YOUR OWN private GitHub account — nobody else's;
+nobody but you can see it. Recommended: yes.
+Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
+      bash install.sh --enable-backup
+
+Step 9 of 9 — starting phrase everywhere on this machine (optional)
+Make "qroky start" work in ANY chat on this machine, not only in your
+working folder? [we recommend: yes] One honest line about what that means:
+we would write exactly two files into ~/.claude (a copy of the phrase's
+rulebook page and a short trigger note) — nothing else, and both are named
+to you and easy to remove.
+Type y for machine-wide; Enter = no, working folder only:   as you chose: the phrase works in your working folder only. Nothing was written outside it.
+
+
+== Setup finished. Nothing failed. ==
+
+Copy-paste this into your terminal:
+
+    cd /private/tmp/qroky-install-dry-run.wHmxkU/w8yes && claude
+
+then say:
+
+    qroky start
+
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.wHmxkU/w8yes → start a new chat — same phrase.)
+
+One honest note: the FIRST time claude starts, it asks a couple of its own
+questions (color theme, login) — that is normal; answer them and continue.
+Your first 5 minutes are described in the README next to this installer
+("Your first 5 minutes").
+
+A note on responsibility: the system produces drafts and analysis; legal,
+financial, and medical decisions and signatures are always made by a human.
+Not professional advice.
+
+(total elapsed: 1s)
+
+plist generated: yes (md.qroky.heartbeat.w8yes)
+fake-launchctl saw a bootstrap call for it: yes
+
+--- fresh install answering 'n' at the heartbeat question ---
+== Qroky setup ==
+
+Step 1 of 9 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   language set: en
+
+Here is the whole road: 9 questions, about 3 minutes of setup, and at the
+end you get two ready lines to copy-paste for your first conversation.
+Every question says which number it is; optional ones can be skipped with
+a single Enter. Nothing installs behind your back.
+
+Step 2 of 9 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.wHmxkU/w8no
+>   working folder: /private/tmp/qroky-install-dry-run.wHmxkU/w8no
+
+Step 3 of 9 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  downloading the rulebook the assistant follows (pinned to one fixed version, so it never changes without asking you)...
+  teaching this folder the starting phrase ("qroky start")...
+  starting phrase wired — a chat opened IN THIS FOLDER will understand "qroky start"
+
+Step 4 of 9 — check your subscription
+  subscription/login — looks active
+
+Step 5 of 9 — connect Telegram (optional)
+Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Or: would you like your assistant on Telegram — a morning digest, updates,
+and questions it can ask you on your phone? Type y to connect now:   Telegram — skipped. Connect any time with one command:
+      bash install.sh --enable-telegram
+
+Step 6 of 9 — daily support sharing (optional)
+Daily support sharing — before asking, here is EXACTLY what would leave this
+computer if you say yes. The complete list — nothing else is ever read:
+  1. task progress files (STATUS.md)  — status word, date, task id only
+  2. cost summaries (RESULT.md)       — token/time cost figures ONLY; the
+                                        summary and content sections, where
+                                        your product would be described,
+                                        are never copied
+  3. step logs (run.log)              — timestamps and step names only
+  4. the status board (status.yaml)   — one line per task, free-text notes
+                                        stripped
+  5. independent check results (VERDICT.md) — the verdict line only, never
+                                        the findings text
+Free-text sentences are stripped from every one of these before copying.
+Your code, specs, and product content are not on this list and are never
+read. Note: saying yes today only records your choice — no sending
+mechanism is installed by this installer, so nothing can leave yet; you
+will be shown the sending script itself, line by line, before it is ever
+added.
+Turn daily support sharing on? Yes/no (y/n), default n:   daily support sharing — OFF (nothing is ever sent while this stays off)
+
+Step 7 of 9 — morning digest (optional)
+Morning digest — a short daily message: what got done, what is waiting for
+you. Yes/no now, you can change your mind later. One honest line about how
+it works: it only READS your own workspace to build the summary — it never
+takes actions on its own and never sends anything anywhere except this
+digest to you. Recommended: yes.
+Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed but OFF. Turn it on any time with:
+      bash install.sh --enable-heartbeat
+
+Step 8 of 9 — backup to your own GitHub (optional)
+Backup — keep a private, off-computer copy of your workspace, so a lost or
+broken computer never means lost work. One honest line about where it goes:
+the backup is stored in YOUR OWN private GitHub account — nobody else's;
+nobody but you can see it. Recommended: yes.
+Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
+      bash install.sh --enable-backup
+
+Step 9 of 9 — starting phrase everywhere on this machine (optional)
+Make "qroky start" work in ANY chat on this machine, not only in your
+working folder? [we recommend: yes] One honest line about what that means:
+we would write exactly two files into ~/.claude (a copy of the phrase's
+rulebook page and a short trigger note) — nothing else, and both are named
+to you and easy to remove.
+Type y for machine-wide; Enter = no, working folder only:   as you chose: the phrase works in your working folder only. Nothing was written outside it.
+
+
+== Setup finished. Nothing failed. ==
+
+Copy-paste this into your terminal:
+
+    cd /private/tmp/qroky-install-dry-run.wHmxkU/w8no && claude
+
+then say:
+
+    qroky start
+
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.wHmxkU/w8no → start a new chat — same phrase.)
+
+One honest note: the FIRST time claude starts, it asks a couple of its own
+questions (color theme, login) — that is normal; answer them and continue.
+Your first 5 minutes are described in the README next to this installer
+("Your first 5 minutes").
+
+A note on responsibility: the system produces drafts and analysis; legal,
+financial, and medical decisions and signatures are always made by a human.
+Not professional advice.
+
+(total elapsed: 0s)
+
+plist generated (installed, but not loaded): yes (md.qroky.heartbeat.w8no)
+fake-launchctl saw ANY bootstrap call during this run: no (must be no)
+one-command enable instruction printed: yes

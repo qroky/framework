@@ -1,0 +1,20 @@
+dry-run.sh — summary of all scenarios
+Generated: 2026-07-10T17:02:21Z
+Sandbox: /private/tmp/qroky-install-dry-run.wHmxkU (removed on exit)
+
+PASS — 1-full-clean-run: exit 0 in 1s
+PASS — 1-journey-map-and-finale: map up front, 'N of 9' headers, finale = real-path copy-paste block + VS Code + first-run honesty
+PASS — 1-question-inventory: 8/8 prompts tagged, all within points 1-9, point 9 = machine-wide present, none beyond 9
+PASS — 2-kill-mid-install: SIGKILL landed mid-telegram (state: prior steps done, telegram not), rerun resumed without re-asking and completed all-done
+PASS — 3-healthy-rerun: exit 0, zero file/state changes, 10 health-check lines, no journey map on a rerun
+PASS — 4-broken-dependency: 2 auto-retries then a concrete human instruction under the correct step, no raw git spew on screen, exit 1, prior steps' state preserved
+PASS — 5-idempotency-diff: identical file listing and state across two runs
+PASS — 6-secrets-negative-grep: zero raw-token leaks across state/log/telemetry/git AND the deployed head's home (8 files, non-vacuous); masked line in log; token file mode 600
+PASS — 7-self-update: 3-line changelog in digest; нет cancelled a genuinely pending update (tag stayed v1.0.0); conflict shown (README.md only, no PROVENANCE false alarm); да applied to v1.1.0; decisions record written
+PASS — 8-heartbeat-both-branches: yes branch bootstraps + enables, no branch installs disabled with a one-command enable instruction, no agent registered
+PASS — 9-backup-optin-optout: opt-in: auth walkthrough shown, real push, zero token leaks in pushed history, token file excluded, tree non-empty, restore command printed; opt-out: choice recorded, enable-later shown, nothing pushed
+PASS — 10-gesture-wiring: skill file landed non-empty, ONE trigger block after re-run, workdir copy identical to vendored source, default workdir outside the clone
+PASS — 11-telegram-journey: A: Start caught, bound 424242, offset 111, hello really sent (exactly 1 send), head deployed (profile+wrappers+2 plists+bootstrap), listener pass OK, digest pre-marked; B: honest timeout, no deploy, install green, --enable-telegram then completes bind+hello+deploy reusing the stored token
+PASS — 12-machinewide-both-branches: yes: exactly 2 files under ~/.claude, one marker after re-run, skill identical to vendored (I3 exception aboard), removal named; no: fake HOME untouched (negative assert non-vacuous)
+
+Totals: 14 passed, 0 failed
