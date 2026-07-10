@@ -94,7 +94,12 @@ clone. The package sells nothing; it leads to `git clone`. Activation
   Claude; known v1 limits) including the verbatim language line of §3.3. The
   features list carries ONE self-update line, verbatim (INFO-024): «checks for
   releases, asks before applying — you're in control» — no self-update section
-  in README (depth lives in docs/UPDATES.md, H8).
+  in README (depth lives in docs/UPDATES.md, H8). FAQ additionally carries
+  (INFO-030): the disclaimer line («the system produces drafts and analysis;
+  legal/financial/medical decisions and signatures are always the human's;
+  not professional advice»); «what if the project/author disappears» —
+  everything is local, open source, works without us, forkable; and the
+  backup line «backups go to YOUR OWN private GitHub account».
 - H2. Old navigator preserved at `docs/REPO-GUIDE.md` (content-identical move).
 - H3. Hero contains none of: audit / journal / verify (grep) — they live in the
   second echelon.
@@ -126,6 +131,13 @@ clone. The package sells nothing; it leads to `git clone`. Activation
   freeze summary of changes (the INFO-016 anti-rationalization discipline:
   render the recorded, don't compose). This file is also the source of the
   heartbeat digest's 3-line changelog (INFO-023).
+- H10. `CONTRIBUTING.md` + forking policy (INFO-030 п.2): BDFL decision model
+  (the CEO decides what enters the core); how to propose changes — issues/PR
+  land as candidates in the touch queue (the external door into the SAME
+  constitutional cycle, never around it); the right to fork is explicitly
+  WELCOMED; trademark line: the code is Apache-free, the name Qroky is
+  protected — forks rename. Multi-platform ports go through forks/bindings
+  per `runtime/INTERFACE.md`, not through core edits.
 
 **Soft (judge — CEO at G2):**
 - S1. 30-second stranger test on README: hero + first screen answer «what is it

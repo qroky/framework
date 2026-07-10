@@ -171,3 +171,19 @@ scriptul (decizie CEO din 2026-07-07, GATE-019, registrul #3) — nu există o
 variantă care copiază fișierele integral, iar înțelegerea de mai sus
 promite exact ce face codul, nimic mai mult. `RESULT.md` este întotdeauna
 redus la blocul de cost, niciodată copiat integral.
+
+---
+
+## Responsabilitate și limite (adăugat 10.07.2026 — decizia CEO, INFO-030)
+
+- Sistemul produce **ciorne și analize**. Deciziile și semnăturile juridice,
+  financiare și medicale aparțin întotdeauna omului. Aceasta nu este
+  consultanță profesională (not professional advice).
+- Orice trimitere către părți externe (scrisori, documente, mesaje) se face
+  numai de mâna dumneavoastră — iar **responsabilitatea pentru ce este
+  trimis aparține întotdeauna proprietarului**. Mecanica sistemului
+  garantează asta tehnic (ciorna ≠ trimitere); acest rând fixează același
+  lucru juridic.
+
+*Amended: 2026-07-10, conform INFO-030 p.4 (înregistrarea deciziei CEO);
+restul textului nu a fost modificat.*
