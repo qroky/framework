@@ -1,0 +1,9 @@
+# status registry — telegram-head-v1 (SM3)
+atoms:
+  ATOM-110:
+    folder: 110-telegram-head
+    status: running
+    maturity: —
+    opened: 2026-07-10
+    gate: GATE-026 (G1 go)
+    mandate: INFO-032 + INFO-033 (two-contour channel model)
