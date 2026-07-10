@@ -2,7 +2,7 @@
 atoms:
   ATOM-110:
     folder: 110-telegram-head
-    status: delivered (harness 11/11; awaiting blind verify)
+    status: reviewed (verify ACCEPT r1, 0 blocking 6 minor; minor-fix round before G2 smoke)
     maturity: —
     opened: 2026-07-10
     gate: GATE-026 (G1 go)
