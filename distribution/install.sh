@@ -1762,8 +1762,16 @@ cmd_uninstall() {
   for _prof in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile"; do
     if [[ -f "$_prof" ]] && grep -qF "$LAUNCHER_PATH_MARKER_START" "$_prof"; then
       L_UNINSTALL_STEP "$_prof (PATH marker block only)"
-      awk -v s="$LAUNCHER_PATH_MARKER_START" -v e="$LAUNCHER_PATH_MARKER_END" \
-        '$0==s{skip=1; next} $0==e{skip=0; next} !skip' "$_prof" > "$_prof.tmp.$$" \
+      # One-line lookbehind (verify F2): the installer prints one blank line
+      # BEFORE the block — swallow exactly that held blank at excision time,
+      # so install/uninstall cycles never accumulate blank lines. Everything
+      # else outside the exact marker lines stays byte-identical.
+      awk -v s="$LAUNCHER_PATH_MARKER_START" -v e="$LAUNCHER_PATH_MARKER_END" '
+        $0==s { skip=1; if (held_set && held=="") held_set=0; next }
+        $0==e { skip=0; next }
+        skip  { next }
+        { if (held_set) print held; held=$0; held_set=1 }
+        END   { if (held_set) print held }' "$_prof" > "$_prof.tmp.$$" \
         && mv "$_prof.tmp.$$" "$_prof"
       _un_note "PATH marker block in $_prof"
     fi

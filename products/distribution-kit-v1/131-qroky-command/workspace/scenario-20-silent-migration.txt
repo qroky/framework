@@ -1,5 +1,5 @@
 Scenario 20 — live v0.3.x instance updates to a manifest release SILENTLY
-Generated: 2026-07-11T18:29:24Z
+Generated: 2026-07-11T18:48:22Z
 
 --- install against the OLD (manifest-less) origin, telegram on ---
 == Qroky setup ==
@@ -19,8 +19,8 @@ a single Enter. Nothing installs behind your back.
 Step 2 of 8 — choose your working folder
 Where should your private Qroky folder live?
 Press Enter to use the suggested folder, or type a different path.
-Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w20
->   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w20
+Suggested: /private/tmp/qroky-install-dry-run.R9Y7bh/w20
+>   working folder: /private/tmp/qroky-install-dry-run.R9Y7bh/w20
 
 Step 3 of 8 — check the Claude Code assistant
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
@@ -32,7 +32,7 @@ Step 4 of 8 — check your subscription
   subscription/login — looks active
 
 Step 5 of 8 — connect Telegram (optional)
-Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Enter = skip, connect later (one command: qroky enable-telegram).
 Or: would you like your assistant on Telegram — a morning digest, updates,
 and questions it can ask you on your phone? Type y to connect now:   Let's create your own Telegram bot — this takes about 2 minutes:
     1. Open the Telegram app.
@@ -82,7 +82,7 @@ it works: it only READS your own workspace to build the summary — it never
 takes actions on its own and never sends anything anywhere except this
 digest to you. Recommended: yes.
 Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed but OFF. Turn it on any time with:
-      bash install.sh --enable-heartbeat
+      qroky enable-heartbeat
 
 Step 8 of 8 — backup to your own GitHub (optional)
 Backup — keep a private, off-computer copy of your workspace, so a lost or
@@ -90,7 +90,7 @@ broken computer never means lost work. One honest line about where it goes:
 the backup is stored in YOUR OWN private GitHub account — nobody else's;
 nobody but you can see it. Recommended: yes.
 Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
-      bash install.sh --enable-backup
+      qroky enable-backup
 
   teaching this whole machine the starting phrase (exactly two files in ~/.claude; the finish screen names them and the one-command removal)...
   done — "qroky start" now works in any chat on this machine.
@@ -103,13 +103,13 @@ Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Tur
 
 Copy-paste this into your terminal:
 
-    cd /private/tmp/qroky-install-dry-run.M8KeeL/w20 && claude
+    cd /private/tmp/qroky-install-dry-run.R9Y7bh/w20 && claude
 
 then say:
 
     qroky start
 
-(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w20 → start a new chat — same phrase.)
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.R9Y7bh/w20 → start a new chat — same phrase.)
 
 One honest note: the FIRST time claude starts, it asks a couple of its own
 questions (color theme, login) — that is normal; answer them and continue.
@@ -120,7 +120,7 @@ From now on, in any NEW terminal window, one word works from anywhere:
     qroky update       — update your assistant
     qroky uninstall    — remove everything it put on this machine
 (what was set up: the small command file ~/.local/bin/qroky,
- plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+ plus one PATH line in /private/tmp/qroky-install-dry-run.R9Y7bh/home/.zshrc — both removed by qroky uninstall)
 
 Set up without a question (so it just works): the assistant answers to
 «qroky» in ANY Claude Code session on this machine — exactly two files in
@@ -136,10 +136,10 @@ Not professional advice.
 (total elapsed: 1s)
 
 --- the next tag brings dist-manifest; --apply-update («да») ---
-Apply this update now? Type "yes" to confirm, anything else cancels:   update applied: v0.3.9 -> v0.4.0. A record was written to: /private/tmp/qroky-install-dry-run.M8KeeL/w20/decisions/UPDATE-2026-07-11-v0.4.0.md
+Apply this update now? Type "yes" to confirm, anything else cancels:   update applied: v0.3.9 -> v0.4.0. A record was written to: /private/tmp/qroky-install-dry-run.R9Y7bh/w20/decisions/UPDATE-2026-07-11-v0.4.0.md
 
 --- freeze check after migration ---
-FREEZE-CHECK OK: /private/tmp/qroky-install-dry-run.M8KeeL/w20/framework contains manifest paths only (11 manifest entries).
+FREEZE-CHECK OK: /private/tmp/qroky-install-dry-run.R9Y7bh/w20/framework contains manifest paths only (11 manifest entries).
 
 --- assertions ---
 old install: exit 0 (0); fat instance proven (junk vendored, non-vacuous): 1 (1); bound chat: 424242

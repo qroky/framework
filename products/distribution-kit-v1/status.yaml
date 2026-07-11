@@ -56,7 +56,7 @@ atoms:
     mandate: reinstall path (3 entry cases, recovery), fresh-gesture visibility x3, interview 9->8 machine-wide always-on + audit
   ATOM-131:
     folder: 131-qroky-command
-    status: delivered (kit v0.4.1 — awaiting verify: mutation, INFO-037; then CEO re-run per INFO-035/INFO-044)
+    status: reviewed (kit v0.4.1, verify ACCEPT r1 mutational 3/3 killed; fix round F1-F4 closed, harness 24/24 — awaiting coordinator tag, then CEO re-run per INFO-035/INFO-044)
     maturity: —
     opened: 2026-07-11
     gate: INFO-044 (CEO «решить проблему, а не подсказывать»)

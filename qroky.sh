@@ -86,6 +86,17 @@ case "$CMD" in
     say "No Qroky install found on this machine — nothing to show details for."
     exit 1
     ;;
+  enable-telegram|enable-heartbeat|enable-backup)
+    # The enable-later family (ATOM-131 verify F1, same INFO-044 class):
+    # every skip/enable-later hint prints exactly these words, so they must
+    # work from anywhere too — pure passthrough to install.sh's --enable-*.
+    if INSTALLER="$(_find_installer)"; then
+      exec bash "$INSTALLER" "--$CMD"
+    fi
+    say "No Qroky install found on this machine — set it up first, with one command:"
+    say "  bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install"
+    exit 1
+    ;;
   uninstall)
     if INSTALLER="$(_find_installer)"; then
       exec bash "$INSTALLER" --uninstall
@@ -99,6 +110,7 @@ case "$CMD" in
     say "  qroky install      set Qroky up on this machine"
     say "  qroky update       update an existing install"
     say "  qroky uninstall    remove everything it put on this machine"
+    say "  also: qroky details | enable-telegram | enable-heartbeat | enable-backup"
     say ""
     say "Not installed yet? One command, from anywhere:"
     say "  bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install"

@@ -68,11 +68,11 @@ L_SUBSCRIPTION_SOFT_NOTICE() {
 }
 
 L_TELEGRAM_ASK_OPTIN() {
-  printf 'Enter = пропустить, подключите позже (одной командой: bash install.sh --enable-telegram).\n'
+  printf 'Enter = пропустить, подключите позже (одной командой: qroky enable-telegram).\n'
   printf 'Или: хотите ассистента в Telegram — утренний дайджест, новости и вопросы,\n'
   printf 'которые он сможет задавать вам прямо в телефон? Введите y, чтобы подключить сейчас: '
 }
-L_TELEGRAM_SKIPPED() { printf '  Telegram — пропущено. Подключить в любой момент одной командой:\n      bash install.sh --enable-telegram\n'; }
+L_TELEGRAM_SKIPPED() { printf '  Telegram — пропущено. Подключить в любой момент одной командой:\n      qroky enable-telegram\n'; }
 L_TELEGRAM_WALKTHROUGH() {
   cat <<'EOF'
   Давайте создадим вашего собственного бота в Telegram — это займёт около 2 минут:
@@ -112,13 +112,13 @@ L_TELEGRAM_HELLO_FAILED() {
 L_TELEGRAM_NO_START() {
   printf '  Start за время ожидания никто не нажал — ничего страшного, ничего не сломалось.\n'
   printf '  Ваш токен сохранён; бот подключается позже одной командой:\n'
-  printf '      bash install.sh --enable-telegram\n'
+  printf '      qroky enable-telegram\n'
   printf '  Установка продолжается.\n'
 }
 L_TELEGRAM_HEAD_MISSING() {
   printf '  файлов Telegram-ассистента нет в скачанном своде правил (его версия старше\n'
   printf '  этого установщика). Токен и связка сохранены. Попробуйте:\n'
-  printf '      qroky update   а затем: bash install.sh --enable-telegram\n'
+  printf '      qroky update   а затем: qroky enable-telegram\n'
   printf '  Установка продолжается.\n'
 }
 L_TELEGRAM_DEPLOYING() { printf '  подключаю бота к этому компьютеру (проверка каждые 30 секунд; дайджест ежедневно в 09:05)...\n'; }
@@ -131,7 +131,7 @@ L_TELEGRAM_LISTENER_WARN() {
 L_TELEGRAM_SCHEDULE_FAILED() {
   printf '  ЗАМЕТКА: задания Telegram сейчас не удалось запланировать автоматически.\n'
   printf '  Всё остальное в порядке — связка с ботом сохранена. Попробуйте позже:\n'
-  printf '      bash install.sh --enable-telegram\n'
+  printf '      qroky enable-telegram\n'
 }
 L_TELEGRAM_NO_LAUNCHD() {
   printf 'ЗАМЕТКА: на этом компьютере нет "launchctl" (обычно вне macOS), поэтому\n'
@@ -178,7 +178,7 @@ EOF
   printf 'Включить утренний дайджест? Да/нет (y/n), по умолчанию y: '
 }
 L_HEARTBEAT_ON() { printf '  утренний дайджест — установлен и ВКЛЮЧЁН\n'; }
-L_HEARTBEAT_OFF() { printf '  утренний дайджест — установлен, но ВЫКЛЮЧЕН. Включить в любой момент:\n      bash install.sh --enable-heartbeat\n'; }
+L_HEARTBEAT_OFF() { printf '  утренний дайджест — установлен, но ВЫКЛЮЧЕН. Включить в любой момент:\n      qroky enable-heartbeat\n'; }
 L_HEARTBEAT_NO_LAUNCHD() {
   printf 'ЗАМЕТКА: на этом компьютере нет "launchctl" (обычно вне macOS), поэтому\n'
   printf 'утренний дайджест нельзя запланировать автоматически. Больше ничего не\n'
@@ -187,7 +187,7 @@ L_HEARTBEAT_NO_LAUNCHD() {
 L_HEARTBEAT_SCHEDULE_FAILED() {
   printf 'ЗАМЕТКА: утренний дайджест сейчас не удалось запланировать автоматически.\n'
   printf 'Всё остальное завершилось успешно — дайджест установлен, но выключен.\n'
-  printf 'Попробуйте позже:\n      bash install.sh --enable-heartbeat\n'
+  printf 'Попробуйте позже:\n      qroky enable-heartbeat\n'
 }
 
 L_FINALE() {
@@ -258,7 +258,7 @@ L_BACKUP_GH_MISSING() {
   printf '  продолжается без резервной копии.\n'
   printf '  Чтобы добавить позже:\n'
   printf '    1. Установите gh: Mac: brew install gh   |   иначе: https://cli.github.com\n'
-  printf '    2. Выполните: bash install.sh --enable-backup\n'
+  printf '    2. Выполните: qroky enable-backup\n'
 }
 L_BACKUP_AUTH_WALKTHROUGH() {
   cat <<'EOF'
@@ -277,7 +277,7 @@ EOF
 L_BACKUP_AUTH_FAILED() {
   printf '  подключить аккаунт GitHub в этот раз не удалось. Больше ничего не\n'
   printf '  затронуто — установка продолжается без резервной копии.\n'
-  printf '  Чтобы попробовать позже: bash install.sh --enable-backup\n'
+  printf '  Чтобы попробовать позже: qroky enable-backup\n'
 }
 L_BACKUP_CREATING() { printf '  создаю вашу приватную резервную копию и отправляю первый снимок...\n'; }
 L_BACKUP_DONE() {
@@ -288,11 +288,11 @@ L_BACKUP_DONE() {
 L_BACKUP_FAILED() {
   printf '  первую резервную копию завершить не удалось (часто это сбой сети).\n'
   printf '  Больше ничего не затронуто — установка продолжается без резервной копии.\n'
-  printf '  Чтобы попробовать позже: bash install.sh --enable-backup\n'
+  printf '  Чтобы попробовать позже: qroky enable-backup\n'
 }
 L_BACKUP_SKIPPED() {
   printf '  резервная копия — выключена, как вы выбрали. Включить в любой момент:\n'
-  printf '      bash install.sh --enable-backup\n'
+  printf '      qroky enable-backup\n'
 }
 L_DISCLAIMER() {
   printf 'Замечание об ответственности: система производит черновики и анализ;\n'
@@ -327,7 +327,7 @@ L_TELEGRAM_ALREADY_CONNECTED() {
 L_TELEGRAM_UPDATE_FINISH_HINT() {
   printf '  обновление принесло Telegram-ассистента, а ваш токен уже сохранён —\n'
   printf '  подключение завершает одна команда (она подождёт вашего нажатия Start):\n'
-  printf '      bash install.sh --enable-telegram\n'
+  printf '      qroky enable-telegram\n'
 }
 
 # ATOM-105 (готовность к чистому прогону): строки, бывшие EN-hardcode, и новые.

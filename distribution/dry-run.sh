@@ -63,7 +63,11 @@
 set -uo pipefail   # NOT -e: scenarios intentionally capture non-zero exits
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ATOM_WORKSPACE="$(cd "$HERE/../products/distribution-kit-v1/131-qroky-command/workspace" && pwd)"
+# Verify F4 (ATOM-131): guard the transcript destination — without it an
+# absent dir made ATOM_WORKSPACE empty and transcripts sprayed at /.
+ATOM_WORKSPACE_SRC="$HERE/../products/distribution-kit-v1/131-qroky-command/workspace"
+mkdir -p "$ATOM_WORKSPACE_SRC" || { echo "dry-run.sh: cannot create transcript dir: $ATOM_WORKSPACE_SRC" >&2; exit 1; }
+ATOM_WORKSPACE="$(cd "$ATOM_WORKSPACE_SRC" && pwd)"
 SANDBOX="$(mktemp -d /private/tmp/qroky-install-dry-run.XXXXXX)"
 cleanup() { rm -rf "$SANDBOX"; }
 trap cleanup EXIT
@@ -837,7 +841,7 @@ OUT8N="$(run_install "$W8NO" $'en\n\nn\nn\nn\nn\n')"
 echo "$OUT8N" >> "$T8"
 LABEL8N="$(basename "$(ls "$W8NO"/.qroky/launchd/*.plist 2>/dev/null | head -1)" .plist)"
 BOOTSTRAPPED_N=$(grep -c "bootstrap" "$LAUNCHCTL_STATE" 2>/dev/null || true)
-HAS_ENABLE_INSTR=$(printf '%s' "$OUT8N" | grep -c -- "--enable-heartbeat" || true)
+HAS_ENABLE_INSTR=$(printf '%s' "$OUT8N" | grep -c "qroky enable-heartbeat" || true)
 {
   echo ""
   echo "plist generated (installed, but not loaded): $([[ -n "$LABEL8N" ]] && echo yes || echo no) ($LABEL8N)"
@@ -920,7 +924,7 @@ REPOS_AFTER9B=$(ls -d "$FAKE_GITHUB"/*.git 2>/dev/null | wc -l | tr -d ' ')
 STATE9B="$(cat "$W9B/install-state.json" 2>/dev/null || echo MISSING)"
 OPTOUT_RECORDED9=$(printf '%s' "$STATE9B" | grep -c '"answer_backup_optin": "no"' || true)
 OPTOUT_STEP_DONE9=$(printf '%s' "$STATE9B" | grep -c '"step_backup": "done"' || true)
-ENABLE_LATER_SHOWN9=$(printf '%s' "$OUT9B" | grep -c -- "--enable-backup" || true)
+ENABLE_LATER_SHOWN9=$(printf '%s' "$OUT9B" | grep -c "qroky enable-backup" || true)
 {
   echo ""
   echo "--- opt-out assertions ---"
@@ -1089,7 +1093,7 @@ OUT11B="$( ( export QROKY_STUB_TG_START=0; run_install "$W11B" $'en\n\ny\nGOODTO
 STATUS11B=$?
 echo "$OUT11B" >> "$T11"
 HONEST11B=$(printf '%s' "$OUT11B" | grep -c "nobody pressed Start" || true)
-ENABLE_LATER11B=$(printf '%s' "$OUT11B" | grep -c -- "--enable-telegram" || true)
+ENABLE_LATER11B=$(printf '%s' "$OUT11B" | grep -c "qroky enable-telegram" || true)
 TOKEN_KEPT11B=0; [[ -s "$W11B/.qroky/telegram.token" ]] && TOKEN_KEPT11B=1
 DEPLOYED11B=0; [[ -f "$W11B/.qroky/telegram/profile.conf" ]] && DEPLOYED11B=1
 BOOT11B=$(grep -c "bootstrap.*md.qroky.telegram" "$LAUNCHCTL_STATE" 2>/dev/null || true)
@@ -1364,7 +1368,7 @@ and a third"
 OUT13D2="$(QROKY_DRYRUN_REGISTRY="$SANDBOX/registries/machine13d.registry" run_install "$W13D" $'y\n' --apply-update)"
 STATUS13D2=$?
 echo "$OUT13D2" >> "$T13"
-HINT13D=$(printf '%s' "$OUT13D2" | grep -c -- "--enable-telegram" || true)
+HINT13D=$(printf '%s' "$OUT13D2" | grep -c "qroky enable-telegram" || true)
 NOBIND_LOG13D=$(grep -c "TOKEN-WITHOUT-BINDING" "$W13D/install.log" 2>/dev/null || true)
 WRAP13D=0; [[ -f "$W13D/.qroky/telegram/run-listener.sh" ]] && WRAP13D=1
 
@@ -2053,6 +2057,28 @@ ANNOUNCED22=$(printf '%s' "$OUT22C" | grep -c "one word works from anywhere" || 
 TAG22=$(grep -c '"framework_tag": "v1.7.0"' "$W22/install-state.json" 2>/dev/null || true)
 cp "$LAUNCHER22" "$SANDBOX/saved-launcher-22"
 
+{ echo ""; echo "--- (c2) verify F3: a SECOND consecutive update (launcher already there) stays silent ---"; } >> "$T22"
+git -C "$FAKE_FW" -c user.email=dryrun@qroky.local -c user.name="Qroky dry run" commit -q --allow-empty -m "stub commit 9"
+git -C "$FAKE_FW" -c user.email=dryrun@qroky.local -c user.name="Qroky dry run" tag -a v1.8.0 -m $'v1.8.0\n\nsilence stub\nsecond line\nthird line'
+OUT22C2="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW"; \
+  printf 'yes\n' | bash "$DOWNLOADED" update ) 2>&1)"
+STATUS22C2=$?
+echo "$OUT22C2" >> "$T22"
+ANNOUNCED22B=$(printf '%s' "$OUT22C2" | grep -c "one word works from anywhere" || true)
+TAG22B=$(grep -c '"framework_tag": "v1.8.0"' "$W22/install-state.json" 2>/dev/null || true)
+
+{ echo ""; echo "--- (c3) verify F1: the enable-later family dispatches from anywhere (qroky enable-heartbeat) ---"; } >> "$T22"
+OUT22H="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW"; \
+  bash "$DOWNLOADED" enable-heartbeat ) 2>&1)"
+STATUS22H=$?
+echo "$OUT22H" >> "$T22"
+HB_ON22=$(printf '%s' "$OUT22H" | grep -c "installed and ON" || true)
+HB_PLIST22=$(ls "$HOME_H/Library/LaunchAgents"/md.qroky.heartbeat.*.plist 2>/dev/null | wc -l | tr -d ' ')
+# F1 sweep: the user-facing sources carry ZERO path-bound enable hints
+ENABLE_PATHY22=$(cat "$HERE/lang/en.sh" "$HERE/lang/ru.sh" "$HERE/lang/ro.sh" \
+  "$HERE/README.en.md" "$HERE/README.ru.md" "$HERE/README.ro.md" 2>/dev/null \
+  | grep -c "install.sh --enable" || true)
+
 { echo ""; echo "--- (d) round 1: FOREIGN launcher + foreign profile line survive the uninstall ---"; } >> "$T22"
 printf 'export MY_OWN_LINE=1  # user rule, must survive\n' >> "$PROF22"
 printf '#!/bin/sh\n# somebody else installed a different qroky — no kit provenance\nexit 0\n' > "$LAUNCHER22"
@@ -2069,6 +2095,10 @@ STATE22_GONE=0; [[ -f "$W22/install-state.json" ]] || STATE22_GONE=1
 
 { echo ""; echo "--- (d) round 2: OUR launcher back, marker block back — removed via the VENDORED installer (kit copy is gone) ---"; } >> "$T22"
 cp "$SANDBOX/saved-launcher-22" "$LAUNCHER22"; chmod +x "$LAUNCHER22"
+# Verify F2 byte-cycle: snapshot the profile BEFORE appending blank+block —
+# after the uninstall's excision it must be byte-identical (the one leading
+# blank the installer prints is swallowed too, so cycles never accumulate).
+cp "$PROF22" "$SANDBOX/prof22.snap"
 { printf '\n# >>> qroky command (added by the Qroky installer, INFO-044; removed by `qroky uninstall`) >>>\n'
   printf 'export PATH="$HOME/.local/bin:$PATH"\n'
   printf '# <<< qroky command <<<\n'; } >> "$PROF22"
@@ -2080,6 +2110,7 @@ OURS22_GONE=0; [[ -f "$LAUNCHER22" ]] || OURS22_GONE=1
 PATHBLOCKS22_E=$(cat "$HOME_H/.zshrc" "$HOME_H/.zprofile" "$HOME_H/.bashrc" "$HOME_H/.bash_profile" "$HOME_H/.profile" 2>/dev/null | grep -cF '>>> qroky command' || true)
 USERLINE22_E=$(grep -c "MY_OWN_LINE" "$PROF22" 2>/dev/null || true)
 REMOVAL22_LISTED=$(printf '%s' "$OUT22E" | grep -c ".local/bin/qroky" || true)
+F2_CYCLE22=0; cmp -s "$SANDBOX/prof22.snap" "$PROF22" && F2_CYCLE22=1
 
 { echo ""; echo "--- (d) round 3: no launcher at all — polite no-op ---"; } >> "$T22"
 OUT22F="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW" QROKY_WORKSPACE_DIR="$W22"; \
@@ -2093,20 +2124,24 @@ NOOP22=$(printf '%s' "$OUT22F" | grep -c "Nothing to remove" || true)
   echo "(a) curl-mode install: exit $STATUS22A (0); launcher executable+provenance: $LAUNCHER22_OK (1); PATH blocks: $PATHBLOCKS22_A (1); finale names ~/.local/bin/qroky: $FINALE_NAMES22 (>=1), NEW-terminal honesty: $FINALE_NEWTERM22 (>=1), the word itself: $FINALE_WORD22 (>=1)"
   echo "(b) relay: exit $STATUS22B (2 = help), kit qroky.sh spoke: $RELAY22 (>=1)"
   echo "(c) backfill on update: exit $STATUS22C (0); launcher back: $BACKFILL22_OK (1); PATH blocks: $PATHBLOCKS22_C (1); announced: $ANNOUNCED22 (>=1); tag v1.7.0: $TAG22 (1)"
+  echo "(c2) second consecutive update: exit $STATUS22C2 (0); announce lines (must be 0 — F3 silence): $ANNOUNCED22B; tag v1.8.0: $TAG22B (1)"
+  echo "(c3) qroky enable-heartbeat from a neutral folder: exit $STATUS22H (0); heartbeat ON said: $HB_ON22 (>=1); plist landed: $HB_PLIST22 (1); path-bound enable hints left in lang x3 + README x3 (must be 0): $ENABLE_PATHY22"
   echo "(d1) foreign launcher kept: $FOREIGN22_KEPT (1), said foreign: $FOREIGN22_SAID (>=1); PATH blocks after uninstall: $PATHBLOCKS22_D (0); user profile line kept: $USERLINE22 (1); state gone: $STATE22_GONE (1); exit $STATUS22D (0)"
-  echo "(d2) OUR launcher removed via vendored installer: $OURS22_GONE (1); PATH blocks: $PATHBLOCKS22_E (0); user line still kept: $USERLINE22_E (1); removal listed the launcher: $REMOVAL22_LISTED (>=1); exit $STATUS22E (0)"
+  echo "(d2) OUR launcher removed via vendored installer: $OURS22_GONE (1); PATH blocks: $PATHBLOCKS22_E (0); user line still kept: $USERLINE22_E (1); removal listed the launcher: $REMOVAL22_LISTED (>=1); profile byte-identical after the blank+block cycle (F2): $F2_CYCLE22 (1); exit $STATUS22E (0)"
   echo "(d3) no-launcher uninstall: exit $STATUS22F (0), polite no-op: $NOOP22 (>=1)"
 } >> "$T22"
 if [[ $STATUS22A -eq 0 && $LAUNCHER22_OK -eq 1 && "$PATHBLOCKS22_A" -eq 1 \
       && "$FINALE_NAMES22" -ge 1 && "$FINALE_NEWTERM22" -ge 1 && "$FINALE_WORD22" -ge 1 \
       && $STATUS22B -eq 2 && "$RELAY22" -ge 1 \
       && $STATUS22C -eq 0 && $BACKFILL22_OK -eq 1 && "$PATHBLOCKS22_C" -eq 1 && "$ANNOUNCED22" -ge 1 && "$TAG22" -eq 1 \
+      && $STATUS22C2 -eq 0 && "$ANNOUNCED22B" -eq 0 && "$TAG22B" -eq 1 \
+      && $STATUS22H -eq 0 && "$HB_ON22" -ge 1 && "$HB_PLIST22" -eq 1 && "$ENABLE_PATHY22" -eq 0 \
       && $STATUS22D -eq 0 && $FOREIGN22_KEPT -eq 1 && "$FOREIGN22_SAID" -ge 1 && "$PATHBLOCKS22_D" -eq 0 && "$USERLINE22" -eq 1 && $STATE22_GONE -eq 1 \
-      && $STATUS22E -eq 0 && $OURS22_GONE -eq 1 && "$PATHBLOCKS22_E" -eq 0 && "$USERLINE22_E" -eq 1 && "$REMOVAL22_LISTED" -ge 1 \
+      && $STATUS22E -eq 0 && $OURS22_GONE -eq 1 && "$PATHBLOCKS22_E" -eq 0 && "$USERLINE22_E" -eq 1 && "$REMOVAL22_LISTED" -ge 1 && $F2_CYCLE22 -eq 1 \
       && $STATUS22F -eq 0 && "$NOOP22" -ge 1 ]]; then
-  record "22-qroky-command" PASS "curl-mode (process substitution, neutral cwd) install put the qroky command on PATH (launcher with provenance + exactly one marker block, finale names both + new-terminal honesty); the launcher relays to the kit; a pre-131 machine got it back on its next update, announced; uninstall kept a FOREIGN launcher and a user profile line, removed OURS (via the vendored installer, kit copy gone) and the marker block; no-launcher uninstall = polite no-op"
+  record "22-qroky-command" PASS "curl-mode (process substitution, neutral cwd) install put the qroky command on PATH (launcher with provenance + exactly one marker block, finale names both + new-terminal honesty); the launcher relays to the kit; a pre-131 machine got it back on its next update, announced ONCE (second update silent — F3); qroky enable-heartbeat dispatched from a neutral folder (plist landed) and zero path-bound enable hints remain in the sources (F1); uninstall kept a FOREIGN launcher and a user profile line, removed OURS (via the vendored installer, kit copy gone) and the marker block with the blank+block cycle byte-identical (F2); no-launcher uninstall = polite no-op"
 else
-  record "22-qroky-command" FAIL "a=$STATUS22A/$LAUNCHER22_OK/$PATHBLOCKS22_A finale=$FINALE_NAMES22/$FINALE_NEWTERM22/$FINALE_WORD22 relay=$STATUS22B/$RELAY22 c=$STATUS22C/$BACKFILL22_OK/$PATHBLOCKS22_C/$ANNOUNCED22/$TAG22 d1=$STATUS22D/$FOREIGN22_KEPT/$FOREIGN22_SAID/$PATHBLOCKS22_D/$USERLINE22/$STATE22_GONE d2=$STATUS22E/$OURS22_GONE/$PATHBLOCKS22_E/$USERLINE22_E/$REMOVAL22_LISTED d3=$STATUS22F/$NOOP22"
+  record "22-qroky-command" FAIL "a=$STATUS22A/$LAUNCHER22_OK/$PATHBLOCKS22_A finale=$FINALE_NAMES22/$FINALE_NEWTERM22/$FINALE_WORD22 relay=$STATUS22B/$RELAY22 c=$STATUS22C/$BACKFILL22_OK/$PATHBLOCKS22_C/$ANNOUNCED22/$TAG22 c2=$STATUS22C2/$ANNOUNCED22B/$TAG22B c3=$STATUS22H/$HB_ON22/$HB_PLIST22/pathy=$ENABLE_PATHY22 d1=$STATUS22D/$FOREIGN22_KEPT/$FOREIGN22_SAID/$PATHBLOCKS22_D/$USERLINE22/$STATE22_GONE d2=$STATUS22E/$OURS22_GONE/$PATHBLOCKS22_E/$USERLINE22_E/$REMOVAL22_LISTED/f2=$F2_CYCLE22 d3=$STATUS22F/$NOOP22"
 fi
 
 # ---------------------------------------------------------------------------

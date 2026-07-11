@@ -1,5 +1,5 @@
 Scenario 4 — broken dependency (framework source unreachable)
-Generated: 2026-07-11T18:28:56Z
+Generated: 2026-07-11T18:47:53Z
 QROKY_FRAMEWORK_SOURCE points at a path that does not exist — the
 network/dependency failure a founder would see as 'can't reach it'.
 
@@ -20,8 +20,8 @@ a single Enter. Nothing installs behind your back.
 Step 2 of 8 — choose your working folder
 Where should your private Qroky folder live?
 Press Enter to use the suggested folder, or type a different path.
-Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w4
->   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w4
+Suggested: /private/tmp/qroky-install-dry-run.R9Y7bh/w4
+>   working folder: /private/tmp/qroky-install-dry-run.R9Y7bh/w4
 
 Step 3 of 8 — check the Claude Code assistant
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
@@ -30,12 +30,12 @@ Step 3 of 8 — check the Claude Code assistant
   that did not work — trying again automatically (attempt 2 of 2)...
 
 SETUP STOPPED.
-Could not download the assistant's rulebook (the address it tried: /private/tmp/qroky-nonexistent-source-33714).
+Could not download the assistant's rulebook (the address it tried: /private/tmp/qroky-nonexistent-source-44354).
   This is almost always the internet connection. Check it, then run this
   installer again — it will continue from exactly this step.
   If this keeps failing, whoever gave you this kit can send a local copy to
   point QROKY_FRAMEWORK_SOURCE at instead.
-  (The technical details were saved to: /private/tmp/qroky-install-dry-run.M8KeeL/w4/install.log)
+  (The technical details were saved to: /private/tmp/qroky-install-dry-run.R9Y7bh/w4/install.log)
 
 Nothing was changed silently — the message above is the whole story.
 Fix that one thing, then run this installer again; it picks up exactly here.
@@ -45,9 +45,9 @@ Fix that one thing, then run this installer again; it picks up exactly here.
 --- state file after the failure (workdir stays done, framework marked failed) ---
 {
   "version": 1,
-  "generated_at": "2026-07-11T18:28:59Z",
+  "generated_at": "2026-07-11T18:47:56Z",
   "answer_language": "en",
-  "answer_workdir": "/private/tmp/qroky-install-dry-run.M8KeeL/w4",
+  "answer_workdir": "/private/tmp/qroky-install-dry-run.R9Y7bh/w4",
   "answer_telegram_optin": "",
   "answer_telegram_token_stored": "no",
   "answer_telegram_bound": "no",
@@ -67,7 +67,7 @@ Fix that one thing, then run this installer again; it picks up exactly here.
   "step_backup": "pending",
   "step_machinewide": "pending",
   "backup_repo": "",
-  "framework_source": "/private/tmp/qroky-nonexistent-source-33714",
+  "framework_source": "/private/tmp/qroky-nonexistent-source-44354",
   "framework_ref": "",
   "framework_tag": ""
 }

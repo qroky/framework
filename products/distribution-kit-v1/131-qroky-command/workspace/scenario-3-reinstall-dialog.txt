@@ -1,5 +1,5 @@
 Scenario 3 — rerun over the complete Scenario-1 install: the (a) dialog
-Generated: 2026-07-11T18:28:55Z
+Generated: 2026-07-11T18:47:52Z
 
 --- answer 'cancel': leaves without a trace ---
 == Qroky setup ==
@@ -7,7 +7,7 @@ Generated: 2026-07-11T18:28:55Z
 Step 1 of 8 — choose your language
   language set: en
 This folder already carries a Qroky install: framework/ plus your data next to it.
-  /private/tmp/qroky-install-dry-run.M8KeeL/w1
+  /private/tmp/qroky-install-dry-run.R9Y7bh/w1
 Reinstall: your data stays untouched, framework/ is recreated fresh.
 What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Cancelled. Nothing was changed.
 
@@ -17,7 +17,7 @@ What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Cancelled. 
 Step 1 of 8 — choose your language
   language set: en
 This folder already carries a Qroky install: framework/ plus your data next to it.
-  /private/tmp/qroky-install-dry-run.M8KeeL/w1
+  /private/tmp/qroky-install-dry-run.R9Y7bh/w1
 Reinstall: your data stays untouched, framework/ is recreated fresh.
 What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Routing to the update path...
   no update available — you are on the latest release
@@ -28,7 +28,7 @@ What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Routing to 
 Step 1 of 8 — choose your language
   language set: en
 This folder already carries a Qroky install: framework/ plus your data next to it.
-  /private/tmp/qroky-install-dry-run.M8KeeL/w1
+  /private/tmp/qroky-install-dry-run.R9Y7bh/w1
 Reinstall: your data stays untouched, framework/ is recreated fresh.
 What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Recreating framework/ — your data is not touched.
 
@@ -62,13 +62,13 @@ Step 8 of 8 — backup to your own GitHub (optional)
 
 Copy-paste this into your terminal:
 
-    cd /private/tmp/qroky-install-dry-run.M8KeeL/w1 && claude
+    cd /private/tmp/qroky-install-dry-run.R9Y7bh/w1 && claude
 
 then say:
 
     qroky start
 
-(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w1 → start a new chat — same phrase.)
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.R9Y7bh/w1 → start a new chat — same phrase.)
 
 One honest note: the FIRST time claude starts, it asks a couple of its own
 questions (color theme, login) — that is normal; answer them and continue.
@@ -79,7 +79,7 @@ From now on, in any NEW terminal window, one word works from anywhere:
     qroky update       — update your assistant
     qroky uninstall    — remove everything it put on this machine
 (what was set up: the small command file ~/.local/bin/qroky,
- plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+ plus one PATH line in /private/tmp/qroky-install-dry-run.R9Y7bh/home/.zshrc — both removed by qroky uninstall)
 
 Set up without a question (so it just works): the assistant answers to
 «qroky» in ANY Claude Code session on this machine — exactly two files in

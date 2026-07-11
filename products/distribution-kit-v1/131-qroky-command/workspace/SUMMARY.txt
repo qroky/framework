@@ -1,6 +1,6 @@
 dry-run.sh — summary of all scenarios
-Generated: 2026-07-11T18:29:28Z
-Sandbox: /private/tmp/qroky-install-dry-run.M8KeeL (removed on exit)
+Generated: 2026-07-11T18:48:26Z
+Sandbox: /private/tmp/qroky-install-dry-run.R9Y7bh (removed on exit)
 
 PASS — 1-full-clean-run: exit 0 in 1s
 PASS — 1-journey-map-and-finale: map up front, 'N of 8' headers (no 'of 9' leftovers), finale = real-path copy-paste block + VS Code + first-run honesty
@@ -25,6 +25,6 @@ PASS — 18-fresh-gesture-visibility: the new-session note is at all three touch
 PASS — 19-sparse-and-freeze: origin tree carries factory junk (non-vacuous) yet the instance worktree has none; runtime/manifest materialized; verify.sh green on clean, red with the offender NAMED on one planted file
 PASS — 20-silent-migration: fat v0.3.x instance (junk vendored, non-vacuous) updated to the manifest release with one «да»: factory history shed, runtime alive, chat binding + profile + token byte-stable, zero interview lines, zero extra sends, freeze check green
 PASS — 21-bootstrap: qroky.sh from arbitrary folders: install cloned the kit to ~/.qroky/kit at the release tag and completed sparse; update applied the new tag with no workdir hint; uninstall found the install by the machine trace alone, removed the machine side, kept the workdir; second uninstall = polite no-op
-PASS — 22-qroky-command: curl-mode (process substitution, neutral cwd) install put the qroky command on PATH (launcher with provenance + exactly one marker block, finale names both + new-terminal honesty); the launcher relays to the kit; a pre-131 machine got it back on its next update, announced; uninstall kept a FOREIGN launcher and a user profile line, removed OURS (via the vendored installer, kit copy gone) and the marker block; no-launcher uninstall = polite no-op
+PASS — 22-qroky-command: curl-mode (process substitution, neutral cwd) install put the qroky command on PATH (launcher with provenance + exactly one marker block, finale names both + new-terminal honesty); the launcher relays to the kit; a pre-131 machine got it back on its next update, announced ONCE (second update silent — F3); qroky enable-heartbeat dispatched from a neutral folder (plist landed) and zero path-bound enable hints remain in the sources (F1); uninstall kept a FOREIGN launcher and a user profile line, removed OURS (via the vendored installer, kit copy gone) and the marker block with the blank+block cycle byte-identical (F2); no-launcher uninstall = polite no-op
 
 Totals: 24 passed, 0 failed

@@ -1,5 +1,5 @@
 Scenario 22 — the qroky command on PATH (ATOM-131, INFO-044)
-Generated: 2026-07-11T18:29:27Z
+Generated: 2026-07-11T18:48:25Z
 
 --- (a) curl-mode install: bash <(cat qroky.sh) install, neutral cwd, no clone ---
 == Qroky setup ==
@@ -19,8 +19,8 @@ a single Enter. Nothing installs behind your back.
 Step 2 of 8 — choose your working folder
 Where should your private Qroky folder live?
 Press Enter to use the suggested folder, or type a different path.
-Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w22
->   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w22
+Suggested: /private/tmp/qroky-install-dry-run.R9Y7bh/w22
+>   working folder: /private/tmp/qroky-install-dry-run.R9Y7bh/w22
 
 Step 3 of 8 — check the Claude Code assistant
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
@@ -32,10 +32,10 @@ Step 4 of 8 — check your subscription
   subscription/login — looks active
 
 Step 5 of 8 — connect Telegram (optional)
-Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Enter = skip, connect later (one command: qroky enable-telegram).
 Or: would you like your assistant on Telegram — a morning digest, updates,
 and questions it can ask you on your phone? Type y to connect now:   Telegram — skipped. Connect any time with one command:
-      bash install.sh --enable-telegram
+      qroky enable-telegram
 
 Step 6 of 8 — daily support sharing (optional)
 Daily support sharing — before asking, here is EXACTLY what would leave this
@@ -65,7 +65,7 @@ it works: it only READS your own workspace to build the summary — it never
 takes actions on its own and never sends anything anywhere except this
 digest to you. Recommended: yes.
 Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed but OFF. Turn it on any time with:
-      bash install.sh --enable-heartbeat
+      qroky enable-heartbeat
 
 Step 8 of 8 — backup to your own GitHub (optional)
 Backup — keep a private, off-computer copy of your workspace, so a lost or
@@ -73,7 +73,7 @@ broken computer never means lost work. One honest line about where it goes:
 the backup is stored in YOUR OWN private GitHub account — nobody else's;
 nobody but you can see it. Recommended: yes.
 Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
-      bash install.sh --enable-backup
+      qroky enable-backup
 
   teaching this whole machine the starting phrase (exactly two files in ~/.claude; the finish screen names them and the one-command removal)...
   done — "qroky start" now works in any chat on this machine.
@@ -86,13 +86,13 @@ Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Tur
 
 Copy-paste this into your terminal:
 
-    cd /private/tmp/qroky-install-dry-run.M8KeeL/w22 && claude
+    cd /private/tmp/qroky-install-dry-run.R9Y7bh/w22 && claude
 
 then say:
 
     qroky start
 
-(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w22 → start a new chat — same phrase.)
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.R9Y7bh/w22 → start a new chat — same phrase.)
 
 One honest note: the FIRST time claude starts, it asks a couple of its own
 questions (color theme, login) — that is normal; answer them and continue.
@@ -103,7 +103,7 @@ From now on, in any NEW terminal window, one word works from anywhere:
     qroky update       — update your assistant
     qroky uninstall    — remove everything it put on this machine
 (what was set up: the small command file ~/.local/bin/qroky,
- plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.zshrc — both removed by qroky uninstall)
+ plus one PATH line in /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.zshrc — both removed by qroky uninstall)
 
 Set up without a question (so it just works): the assistant answers to
 «qroky» in ANY Claude Code session on this machine — exactly two files in
@@ -123,39 +123,48 @@ qroky — one command for the whole journey:
   qroky install      set Qroky up on this machine
   qroky update       update an existing install
   qroky uninstall    remove everything it put on this machine
+  also: qroky details | enable-telegram | enable-heartbeat | enable-backup
 
 Not installed yet? One command, from anywhere:
   bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install
 
 --- (c) DoD 6 backfill: strip launcher+PATH block (pre-131 machine), then update ---
-Apply this update now? Type "yes" to confirm, anything else cancels:   update applied: v1.6.0 -> v1.7.0. A record was written to: /private/tmp/qroky-install-dry-run.M8KeeL/w22/decisions/UPDATE-2026-07-11-v1.7.0.md
+Apply this update now? Type "yes" to confirm, anything else cancels:   update applied: v1.6.0 -> v1.7.0. A record was written to: /private/tmp/qroky-install-dry-run.R9Y7bh/w22/decisions/UPDATE-2026-07-11-v1.7.0.md
 
 From now on, in any NEW terminal window, one word works from anywhere:
     qroky update       — update your assistant
     qroky uninstall    — remove everything it put on this machine
 (what was set up: the small command file ~/.local/bin/qroky,
- plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.zshrc — both removed by qroky uninstall)
+ plus one PATH line in /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.zshrc — both removed by qroky uninstall)
+
+--- (c2) verify F3: a SECOND consecutive update (launcher already there) stays silent ---
+Apply this update now? Type "yes" to confirm, anything else cancels:   update applied: v1.7.0 -> v1.8.0. A record was written to: /private/tmp/qroky-install-dry-run.R9Y7bh/w22/decisions/UPDATE-2026-07-11-v1.8.0.md
+
+--- (c3) verify F1: the enable-later family dispatches from anywhere (qroky enable-heartbeat) ---
+  morning digest — installed and ON
 
 --- (d) round 1: FOREIGN launcher + foreign profile line survive the uninstall ---
 Clean slate — removing everything the installer put on this MACHINE.
 Your working folder is not touched. Each step is printed before it runs.
 
-  removing: /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.claude/skills/qroky/SKILL.md
-  removing: /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.claude/CLAUDE.md (marker block only)
-  leaving /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.local/bin/qroky in place — it does not carry this kit's provenance marker,
+  removing: launchd: md.qroky.heartbeat.w22
+  removing: /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.claude/skills/qroky/SKILL.md
+  removing: /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.claude/CLAUDE.md (marker block only)
+  leaving /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.local/bin/qroky in place — it does not carry this kit's provenance marker,
   so it is not ours to delete.
-  removing: /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.zshrc (PATH marker block only)
-  removing: /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.qroky
-  removing: /private/tmp/qroky-install-dry-run.M8KeeL/w22/install-state.json
+  removing: /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.zshrc (PATH marker block only)
+  removing: /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.qroky
+  removing: /private/tmp/qroky-install-dry-run.R9Y7bh/w22/install-state.json
 
 Done. Removed:
-  - /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.claude/skills/qroky/SKILL.md
-  - marker block in /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.claude/CLAUDE.md
-  - PATH marker block in /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.zshrc
-  - /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.qroky
-  - /private/tmp/qroky-install-dry-run.M8KeeL/w22/install-state.json
+  - launchd: md.qroky.heartbeat.w22
+  - /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.claude/skills/qroky/SKILL.md
+  - marker block in /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.claude/CLAUDE.md
+  - PATH marker block in /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.zshrc
+  - /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.qroky
+  - /private/tmp/qroky-install-dry-run.R9Y7bh/w22/install-state.json
 
-Your data stayed here: /private/tmp/qroky-install-dry-run.M8KeeL/w22
+Your data stayed here: /private/tmp/qroky-install-dry-run.R9Y7bh/w22
 Delete that folder yourself if you want a complete zero.
 To reinstall — one command, from anywhere; your data will stay:
     bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install
@@ -164,14 +173,14 @@ To reinstall — one command, from anywhere; your data will stay:
 Clean slate — removing everything the installer put on this MACHINE.
 Your working folder is not touched. Each step is printed before it runs.
 
-  removing: /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.local/bin/qroky
-  removing: /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.zshrc (PATH marker block only)
+  removing: /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.local/bin/qroky
+  removing: /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.zshrc (PATH marker block only)
 
 Done. Removed:
-  - /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.local/bin/qroky
-  - PATH marker block in /private/tmp/qroky-install-dry-run.M8KeeL/home-h/.zshrc
+  - /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.local/bin/qroky
+  - PATH marker block in /private/tmp/qroky-install-dry-run.R9Y7bh/home-h/.zshrc
 
-Your data stayed here: /private/tmp/qroky-install-dry-run.M8KeeL/w22
+Your data stayed here: /private/tmp/qroky-install-dry-run.R9Y7bh/w22
 Delete that folder yourself if you want a complete zero.
 To reinstall — one command, from anywhere; your data will stay:
     bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install
@@ -186,6 +195,8 @@ Nothing to remove — this machine has no Qroky install. All clean already.
 (a) curl-mode install: exit 0 (0); launcher executable+provenance: 1 (1); PATH blocks: 1 (1); finale names ~/.local/bin/qroky: 1 (>=1), NEW-terminal honesty: 1 (>=1), the word itself: 1 (>=1)
 (b) relay: exit 2 (2 = help), kit qroky.sh spoke: 1 (>=1)
 (c) backfill on update: exit 0 (0); launcher back: 1 (1); PATH blocks: 1 (1); announced: 1 (>=1); tag v1.7.0: 1 (1)
+(c2) second consecutive update: exit 0 (0); announce lines (must be 0 — F3 silence): 0; tag v1.8.0: 1 (1)
+(c3) qroky enable-heartbeat from a neutral folder: exit 0 (0); heartbeat ON said: 1 (>=1); plist landed: 1 (1); path-bound enable hints left in lang x3 + README x3 (must be 0): 0
 (d1) foreign launcher kept: 1 (1), said foreign: 1 (>=1); PATH blocks after uninstall: 0 (0); user profile line kept: 1 (1); state gone: 1 (1); exit 0 (0)
-(d2) OUR launcher removed via vendored installer: 1 (1); PATH blocks: 0 (0); user line still kept: 1 (1); removal listed the launcher: 2 (>=1); exit 0 (0)
+(d2) OUR launcher removed via vendored installer: 1 (1); PATH blocks: 0 (0); user line still kept: 1 (1); removal listed the launcher: 2 (>=1); profile byte-identical after the blank+block cycle (F2): 1 (1); exit 0 (0)
 (d3) no-launcher uninstall: exit 0 (0), polite no-op: 1 (>=1)

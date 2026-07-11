@@ -1,5 +1,5 @@
 Scenario 2 — kill the install mid-way, rerun completes to the end
-Generated: 2026-07-11T18:28:50Z
+Generated: 2026-07-11T18:47:48Z
 Mechanism (round-2 fix, verify F1): RUN A opts INTO Telegram (y +
 GOODTOKEN456) so the QROKY_TEST_DELAY_STEP=telegram hook — which sits
 AFTER the token is stored but BEFORE the telegram step's state commit
@@ -28,8 +28,8 @@ a single Enter. Nothing installs behind your back.
 Step 2 of 8 — choose your working folder
 Where should your private Qroky folder live?
 Press Enter to use the suggested folder, or type a different path.
-Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w2
->   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w2
+Suggested: /private/tmp/qroky-install-dry-run.R9Y7bh/w2
+>   working folder: /private/tmp/qroky-install-dry-run.R9Y7bh/w2
 
 Step 3 of 8 — check the Claude Code assistant
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
@@ -41,7 +41,7 @@ Step 4 of 8 — check your subscription
   subscription/login — looks active
 
 Step 5 of 8 — connect Telegram (optional)
-Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Enter = skip, connect later (one command: qroky enable-telegram).
 Or: would you like your assistant on Telegram — a morning digest, updates,
 and questions it can ask you on your phone? Type y to connect now:   Let's create your own Telegram bot — this takes about 2 minutes:
     1. Open the Telegram app.
@@ -62,14 +62,14 @@ Paste the token here (or type "skip" to skip this step):   checking the token wi
   connecting the bot to this computer (checks every 30 seconds; daily digest at 09:05)...
   first listener pass — healthy
   Telegram assistant — ON (listener every 30 s, digest daily at 09:05; its files live in .qroky/telegram/ inside your workspace)
-(process 34543 SIGKILLed mid-step, as intended)
+(process 45185 SIGKILLed mid-step, as intended)
 
 --- state file immediately after the kill ---
 {
   "version": 1,
-  "generated_at": "2026-07-11T18:28:51Z",
+  "generated_at": "2026-07-11T18:47:48Z",
   "answer_language": "en",
-  "answer_workdir": "/private/tmp/qroky-install-dry-run.M8KeeL/w2",
+  "answer_workdir": "/private/tmp/qroky-install-dry-run.R9Y7bh/w2",
   "answer_telegram_optin": "",
   "answer_telegram_token_stored": "no",
   "answer_telegram_bound": "no",
@@ -89,8 +89,8 @@ Paste the token here (or type "skip" to skip this step):   checking the token wi
   "step_backup": "pending",
   "step_machinewide": "pending",
   "backup_repo": "",
-  "framework_source": "/private/tmp/qroky-install-dry-run.M8KeeL/fake-framework-origin",
-  "framework_ref": "35e3645389c500a273d6073e2ecba756618ef5b1",
+  "framework_source": "/private/tmp/qroky-install-dry-run.R9Y7bh/fake-framework-origin",
+  "framework_ref": "170592eae726772769b94a57216ec8faa0f9de3a",
   "framework_tag": "v1.0.0"
 }
 
@@ -116,10 +116,10 @@ Step 4 of 8 — check your subscription
   already set up — nothing to do (health check)
 
 Step 5 of 8 — connect Telegram (optional)
-Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Enter = skip, connect later (one command: qroky enable-telegram).
 Or: would you like your assistant on Telegram — a morning digest, updates,
 and questions it can ask you on your phone? Type y to connect now:   Telegram — skipped. Connect any time with one command:
-      bash install.sh --enable-telegram
+      qroky enable-telegram
 
 Step 6 of 8 — daily support sharing (optional)
 Daily support sharing — before asking, here is EXACTLY what would leave this
@@ -156,7 +156,7 @@ broken computer never means lost work. One honest line about where it goes:
 the backup is stored in YOUR OWN private GitHub account — nobody else's;
 nobody but you can see it. Recommended: yes.
 Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
-      bash install.sh --enable-backup
+      qroky enable-backup
 
   teaching this whole machine the starting phrase (exactly two files in ~/.claude; the finish screen names them and the one-command removal)...
   done — "qroky start" now works in any chat on this machine.
@@ -169,13 +169,13 @@ Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Tur
 
 Copy-paste this into your terminal:
 
-    cd /private/tmp/qroky-install-dry-run.M8KeeL/w2 && claude
+    cd /private/tmp/qroky-install-dry-run.R9Y7bh/w2 && claude
 
 then say:
 
     qroky start
 
-(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w2 → start a new chat — same phrase.)
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.R9Y7bh/w2 → start a new chat — same phrase.)
 
 One honest note: the FIRST time claude starts, it asks a couple of its own
 questions (color theme, login) — that is normal; answer them and continue.
@@ -186,7 +186,7 @@ From now on, in any NEW terminal window, one word works from anywhere:
     qroky update       — update your assistant
     qroky uninstall    — remove everything it put on this machine
 (what was set up: the small command file ~/.local/bin/qroky,
- plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+ plus one PATH line in /private/tmp/qroky-install-dry-run.R9Y7bh/home/.zshrc — both removed by qroky uninstall)
 
 Set up without a question (so it just works): the assistant answers to
 «qroky» in ANY Claude Code session on this machine — exactly two files in
@@ -199,16 +199,16 @@ A note on responsibility: the system produces drafts and analysis; legal,
 financial, and medical decisions and signatures are always made by a human.
 Not professional advice.
 
-(total elapsed: 1s)
+(total elapsed: 0s)
 
 --- RUN B exit code: 0 ---
 
 --- final state file ---
 {
   "version": 1,
-  "generated_at": "2026-07-11T18:28:55Z",
+  "generated_at": "2026-07-11T18:47:52Z",
   "answer_language": "en",
-  "answer_workdir": "/private/tmp/qroky-install-dry-run.M8KeeL/w2",
+  "answer_workdir": "/private/tmp/qroky-install-dry-run.R9Y7bh/w2",
   "answer_telegram_optin": "no",
   "answer_telegram_token_stored": "no",
   "answer_telegram_bound": "no",
@@ -228,8 +228,8 @@ Not professional advice.
   "step_backup": "done",
   "step_machinewide": "done",
   "backup_repo": "",
-  "framework_source": "/private/tmp/qroky-install-dry-run.M8KeeL/fake-framework-origin",
-  "framework_ref": "35e3645389c500a273d6073e2ecba756618ef5b1",
+  "framework_source": "/private/tmp/qroky-install-dry-run.R9Y7bh/fake-framework-origin",
+  "framework_ref": "170592eae726772769b94a57216ec8faa0f9de3a",
   "framework_tag": "v1.0.0"
 }
 

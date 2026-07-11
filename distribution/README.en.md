@@ -84,7 +84,7 @@ this machine** — the installer sets that up itself (exactly two files under
 5. **Telegram (optional)** — the assistant in your pocket: a morning
    digest, updates, and questions it can ask you on your phone. Skipping is
    zero effort: just press Enter (connect later with one command:
-   `bash install.sh --enable-telegram`). If you say yes, the installer
+   `qroky enable-telegram`). If you say yes, the installer
    walks you through creating your own bot with BotFather, checks the token
    live, asks you to press **Start** on your bot — and the bot
    **immediately writes back** ("I am connected; tomorrow morning you get
@@ -150,12 +150,12 @@ optional piece it turns on can be turned off just as easily:
   answer "yes" at question 7 in the first place — the digest ships
   installed-but-off in that case, with the exact enable command printed
   for you.
-- **Enable the morning digest later:** `bash install.sh --enable-heartbeat`
+- **Enable the morning digest later:** `qroky enable-heartbeat`
 - **Enable the backup later** (if you said no at question 8):
-  `bash install.sh --enable-backup`
+  `qroky enable-backup`
 - **Connect (or finish connecting) Telegram later** (if you skipped
   question 5 or Start wasn't pressed in time):
-  `bash install.sh --enable-telegram`
+  `qroky enable-telegram`
 - **Disable the Telegram assistant:** delete the two files
   `md.qroky.telegram.listener.plist` and `md.qroky.telegram.digest.plist`
   from `~/Library/LaunchAgents/` (its working files live in

@@ -90,7 +90,7 @@ Claude Code pe acest calculator** — instalatorul configurează asta singur
 5. **Telegram (opțional)** — asistentul în buzunarul tău: un rezumat de
    dimineață, noutăți și întrebări pe care ți le poate pune pe telefon. A
    sări peste nu cere niciun efort: apasă doar Enter (conectezi mai târziu
-   cu o comandă: `bash install.sh --enable-telegram`). Dacă spui da,
+   cu o comandă: `qroky enable-telegram`). Dacă spui da,
    instalatorul te duce pas cu pas prin crearea propriului tău bot cu
    BotFather, verifică token-ul live, îți cere să apeși **Start** la botul
    tău — iar botul **îți scrie imediat înapoi** („sunt conectat; mâine
@@ -160,12 +160,12 @@ opțională pe care o pornește poate fi oprită la fel de ușor:
   început — rezumatul e instalat-dar-oprit în acest caz, cu comanda exactă
   de pornire afișată pentru tine.
 - **Pornește rezumatul de dimineață mai târziu:**
-  `bash install.sh --enable-heartbeat`
+  `qroky enable-heartbeat`
 - **Pornește copia de siguranță mai târziu** (dacă ai spus nu la
-  întrebarea 8): `bash install.sh --enable-backup`
+  întrebarea 8): `qroky enable-backup`
 - **Conectează (sau termină de conectat) Telegram mai târziu** (dacă ai
   sărit peste întrebarea 5 sau Start nu a fost apăsat la timp):
-  `bash install.sh --enable-telegram`
+  `qroky enable-telegram`
 - **Oprește asistentul Telegram:** șterge cele două fișiere
   `md.qroky.telegram.listener.plist` și `md.qroky.telegram.digest.plist`
   din `~/Library/LaunchAgents/` (fișierele lui de lucru stau în

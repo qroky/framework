@@ -73,11 +73,11 @@ L_SUBSCRIPTION_SOFT_NOTICE() {
 }
 
 L_TELEGRAM_ASK_OPTIN() {
-  printf 'Enter = skip, connect later (one command: bash install.sh --enable-telegram).\n'
+  printf 'Enter = skip, connect later (one command: qroky enable-telegram).\n'
   printf 'Or: would you like your assistant on Telegram — a morning digest, updates,\n'
   printf 'and questions it can ask you on your phone? Type y to connect now: '
 }
-L_TELEGRAM_SKIPPED() { printf '  Telegram — skipped. Connect any time with one command:\n      bash install.sh --enable-telegram\n'; }
+L_TELEGRAM_SKIPPED() { printf '  Telegram — skipped. Connect any time with one command:\n      qroky enable-telegram\n'; }
 L_TELEGRAM_WALKTHROUGH() {
   cat <<'EOF'
   Let's create your own Telegram bot — this takes about 2 minutes:
@@ -117,13 +117,13 @@ L_TELEGRAM_HELLO_FAILED() {
 L_TELEGRAM_NO_START() {
   printf '  nobody pressed Start within the wait — that is fine, nothing broke.\n'
   printf '  Your token is saved; the bot connects later with one command:\n'
-  printf '      bash install.sh --enable-telegram\n'
+  printf '      qroky enable-telegram\n'
   printf '  Setup continues.\n'
 }
 L_TELEGRAM_HEAD_MISSING() {
   printf '  the Telegram assistant files are not in the downloaded rulebook (its version\n'
   printf '  predates this installer). Your token and link are saved. Try:\n'
-  printf '      qroky update   and then: bash install.sh --enable-telegram\n'
+  printf '      qroky update   and then: qroky enable-telegram\n'
   printf '  Setup continues.\n'
 }
 L_TELEGRAM_DEPLOYING() { printf '  connecting the bot to this computer (checks every 30 seconds; daily digest at 09:05)...\n'; }
@@ -136,7 +136,7 @@ L_TELEGRAM_LISTENER_WARN() {
 L_TELEGRAM_SCHEDULE_FAILED() {
   printf '  NOTICE: the Telegram jobs could not be scheduled automatically right now.\n'
   printf '  Everything else is fine — your bot link is saved. Try again later with:\n'
-  printf '      bash install.sh --enable-telegram\n'
+  printf '      qroky enable-telegram\n'
 }
 L_TELEGRAM_NO_LAUNCHD() {
   printf 'NOTICE: this machine has no "launchctl" (common outside macOS), so the\n'
@@ -181,7 +181,7 @@ EOF
   printf 'Turn the morning digest on? Yes/no (y/n), default y: '
 }
 L_HEARTBEAT_ON() { printf '  morning digest — installed and ON\n'; }
-L_HEARTBEAT_OFF() { printf '  morning digest — installed but OFF. Turn it on any time with:\n      bash install.sh --enable-heartbeat\n'; }
+L_HEARTBEAT_OFF() { printf '  morning digest — installed but OFF. Turn it on any time with:\n      qroky enable-heartbeat\n'; }
 L_HEARTBEAT_NO_LAUNCHD() {
   printf 'NOTICE: this machine has no "launchctl" (common outside macOS), so the\n'
   printf 'morning digest cannot be scheduled automatically. Nothing else failed —\n'
@@ -190,7 +190,7 @@ L_HEARTBEAT_NO_LAUNCHD() {
 L_HEARTBEAT_SCHEDULE_FAILED() {
   printf 'NOTICE: the morning digest could not be scheduled automatically right now.\n'
   printf 'Everything else finished fine — the digest is installed but off.\n'
-  printf 'Try again later with:\n      bash install.sh --enable-heartbeat\n'
+  printf 'Try again later with:\n      qroky enable-heartbeat\n'
 }
 
 L_FINALE() {
@@ -259,7 +259,7 @@ L_BACKUP_GH_MISSING() {
   printf '  is affected — setup continues without the backup.\n'
   printf '  To add it later:\n'
   printf '    1. Install gh: Mac: brew install gh   |   other: https://cli.github.com\n'
-  printf '    2. Run: bash install.sh --enable-backup\n'
+  printf '    2. Run: qroky enable-backup\n'
 }
 L_BACKUP_AUTH_WALKTHROUGH() {
   cat <<'EOF'
@@ -278,7 +278,7 @@ EOF
 L_BACKUP_AUTH_FAILED() {
   printf '  could not connect the GitHub account this time. Nothing else is\n'
   printf '  affected — setup continues without the backup.\n'
-  printf '  To try again later: bash install.sh --enable-backup\n'
+  printf '  To try again later: qroky enable-backup\n'
 }
 L_BACKUP_CREATING() { printf '  creating your private backup copy and sending the first snapshot...\n'; }
 L_BACKUP_DONE() {
@@ -289,11 +289,11 @@ L_BACKUP_DONE() {
 L_BACKUP_FAILED() {
   printf '  the first backup could not be completed (often a network hiccup).\n'
   printf '  Nothing else is affected — setup continues without the backup.\n'
-  printf '  To try again later: bash install.sh --enable-backup\n'
+  printf '  To try again later: qroky enable-backup\n'
 }
 L_BACKUP_SKIPPED() {
   printf '  backup — off, as you chose. Turn it on any time with:\n'
-  printf '      bash install.sh --enable-backup\n'
+  printf '      qroky enable-backup\n'
 }
 L_DISCLAIMER() {
   printf 'A note on responsibility: the system produces drafts and analysis; legal,\n'
@@ -328,7 +328,7 @@ L_TELEGRAM_ALREADY_CONNECTED() {
 L_TELEGRAM_UPDATE_FINISH_HINT() {
   printf '  the update brought the Telegram assistant, and your token is already saved —\n'
   printf '  one command finishes the connection (it waits for your Start press):\n'
-  printf '      bash install.sh --enable-telegram\n'
+  printf '      qroky enable-telegram\n'
 }
 
 # ATOM-105 (clean-run readiness): strings that were EN-hardcoded or new.

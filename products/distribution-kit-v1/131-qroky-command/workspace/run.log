@@ -91,3 +91,26 @@ kills 22(b).
 ~55k of ~80k executor budget (INFO-019: in envelope, honest E4 not
 needed). No network, no real tokens, no git operations against real
 repos, no framework commits (coordinator's after acceptance).
+
+## Fix round (post-verify ACCEPT r1 — VERDICT.md findings F1–F4)
+
+1. F1: qroky.sh case gained enable-telegram|enable-heartbeat|enable-backup
+   (passthrough "--$CMD" via _find_installer — offline-capable, no logic
+   duplicated; launcher untouched, it is exec-only). Replaced all 48
+   «bash install.sh --enable-*» hints with «qroky enable-*» (lang ×3 = 12
+   each, README ×3 = 4 each; python batch with count asserts). Four
+   harness OUTPUT greps that hunted the old hint text retargeted to the
+   new words (scenarios 8, 9, 11B, 13d — kept non-vacuous).
+2. F2: uninstall's profile excision awk now holds one line back and drops
+   a HELD BLANK when the start marker arrives — the one blank the
+   installer prints before the block is swallowed, cycles are
+   byte-neutral. Proven by a cmp snapshot cycle in scenario 22 d2.
+3. F3: scenario 22 c2 — second consecutive update on a new tag (v1.8.0):
+   zero announce lines, tag applied. The DoD-6 silence tail is now
+   run-proven, not code-read-only.
+4. F4: dry-run.sh mkdir -p's the transcript dir with an honest stderr
+   line on failure (previously an absent dir left ATOM_WORKSPACE empty
+   and transcripts sprayed at /).
+5. Full harness rerun: 24/24 PASS (scenario 22 now has c2 + c3 +
+   F2-byte-cycle legs). Envelope: ~15k of the ~20k fix-round budget;
+   total ≈ 70k.

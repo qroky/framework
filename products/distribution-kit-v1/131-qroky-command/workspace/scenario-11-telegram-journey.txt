@@ -1,5 +1,5 @@
 Scenario 11 — Telegram journey (v0.2): «дал ключ — бот пнул», both branches
-Generated: 2026-07-11T18:29:05Z
+Generated: 2026-07-11T18:48:03Z
 Stub: getUpdates delivers the owner's /start (update_id 111, chat 424242)
 only while QROKY_STUB_TG_START=1 and offset <= 111; every sendMessage is
 recorded verbatim in tg-sent.log. QROKY_TEST_START_WAIT=4 shrinks the
@@ -23,8 +23,8 @@ a single Enter. Nothing installs behind your back.
 Step 2 of 8 — choose your working folder
 Where should your private Qroky folder live?
 Press Enter to use the suggested folder, or type a different path.
-Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w11a
->   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w11a
+Suggested: /private/tmp/qroky-install-dry-run.R9Y7bh/w11a
+>   working folder: /private/tmp/qroky-install-dry-run.R9Y7bh/w11a
 
 Step 3 of 8 — check the Claude Code assistant
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
@@ -36,7 +36,7 @@ Step 4 of 8 — check your subscription
   subscription/login — looks active
 
 Step 5 of 8 — connect Telegram (optional)
-Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Enter = skip, connect later (one command: qroky enable-telegram).
 Or: would you like your assistant on Telegram — a morning digest, updates,
 and questions it can ask you on your phone? Type y to connect now:   Let's create your own Telegram bot — this takes about 2 minutes:
     1. Open the Telegram app.
@@ -86,7 +86,7 @@ it works: it only READS your own workspace to build the summary — it never
 takes actions on its own and never sends anything anywhere except this
 digest to you. Recommended: yes.
 Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed but OFF. Turn it on any time with:
-      bash install.sh --enable-heartbeat
+      qroky enable-heartbeat
 
 Step 8 of 8 — backup to your own GitHub (optional)
 Backup — keep a private, off-computer copy of your workspace, so a lost or
@@ -94,7 +94,7 @@ broken computer never means lost work. One honest line about where it goes:
 the backup is stored in YOUR OWN private GitHub account — nobody else's;
 nobody but you can see it. Recommended: yes.
 Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
-      bash install.sh --enable-backup
+      qroky enable-backup
 
   teaching this whole machine the starting phrase (exactly two files in ~/.claude; the finish screen names them and the one-command removal)...
   done — "qroky start" now works in any chat on this machine.
@@ -107,13 +107,13 @@ Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Tur
 
 Copy-paste this into your terminal:
 
-    cd /private/tmp/qroky-install-dry-run.M8KeeL/w11a && claude
+    cd /private/tmp/qroky-install-dry-run.R9Y7bh/w11a && claude
 
 then say:
 
     qroky start
 
-(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w11a → start a new chat — same phrase.)
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.R9Y7bh/w11a → start a new chat — same phrase.)
 
 One honest note: the FIRST time claude starts, it asks a couple of its own
 questions (color theme, login) — that is normal; answer them and continue.
@@ -124,7 +124,7 @@ From now on, in any NEW terminal window, one word works from anywhere:
     qroky update       — update your assistant
     qroky uninstall    — remove everything it put on this machine
 (what was set up: the small command file ~/.local/bin/qroky,
- plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+ plus one PATH line in /private/tmp/qroky-install-dry-run.R9Y7bh/home/.zshrc — both removed by qroky uninstall)
 
 Set up without a question (so it just works): the assistant answers to
 «qroky» in ANY Claude Code session on this machine — exactly two files in
@@ -169,8 +169,8 @@ a single Enter. Nothing installs behind your back.
 Step 2 of 8 — choose your working folder
 Where should your private Qroky folder live?
 Press Enter to use the suggested folder, or type a different path.
-Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w11b
->   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w11b
+Suggested: /private/tmp/qroky-install-dry-run.R9Y7bh/w11b
+>   working folder: /private/tmp/qroky-install-dry-run.R9Y7bh/w11b
 
 Step 3 of 8 — check the Claude Code assistant
   Claude Code — found (claude-code 0.0.0-dry-run-stub)
@@ -182,7 +182,7 @@ Step 4 of 8 — check your subscription
   subscription/login — looks active
 
 Step 5 of 8 — connect Telegram (optional)
-Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Enter = skip, connect later (one command: qroky enable-telegram).
 Or: would you like your assistant on Telegram — a morning digest, updates,
 and questions it can ask you on your phone? Type y to connect now:   Let's create your own Telegram bot — this takes about 2 minutes:
     1. Open the Telegram app.
@@ -200,7 +200,7 @@ Paste the token here (or type "skip" to skip this step):   checking the token wi
   (or send it any message). I am waiting for it here, up to 4 seconds...
   nobody pressed Start within the wait — that is fine, nothing broke.
   Your token is saved; the bot connects later with one command:
-      bash install.sh --enable-telegram
+      qroky enable-telegram
   Setup continues.
 
 Step 6 of 8 — daily support sharing (optional)
@@ -231,7 +231,7 @@ it works: it only READS your own workspace to build the summary — it never
 takes actions on its own and never sends anything anywhere except this
 digest to you. Recommended: yes.
 Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed but OFF. Turn it on any time with:
-      bash install.sh --enable-heartbeat
+      qroky enable-heartbeat
 
 Step 8 of 8 — backup to your own GitHub (optional)
 Backup — keep a private, off-computer copy of your workspace, so a lost or
@@ -239,7 +239,7 @@ broken computer never means lost work. One honest line about where it goes:
 the backup is stored in YOUR OWN private GitHub account — nobody else's;
 nobody but you can see it. Recommended: yes.
 Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
-      bash install.sh --enable-backup
+      qroky enable-backup
 
   teaching this whole machine the starting phrase (exactly two files in ~/.claude; the finish screen names them and the one-command removal)...
   done — "qroky start" now works in any chat on this machine.
@@ -252,13 +252,13 @@ Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Tur
 
 Copy-paste this into your terminal:
 
-    cd /private/tmp/qroky-install-dry-run.M8KeeL/w11b && claude
+    cd /private/tmp/qroky-install-dry-run.R9Y7bh/w11b && claude
 
 then say:
 
     qroky start
 
-(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w11b → start a new chat — same phrase.)
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.R9Y7bh/w11b → start a new chat — same phrase.)
 
 One honest note: the FIRST time claude starts, it asks a couple of its own
 questions (color theme, login) — that is normal; answer them and continue.
@@ -269,7 +269,7 @@ From now on, in any NEW terminal window, one word works from anywhere:
     qroky update       — update your assistant
     qroky uninstall    — remove everything it put on this machine
 (what was set up: the small command file ~/.local/bin/qroky,
- plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+ plus one PATH line in /private/tmp/qroky-install-dry-run.R9Y7bh/home/.zshrc — both removed by qroky uninstall)
 
 Set up without a question (so it just works): the assistant answers to
 «qroky» in ANY Claude Code session on this machine — exactly two files in

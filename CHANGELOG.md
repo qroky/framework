@@ -21,7 +21,9 @@ entry is not published.
 - Existing installs get the `qroky` command automatically on their next
   update — no reinstall.
 - Every message the kit prints now says `qroky update` / `qroky details` /
-  `qroky uninstall` — no paths, no «go to the folder first».
+  `qroky uninstall` — and the connect-later hints say `qroky enable-telegram`,
+  `qroky enable-heartbeat`, `qroky enable-backup`, which work from anywhere
+  too. No paths, no «go to the folder first», anywhere.
 
 ## v0.4 — 2026-07-11
 

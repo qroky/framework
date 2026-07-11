@@ -1,10 +1,10 @@
 Scenario 18 — fresh-gesture visibility notes at all three touch points (INFO-041)
-Generated: 2026-07-11T18:29:24Z
+Generated: 2026-07-11T18:48:22Z
 
 --- assertions (all against real output of earlier scenarios) ---
 finale note, en (scenario 1): 1 (>=1); ru (scenario 14): 1 (>=1)
 hello carries the literal route with the real path, en: 1 (>=1); ru: 1 (>=1)
-marker note in the WORKDIR copy (en, /private/tmp/qroky-install-dry-run.M8KeeL/w1/CLAUDE.md): 1 (1)
-marker note in the MACHINE-WIDE copy (/private/tmp/qroky-install-dry-run.M8KeeL/home-mw-default/.claude/CLAUDE.md): 1 (1), inside the strip fences: 1 (1)
-marker note in the ru workdir copy (/private/tmp/qroky-install-dry-run.M8KeeL/w14/CLAUDE.md): 1 (1)
+marker note in the WORKDIR copy (en, /private/tmp/qroky-install-dry-run.R9Y7bh/w1/CLAUDE.md): 1 (1)
+marker note in the MACHINE-WIDE copy (/private/tmp/qroky-install-dry-run.R9Y7bh/home-mw-default/.claude/CLAUDE.md): 1 (1), inside the strip fences: 1 (1)
+marker note in the ru workdir copy (/private/tmp/qroky-install-dry-run.R9Y7bh/w14/CLAUDE.md): 1 (1)
 machine-wide trace line in the ru finale (INFO-042): 1 (>=1)
