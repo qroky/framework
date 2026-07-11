@@ -2,11 +2,11 @@
 name: pilot-toolsmith
 description: Builds founder-facing setup scripts, telemetry, and showcase renderers; needed by ATOM-007 (Pilot Prerequisites), ATOM-071 (Setup Kit), ATOM-072 (Telemetry & Consent), ATOM-101 (Distribution Installer).
 maturity:
-  runs: 6  # T1 precedent recording starts here (INFO-014); pre-existing 071/072 runs predate the discipline and are not back-filled
-  verify_returns: 2  # ATOM-101 r1 RETURN -> r2 ACCEPT; ATOM-102/103/104 ACCEPT r1 zero findings; ATOM-110 r1 ACCEPT (6 minor) -> r2 RETURN (R2-1) -> r3 ACCEPT; ATOM-111 ACCEPT r1 (3 minor, fixed in-round)
+  runs: 7  # T1 precedent recording starts here (INFO-014); pre-existing 071/072 runs predate the discipline and are not back-filled
+  verify_returns: 2  # ATOM-101 r1 RETURN -> r2 ACCEPT; ATOM-102/103/104 ACCEPT r1 zero findings; ATOM-110 r1 ACCEPT (6 minor) -> r2 RETURN (R2-1) -> r3 ACCEPT; ATOM-111 ACCEPT r1 (3 minor, fixed in-round); ATOM-105 ACCEPT r1 (2 minor carried)
   rowan_fails: 0
-  envelope_accuracy: "ATOM-101: 324,949 vs ~410k (0.79); ATOM-102: ~70k vs ~150k (0.47); ATOM-103: ~70k vs ~70k (1.0, at the edge); ATOM-110: ~140k vs ~350k (0.40); ATOM-104: ~132k vs ~150k (0.88); ATOM-111: ~190k vs ~250k (0.76)"
-  updated: 2026-07-10
+  envelope_accuracy: "ATOM-101: 324,949 vs ~410k (0.79); ATOM-102: ~70k vs ~150k (0.47); ATOM-103: ~70k vs ~70k (1.0, at the edge); ATOM-110: ~140k vs ~350k (0.40); ATOM-104: ~132k vs ~150k (0.88); ATOM-111: ~190k vs ~250k (0.76); ATOM-105: ~68k vs ~70k (0.97)"
+  updated: 2026-07-11
 ---
 
 # Role: Pilot Toolsmith

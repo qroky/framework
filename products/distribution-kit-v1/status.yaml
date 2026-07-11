@@ -39,3 +39,11 @@ atoms:
     opened: 2026-07-10
     gate: GATE-028 (G1 go + 2 follow-up decisions)
     mandate: GATE-027 G2-return fix (kit v0.2, journey + bot hello + question 9)
+  ATOM-105:
+    folder: 105-clean-run-readiness
+    status: reviewed (kit v0.3.1, verify ACCEPT r1 — 0 blocking / 0 major / 2 minor carried)
+    maturity: —
+    opened: 2026-07-11
+    gate: INFO-035 (G1 "go на апдейт" + launch criterion verbatim)
+    mandate: clean-run readiness (locale integrity end-to-end, --uninstall clean slate)
+    carry_over: "minor 1: provenance marker is coarse substring grep 'GATE-028' — a foreign file mentioning it would be removed; minor 2: asymmetric locale fallbacks (uninstall w/o state -> en, head -> ru)"
