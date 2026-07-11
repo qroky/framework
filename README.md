@@ -24,7 +24,7 @@ Qroky is an operating system for building products with a workforce of agents. E
 | [knowledge/](knowledge/) | The knowledge layer: domain, organizational, procedural, precedent |
 | [runtime/](runtime/) | Runtime bindings — how atoms run on a concrete platform |
 | [distribution/](distribution/) | The installer kit: `install.sh`, the dist-manifest, the freeze check |
-| [qroky.sh](qroky.sh) | The one-command entry: `bash qroky.sh install \| update \| uninstall` |
+| [qroky.sh](qroky.sh) | The one-command entry — installed as the `qroky` command on PATH: `qroky install \| update \| uninstall` |
 | [LICENSE](LICENSE) | Apache License 2.0 — the open boundary is recorded in the decision journal (RISK-002, in the lab) |
 
 This repository is the PRODUCT — what every instance receives, whole

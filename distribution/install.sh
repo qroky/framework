@@ -1393,6 +1393,81 @@ step_machinewide() {
   log "machinewide DONE (always-on, INFO-042)"
 }
 
+# ---------------------------------------------------------------------------
+# The `qroky` command (ATOM-131, INFO-044 — «решить проблему, а не
+# подсказывать»): a tiny launcher at ~/.local/bin/qroky, so update/uninstall
+# work FROM ANYWHERE, forever, without knowing where any clone lives. The
+# launcher carries NO logic — it resolves the machine's own kit copy
+# (~/.qroky/kit; falls back to the install's vendored framework) and execs
+# qroky.sh there. This is the THIRD machine-wide file (+ one possible PATH
+# marker line in the shell profile, added ONLY when ~/.local/bin is not on
+# PATH already): the finale names both, uninstall removes both. Never
+# /usr/local/bin, never sudo. Best-effort — a read-only ~ never kills an
+# install over a convenience command.
+# ---------------------------------------------------------------------------
+LAUNCHER_FILE="$HOME/.local/bin/qroky"
+LAUNCHER_PATH_MARKER_START='# >>> qroky command (added by the Qroky installer, INFO-044; removed by `qroky uninstall`) >>>'
+LAUNCHER_PATH_MARKER_END='# <<< qroky command <<<'
+LAUNCHER_PATH_ADDED=""   # set to the profile file when a PATH line exists/was added
+
+_launcher_profile() {
+  case "${SHELL:-}" in
+    */zsh)  printf '%s' "$HOME/.zshrc" ;;
+    */bash) printf '%s' "$HOME/.bashrc" ;;
+    *)      printf '%s' "$HOME/.profile" ;;
+  esac
+}
+
+_launcher_wire() {
+  if ! { mkdir -p "$HOME/.local/bin" \
+         && cat > "$LAUNCHER_FILE" <<'LAUNCHER_EOF'
+#!/bin/sh
+# qroky — the Qroky command (installed by the Qroky installer, INFO-044;
+# removed by `qroky uninstall`). No logic lives here: resolve the machine's
+# own kit copy and hand everything to qroky.sh.
+KIT="${QROKY_KIT_HOME:-$HOME/.qroky/kit}"
+[ -f "$KIT/qroky.sh" ] && exec bash "$KIT/qroky.sh" "$@"
+WD=""
+[ -f "$HOME/.qroky/workdir" ] && WD="$(cat "$HOME/.qroky/workdir" 2>/dev/null)"
+[ -n "$WD" ] && [ -f "$WD/framework/qroky.sh" ] && exec bash "$WD/framework/qroky.sh" "$@"
+echo "qroky: no kit copy on this machine yet. Set it up with one command:"
+echo "  bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install"
+exit 1
+LAUNCHER_EOF
+         chmod +x "$LAUNCHER_FILE"; } 2>>"${LOG_FILE:-/dev/null}"; then
+    log "launcher WRITE-FAILED (best-effort — install continues; qroky.sh still works)"
+    return 0
+  fi
+  # PATH line: only when ~/.local/bin is genuinely absent from PATH, and
+  # only once — the marker is checked across every profile zsh/bash read
+  # (both .zshrc AND .zprofile, carefully), so re-runs never duplicate it.
+  case ":$PATH:" in
+    *":$HOME/.local/bin:"*) log "launcher PATH-ALREADY (~/.local/bin on PATH — no profile line written)" ;;
+    *)
+      local prof existing=""
+      for prof in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile"; do
+        if [[ -f "$prof" ]] && grep -qF "$LAUNCHER_PATH_MARKER_START" "$prof"; then existing="$prof"; break; fi
+      done
+      if [[ -n "$existing" ]]; then
+        LAUNCHER_PATH_ADDED="$existing"
+        log "launcher PATH-MARKER-PRESENT ($existing) — not duplicated"
+      else
+        prof="$(_launcher_profile)"
+        if { printf '\n%s\n' "$LAUNCHER_PATH_MARKER_START"
+             printf 'export PATH="$HOME/.local/bin:$PATH"\n'
+             printf '%s\n' "$LAUNCHER_PATH_MARKER_END"; } >> "$prof" 2>>"${LOG_FILE:-/dev/null}"; then
+          LAUNCHER_PATH_ADDED="$prof"
+          log "launcher PATH-LINE-ADDED ($prof)"
+        else
+          log "launcher PATH-LINE-FAILED (best-effort — the launcher itself is in place)"
+        fi
+      fi
+      ;;
+  esac
+  log "launcher DONE ($LAUNCHER_FILE)"
+  return 0
+}
+
 # Shared by every flag-driven command (--check-update, --show-update-details,
 # --apply-update, --enable-heartbeat, --enable-backup): resolves the same
 # workdir the interview would (env override, else the pointer file, else
@@ -1470,7 +1545,7 @@ cmd_enable_telegram() {
 # hello and the CLAUDE.md marker blocks are the other two).
 # The finale also carries the machine-wide TRACE (INFO-042): what was set up
 # without a question, and the one command that removes it entirely.
-finale() { L_FINALE "$WORKSPACE_DIR"; say ""; L_FINALE_MACHINEWIDE_TRACE; say ""; L_FINALE_NEW_SESSION_NOTE; say ""; L_DISCLAIMER; log "FINALE-SHOWN"; }
+finale() { L_FINALE "$WORKSPACE_DIR"; say ""; L_FINALE_QROKY_COMMAND "${LAUNCHER_PATH_ADDED:-}"; say ""; L_FINALE_MACHINEWIDE_TRACE; say ""; L_FINALE_NEW_SESSION_NOTE; say ""; L_DISCLAIMER; log "FINALE-SHOWN"; }
 
 # ---------------------------------------------------------------------------
 # Self-update (H11). Release tags only, never main. Digest -> да/позже/
@@ -1570,6 +1645,15 @@ EOF
   L_UPDATE_APPLIED "$old_tag" "$latest" "$record"
   log "self-update APPLIED $old_tag -> $latest"
 
+  # ATOM-131 (INFO-044, DoD 6): an EXISTING install gets the `qroky` command
+  # backfilled by its next update — no reinstall needed. Wired every time
+  # (idempotent, keeps the launcher fresh); announced only when it is NEW.
+  local had_launcher=0; [[ -f "$LAUNCHER_FILE" ]] && had_launcher=1
+  _launcher_wire
+  if [[ $had_launcher -eq 0 && -f "$LAUNCHER_FILE" ]]; then
+    say ""; L_FINALE_QROKY_COMMAND "${LAUNCHER_PATH_ADDED:-}"
+  fi
+
   # ATOM-111 fold of the recorded upgrade defect («токен есть, головы нет»):
   # an update that BRINGS the telegram head auto-completes a half-connected
   # install. Stored token + captured binding + head now vendored + not yet
@@ -1658,6 +1742,32 @@ cmd_uninstall() {
       && mv "$claude_md.tmp.$$" "$claude_md"
     _un_note "marker block in $claude_md"
   fi
+
+  # 2b) the `qroky` command (ATOM-131, INFO-044): the launcher — ONLY with
+  # our provenance (the INFO-044 line the installer writes; anything else at
+  # that path is somebody's file and stays) — and the PATH marker block,
+  # removed from whichever profile carries it. Foreign lines untouched: only
+  # the block between our two markers goes.
+  if [[ -f "$LAUNCHER_FILE" ]]; then
+    if grep -qF "INFO-044" "$LAUNCHER_FILE"; then
+      L_UNINSTALL_STEP "$LAUNCHER_FILE"
+      rm -f "$LAUNCHER_FILE"
+      rmdir "$HOME/.local/bin" 2>/dev/null || true
+      _un_note "$LAUNCHER_FILE"
+    else
+      L_UNINSTALL_FOREIGN_SKILL "$LAUNCHER_FILE"
+    fi
+  fi
+  local _prof
+  for _prof in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile"; do
+    if [[ -f "$_prof" ]] && grep -qF "$LAUNCHER_PATH_MARKER_START" "$_prof"; then
+      L_UNINSTALL_STEP "$_prof (PATH marker block only)"
+      awk -v s="$LAUNCHER_PATH_MARKER_START" -v e="$LAUNCHER_PATH_MARKER_END" \
+        '$0==s{skip=1; next} $0==e{skip=0; next} !skip' "$_prof" > "$_prof.tmp.$$" \
+        && mv "$_prof.tmp.$$" "$_prof"
+      _un_note "PATH marker block in $_prof"
+    fi
+  done
 
   # 3) machine-level qroky state: the registry and friends.
   if [[ -n "${QROKY_REGISTRY:-}" ]]; then
@@ -1789,6 +1899,7 @@ main_interview() {
   step_heartbeat;  say ""
   step_backup;     say ""
   step_machinewide; say ""
+  _launcher_wire
 
   finale
   say ""

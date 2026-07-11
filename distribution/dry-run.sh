@@ -63,7 +63,7 @@
 set -uo pipefail   # NOT -e: scenarios intentionally capture non-zero exits
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ATOM_WORKSPACE="$(cd "$HERE/../products/separation-v1/130-separation/workspace" && pwd)"
+ATOM_WORKSPACE="$(cd "$HERE/../products/distribution-kit-v1/131-qroky-command/workspace" && pwd)"
 SANDBOX="$(mktemp -d /private/tmp/qroky-install-dry-run.XXXXXX)"
 cleanup() { rm -rf "$SANDBOX"; }
 trap cleanup EXIT
@@ -247,6 +247,13 @@ rm -rf "$FAKE_FW/runtime/claude/telegram/state" "$FAKE_FW/runtime/claude/telegra
 mkdir -p "$FAKE_FW/distribution" "$FAKE_FW/products/some-product" "$FAKE_FW/decisions"
 cp "$HERE/dist-manifest" "$FAKE_FW/distribution/dist-manifest"
 cp "$HERE/verify.sh" "$FAKE_FW/distribution/verify.sh"
+# v0.4.1 (ATOM-131): the real framework repo ships the FULL kit inside
+# distribution/ plus qroky.sh at the root — the fake origin now does too,
+# so the vendored copy inside every instance can act as the OFFLINE
+# uninstaller (scenario 22 round 2 resolves through exactly that path).
+cp "$HERE/install.sh" "$FAKE_FW/distribution/install.sh"
+cp -R "$HERE/lang" "$FAKE_FW/distribution/lang"
+cp "$HERE/../qroky.sh" "$FAKE_FW/qroky.sh"
 echo "factory history — must NEVER reach an instance" > "$FAKE_FW/products/some-product/RESULT.md"
 echo "factory decision — must NEVER reach an instance" > "$FAKE_FW/decisions/GATE-000-stub.md"
 echo "factory backlog — must NEVER reach an instance" > "$FAKE_FW/TASKS.md"
@@ -1180,14 +1187,25 @@ FILES_UNDER_HOME_A=$(find "$HOME_C" -type f 2>/dev/null | wc -l | tr -d ' ')
 # v0.4 (ATOM-130): the machine trace ~/.qroky/workdir is a NEW sanctioned
 # ~-write — the exhaustive listing expects exactly it and nothing else new
 MW_POINTER_OK=0; [[ "$(cat "$HOME_C/.qroky/workdir" 2>/dev/null)" == "$W12A" ]] && MW_POINTER_OK=1
+# v0.4.1 (ATOM-131, INFO-044): TWO more sanctioned ~-writes — the qroky
+# launcher (executable, OUR provenance line) and exactly ONE PATH marker
+# block in the shell profile install.sh actually targets (fake HOME has no
+# ~/.local/bin on PATH, so the line is always needed here)
+case "${SHELL:-}" in */zsh) PROF12="$HOME_C/.zshrc";; */bash) PROF12="$HOME_C/.bashrc";; *) PROF12="$HOME_C/.profile";; esac
+LAUNCHER12_OK=0
+[[ -x "$HOME_C/.local/bin/qroky" ]] && grep -qF "INFO-044" "$HOME_C/.local/bin/qroky" && LAUNCHER12_OK=1
+PATH_MARKERS12_A1=$(cat "$HOME_C/.zshrc" "$HOME_C/.zprofile" "$HOME_C/.bashrc" "$HOME_C/.bash_profile" "$HOME_C/.profile" 2>/dev/null | grep -cF '>>> qroky command' || true)
 MARKERS_A1=$(grep -cF '<!-- qroky-machinewide:start -->' "$MW_CLAUDEMD" 2>/dev/null || true)
 SKILL_DIFF12="$(diff "$VENDORED_SKILL" "$MW_SKILL" 2>&1)"
 I3_EXCEPTION12=$(grep -c "GATE-028" "$MW_SKILL" 2>/dev/null || true)
 I3_AMENDED12=$(grep -c "INFO-042" "$MW_SKILL" 2>/dev/null || true)
+# ATOM-131: the skill's I3 exception must also carry the INFO-044 amendment
+# (third machine-wide file: the launcher + its PATH line)
+I3_AMENDED44_12=$(grep -c "INFO-044" "$MW_SKILL" 2>/dev/null || true)
 REMOVAL_NAMED12=$(printf '%s' "$OUT12A" | grep -c "to remove, delete them" || true)
 Q9_ASKED12=$(printf '%s' "$OUT12A" | grep -c "Type y for machine-wide" || true)
 TRACE_FINALE12=$(printf '%s' "$OUT12A" | grep -c "ANY Claude Code session" || true)
-TRACE_UNINSTALL_CMD12=$(printf '%s' "$OUT12A" | grep -c "bash install.sh --uninstall" || true)
+TRACE_UNINSTALL_CMD12=$(printf '%s' "$OUT12A" | grep -c "qroky uninstall" || true)
 SKILL_MD5_A1="$( (md5 -q "$MW_SKILL" 2>/dev/null || md5sum "$MW_SKILL" 2>/dev/null | cut -d' ' -f1) || true)"
 {
   echo ""
@@ -1199,19 +1217,23 @@ echo "$OUT12A2" >> "$T12"
 MARKERS_A2=$(grep -cF '<!-- qroky-machinewide:start -->' "$MW_CLAUDEMD" 2>/dev/null || true)
 FILES_UNDER_CLAUDE_A2=$(find "$HOME_C/.claude" -type f 2>/dev/null | wc -l | tr -d ' ')
 SKILL_MD5_A2="$( (md5 -q "$MW_SKILL" 2>/dev/null || md5sum "$MW_SKILL" 2>/dev/null | cut -d' ' -f1) || true)"
+# ATOM-131 idempotency: the re-run must NOT duplicate the PATH marker block
+PATH_MARKERS12_A2=$(cat "$HOME_C/.zshrc" "$HOME_C/.zprofile" "$HOME_C/.bashrc" "$HOME_C/.bash_profile" "$HOME_C/.profile" 2>/dev/null | grep -cF '>>> qroky command' || true)
+FILES_UNDER_HOME_A2=$(find "$HOME_C" -type f 2>/dev/null | wc -l | tr -d ' ')
 {
   echo ""
   echo "--- default-install assertions ---"
   echo "exit codes: run1=$STATUS12A rerun=$STATUS12A2"
   echo "q9 question asked (must be 0 — INFO-042 removed it): $Q9_ASKED12"
   echo "files under fake-HOME/.claude after run 1 (must be EXACTLY 2): $FILES_UNDER_CLAUDE_A"
-  echo "total files under fake HOME (must be 4: .gitconfig + the two + the ATOM-130 machine pointer ~/.qroky/workdir): $FILES_UNDER_HOME_A; pointer content correct: $MW_POINTER_OK (1)"
+  echo "total files under fake HOME (must be 6: .gitconfig + the two ~/.claude files + the ATOM-130 machine pointer ~/.qroky/workdir + the ATOM-131 launcher ~/.local/bin/qroky + the profile with the PATH block): $FILES_UNDER_HOME_A; pointer content correct: $MW_POINTER_OK (1)"
+  echo "launcher executable with OUR provenance (INFO-044): $LAUNCHER12_OK (1); PATH marker blocks across ALL profiles after run 1 (must be 1): $PATH_MARKERS12_A1; after re-run (must STILL be 1): $PATH_MARKERS12_A2; files under HOME after re-run (must still be 6): $FILES_UNDER_HOME_A2"
   echo "full listing of every file under the fake HOME:"
   find "$HOME_C" -type f | sed "s|$HOME_C|~|"
   echo "marker blocks in ~/.claude/CLAUDE.md after run 1 (must be 1): $MARKERS_A1; after re-run (must still be 1): $MARKERS_A2"
   echo "files under .claude after re-run (must still be 2): $FILES_UNDER_CLAUDE_A2"
   echo "skill copy byte-identical to the vendored source: $([[ -z "$SKILL_DIFF12" ]] && echo yes || echo NO-DEFECT)"
-  echo "skill copy carries the recorded I3 exception (GATE-028): $I3_EXCEPTION12 and its INFO-042 amendment: $I3_AMENDED12"
+  echo "skill copy carries the recorded I3 exception (GATE-028): $I3_EXCEPTION12, its INFO-042 amendment: $I3_AMENDED12, and the INFO-044 launcher amendment: $I3_AMENDED44_12"
   echo "removal paths named to the human: $REMOVAL_NAMED12"
   echo "finale carries the trace (works in ANY session + one-command removal): $TRACE_FINALE12 (>=1) / $TRACE_UNINSTALL_CMD12 (>=1)"
   echo "skill hash stable across the re-run: $([[ -n "$SKILL_MD5_A1" && "$SKILL_MD5_A1" == "$SKILL_MD5_A2" ]] && echo yes || echo NO-DEFECT)"
@@ -1238,16 +1260,18 @@ TRACE_README_RO=$(grep -c "este eliminată complet de această singură comandă
   echo "README uninstall doc carries the machine-wide trace: en=$TRACE_README_EN ru=$TRACE_README_RU ro=$TRACE_README_RO (each >=1)"
 } >> "$T12"
 if [[ $STATUS12A -eq 0 && $STATUS12A2 -eq 0 && "$Q9_ASKED12" -eq 0 \
-      && "$FILES_UNDER_CLAUDE_A" == "2" && "$FILES_UNDER_HOME_A" == "4" && $MW_POINTER_OK -eq 1 \
+      && "$FILES_UNDER_CLAUDE_A" == "2" && "$FILES_UNDER_HOME_A" == "6" && $MW_POINTER_OK -eq 1 \
+      && $LAUNCHER12_OK -eq 1 && "$PATH_MARKERS12_A1" -eq 1 && "$PATH_MARKERS12_A2" -eq 1 \
+      && "$FILES_UNDER_HOME_A2" == "6" \
       && "$MARKERS_A1" -eq 1 && "$MARKERS_A2" -eq 1 && "$FILES_UNDER_CLAUDE_A2" == "2" \
-      && -z "$SKILL_DIFF12" && "$I3_EXCEPTION12" -gt 0 && "$I3_AMENDED12" -gt 0 && "$REMOVAL_NAMED12" -gt 0 \
+      && -z "$SKILL_DIFF12" && "$I3_EXCEPTION12" -gt 0 && "$I3_AMENDED12" -gt 0 && "$I3_AMENDED44_12" -gt 0 && "$REMOVAL_NAMED12" -gt 0 \
       && "$TRACE_FINALE12" -ge 1 && "$TRACE_UNINSTALL_CMD12" -ge 1 \
       && -n "$SKILL_MD5_A1" && "$SKILL_MD5_A1" == "$SKILL_MD5_A2" \
       && $STATUS12B -eq 0 && "$USER_LINE_KEPT" -eq 1 && "$MARKERS_B" -eq 1 && $SKILL_B -eq 1 \
       && "$TRACE_README_EN" -ge 1 && "$TRACE_README_RU" -ge 1 && "$TRACE_README_RO" -ge 1 ]]; then
-  record "12-machinewide-always-on" PASS "no question asked; default install wrote exactly 2 files under ~/.claude (skill = vendored source with the GATE-028+INFO-042 amended exception), one marker after re-run, removal named, finale + README carry the trace in 3 locales; a pre-existing CLAUDE.md survived untouched"
+  record "12-machinewide-always-on" PASS "no question asked; default install wrote exactly 2 files under ~/.claude (skill = vendored source with the GATE-028+INFO-042+INFO-044 amended exception) + the qroky launcher with provenance + ONE PATH block (still one after re-run, 6 HOME files total), one marker after re-run, removal named, finale + README carry the trace in 3 locales; a pre-existing CLAUDE.md survived untouched"
 else
-  record "12-machinewide-always-on" FAIL "a=$STATUS12A a2=$STATUS12A2 q9=$Q9_ASKED12 claude_files=$FILES_UNDER_CLAUDE_A/$FILES_UNDER_CLAUDE_A2 home_files=$FILES_UNDER_HOME_A markers=$MARKERS_A1/$MARKERS_A2 diff_empty=$([[ -z "$SKILL_DIFF12" ]] && echo yes || echo no) i3=$I3_EXCEPTION12/$I3_AMENDED12 removal=$REMOVAL_NAMED12 trace=$TRACE_FINALE12/$TRACE_UNINSTALL_CMD12 md5=$([[ "$SKILL_MD5_A1" == "$SKILL_MD5_A2" ]] && echo stable || echo CHANGED) b=$STATUS12B/$USER_LINE_KEPT/$MARKERS_B/$SKILL_B readme=$TRACE_README_EN/$TRACE_README_RU/$TRACE_README_RO"
+  record "12-machinewide-always-on" FAIL "a=$STATUS12A a2=$STATUS12A2 q9=$Q9_ASKED12 claude_files=$FILES_UNDER_CLAUDE_A/$FILES_UNDER_CLAUDE_A2 home_files=$FILES_UNDER_HOME_A/$FILES_UNDER_HOME_A2 launcher=$LAUNCHER12_OK pathblocks=$PATH_MARKERS12_A1/$PATH_MARKERS12_A2 markers=$MARKERS_A1/$MARKERS_A2 diff_empty=$([[ -z "$SKILL_DIFF12" ]] && echo yes || echo no) i3=$I3_EXCEPTION12/$I3_AMENDED12 removal=$REMOVAL_NAMED12 trace=$TRACE_FINALE12/$TRACE_UNINSTALL_CMD12 md5=$([[ "$SKILL_MD5_A1" == "$SKILL_MD5_A2" ]] && echo stable || echo CHANGED) b=$STATUS12B/$USER_LINE_KEPT/$MARKERS_B/$SKILL_B readme=$TRACE_README_EN/$TRACE_README_RU/$TRACE_README_RO"
 fi
 
 # ---------------------------------------------------------------------------
@@ -1516,7 +1540,8 @@ HELLO_AGAIN=$(tail -n "+$((SENT_BEFORE_15 + 1))" "$TG_SENT_LOG" | grep -c "chat_
 # fatal ever reaches the founder's screen on the reinstall-over-occupied run.
 DIALOG_15R=$(printf '%s' "$OUT15R" | grep -c "already carries a Qroky install" || true)
 RAW_FATAL_15R=$(printf '%s' "$OUT15R" | grep -c "fatal:\|already exists" || true)
-HINT_15U=$(printf '%s' "$OUT15U" | grep -c "just run this installer again" || true)
+# ATOM-131: the reinstall hint is now the clone-less one command
+HINT_15U=$(printf '%s' "$OUT15U" | grep -c "raw.githubusercontent.com/qroky/framework/main/qroky.sh" || true)
 
 { echo ""; echo "--- uninstall on a clean machine: polite no-op ---"; } >> "$T15"
 OUT15N="$( ( export HOME="$HOME_F"; run_install "$W15X" '' --uninstall ) )"
@@ -1964,6 +1989,124 @@ if [[ $STATUS21A -eq 0 && $KIT_CLONED -eq 1 && "$KIT_AT_TAG" == "v0.4.0" && "$ST
   record "21-bootstrap" PASS "qroky.sh from arbitrary folders: install cloned the kit to ~/.qroky/kit at the release tag and completed sparse; update applied the new tag with no workdir hint; uninstall found the install by the machine trace alone, removed the machine side, kept the workdir; second uninstall = polite no-op"
 else
   record "21-bootstrap" FAIL "inst=$STATUS21A/$KIT_CLONED/$KIT_AT_TAG/$STATE21 trace=$TRACE21 sparse=$SPARSE21 upd=$STATUS21U/$TAG21 un=$STATUS21X/$STATE21_GONE/$QROKY_DIR_GONE/$WORKDIR_KEPT21/$UNSUMMARY21 noop=$STATUS21N/$NOOP21"
+fi
+
+# ---------------------------------------------------------------------------
+# SCENARIO 22 — ATOM-131 (INFO-044): the `qroky` command on PATH.
+# (a) CURL-MODE install: qroky.sh runs through PROCESS SUBSTITUTION (no
+#     file path, $0=/dev/fd/N, empty neutral cwd, no clone anywhere near) —
+#     the launcher lands at ~/.local/bin/qroky (executable, OUR provenance)
+#     with exactly ONE PATH marker block, and the finale names both plus
+#     the new-terminal honesty line;
+# (b) the launcher itself relays to the kit's qroky.sh;
+# (c) DoD 6 backfill: a «pre-131» machine (launcher + PATH block stripped)
+#     gets both back on its next `update`, announced;
+# (d) uninstall honors provenance: a FOREIGN file at ~/.local/bin/qroky
+#     stays (and is said to be foreign) while the marker block goes and a
+#     foreign profile line survives; OUR launcher is removed (round 2, via
+#     the workdir's VENDORED installer — kit copy already gone); a third
+#     uninstall with no launcher at all is a polite no-op.
+# Mutation-falsifiable: pre-131 code writes no launcher — (a) fails whole;
+# with a broken kit resolve the relay (b) fails; without the apply-update
+# hook (c) fails; without provenance checks (d) fails.
+# ---------------------------------------------------------------------------
+T22="$ATOM_WORKSPACE/scenario-22-qroky-command.txt"
+W22="$SANDBOX/w22"
+HOME_H="$SANDBOX/home-h"; mkdir -p "$HOME_H" "$SANDBOX/neutral-d"
+cp "$FAKE_HOME/.gitconfig" "$HOME_H/" 2>/dev/null || true
+case "${SHELL:-}" in */zsh) PROF22="$HOME_H/.zshrc";; */bash) PROF22="$HOME_H/.bashrc";; *) PROF22="$HOME_H/.profile";; esac
+LAUNCHER22="$HOME_H/.local/bin/qroky"
+{
+  echo "Scenario 22 — the qroky command on PATH (ATOM-131, INFO-044)"
+  echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo ""
+  echo "--- (a) curl-mode install: bash <(cat qroky.sh) install, neutral cwd, no clone ---"
+} > "$T22"
+OUT22A="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW" QROKY_WORKSPACE_DIR="$W22"; \
+  printf 'en\n\nn\nn\nn\nn\n' | bash <(cat "$DOWNLOADED") install ) 2>&1)"
+STATUS22A=$?
+echo "$OUT22A" >> "$T22"
+LAUNCHER22_OK=0; [[ -x "$LAUNCHER22" ]] && grep -qF "INFO-044" "$LAUNCHER22" && LAUNCHER22_OK=1
+PATHBLOCKS22_A=$(cat "$HOME_H/.zshrc" "$HOME_H/.zprofile" "$HOME_H/.bashrc" "$HOME_H/.bash_profile" "$HOME_H/.profile" 2>/dev/null | grep -cF '>>> qroky command' || true)
+FINALE_NAMES22=$(printf '%s' "$OUT22A" | grep -c ".local/bin/qroky" || true)
+FINALE_NEWTERM22=$(printf '%s' "$OUT22A" | grep -c "NEW terminal" || true)
+FINALE_WORD22=$(printf '%s' "$OUT22A" | grep -c "qroky update" || true)
+
+{ echo ""; echo "--- (b) the installed launcher relays to the kit's qroky.sh ---"; } >> "$T22"
+OUT22B="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H"; "$LAUNCHER22" ) 2>&1)"
+STATUS22B=$?
+echo "$OUT22B" >> "$T22"
+RELAY22=$(printf '%s' "$OUT22B" | grep -c "one command for the whole journey" || true)
+
+{ echo ""; echo "--- (c) DoD 6 backfill: strip launcher+PATH block (pre-131 machine), then update ---"; } >> "$T22"
+rm -f "$LAUNCHER22"
+grep -vF "qroky command" "$PROF22" > "$PROF22.tmp" && mv "$PROF22.tmp" "$PROF22"
+git -C "$FAKE_FW" -c user.email=dryrun@qroky.local -c user.name="Qroky dry run" commit -q --allow-empty -m "stub commit 8"
+git -C "$FAKE_FW" -c user.email=dryrun@qroky.local -c user.name="Qroky dry run" tag -a v1.7.0 -m $'v1.7.0\n\nlauncher-era stub\nsecond line\nthird line'
+OUT22C="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW"; \
+  printf 'yes\n' | bash "$DOWNLOADED" update ) 2>&1)"
+STATUS22C=$?
+echo "$OUT22C" >> "$T22"
+BACKFILL22_OK=0; [[ -x "$LAUNCHER22" ]] && grep -qF "INFO-044" "$LAUNCHER22" && BACKFILL22_OK=1
+PATHBLOCKS22_C=$(cat "$HOME_H/.zshrc" "$HOME_H/.zprofile" "$HOME_H/.bashrc" "$HOME_H/.bash_profile" "$HOME_H/.profile" 2>/dev/null | grep -cF '>>> qroky command' || true)
+ANNOUNCED22=$(printf '%s' "$OUT22C" | grep -c "one word works from anywhere" || true)
+TAG22=$(grep -c '"framework_tag": "v1.7.0"' "$W22/install-state.json" 2>/dev/null || true)
+cp "$LAUNCHER22" "$SANDBOX/saved-launcher-22"
+
+{ echo ""; echo "--- (d) round 1: FOREIGN launcher + foreign profile line survive the uninstall ---"; } >> "$T22"
+printf 'export MY_OWN_LINE=1  # user rule, must survive\n' >> "$PROF22"
+printf '#!/bin/sh\n# somebody else installed a different qroky — no kit provenance\nexit 0\n' > "$LAUNCHER22"
+chmod +x "$LAUNCHER22"
+OUT22D="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW"; \
+  bash "$DOWNLOADED" uninstall ) 2>&1)"
+STATUS22D=$?
+echo "$OUT22D" >> "$T22"
+FOREIGN22_KEPT=0; [[ -f "$LAUNCHER22" ]] && grep -q "somebody else" "$LAUNCHER22" && FOREIGN22_KEPT=1
+FOREIGN22_SAID=$(printf '%s' "$OUT22D" | grep -c "not ours to delete" || true)
+PATHBLOCKS22_D=$(cat "$HOME_H/.zshrc" "$HOME_H/.zprofile" "$HOME_H/.bashrc" "$HOME_H/.bash_profile" "$HOME_H/.profile" 2>/dev/null | grep -cF '>>> qroky command' || true)
+USERLINE22=$(grep -c "MY_OWN_LINE" "$PROF22" 2>/dev/null || true)
+STATE22_GONE=0; [[ -f "$W22/install-state.json" ]] || STATE22_GONE=1
+
+{ echo ""; echo "--- (d) round 2: OUR launcher back, marker block back — removed via the VENDORED installer (kit copy is gone) ---"; } >> "$T22"
+cp "$SANDBOX/saved-launcher-22" "$LAUNCHER22"; chmod +x "$LAUNCHER22"
+{ printf '\n# >>> qroky command (added by the Qroky installer, INFO-044; removed by `qroky uninstall`) >>>\n'
+  printf 'export PATH="$HOME/.local/bin:$PATH"\n'
+  printf '# <<< qroky command <<<\n'; } >> "$PROF22"
+OUT22E="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW" QROKY_WORKSPACE_DIR="$W22"; \
+  bash "$DOWNLOADED" uninstall ) 2>&1)"
+STATUS22E=$?
+echo "$OUT22E" >> "$T22"
+OURS22_GONE=0; [[ -f "$LAUNCHER22" ]] || OURS22_GONE=1
+PATHBLOCKS22_E=$(cat "$HOME_H/.zshrc" "$HOME_H/.zprofile" "$HOME_H/.bashrc" "$HOME_H/.bash_profile" "$HOME_H/.profile" 2>/dev/null | grep -cF '>>> qroky command' || true)
+USERLINE22_E=$(grep -c "MY_OWN_LINE" "$PROF22" 2>/dev/null || true)
+REMOVAL22_LISTED=$(printf '%s' "$OUT22E" | grep -c ".local/bin/qroky" || true)
+
+{ echo ""; echo "--- (d) round 3: no launcher at all — polite no-op ---"; } >> "$T22"
+OUT22F="$( ( cd "$SANDBOX/neutral-d" && export HOME="$HOME_H" QROKY_KIT_SOURCE="$KITFW" QROKY_WORKSPACE_DIR="$W22"; \
+  bash "$DOWNLOADED" uninstall ) 2>&1)"
+STATUS22F=$?
+echo "$OUT22F" >> "$T22"
+NOOP22=$(printf '%s' "$OUT22F" | grep -c "Nothing to remove" || true)
+{
+  echo ""
+  echo "--- assertions ---"
+  echo "(a) curl-mode install: exit $STATUS22A (0); launcher executable+provenance: $LAUNCHER22_OK (1); PATH blocks: $PATHBLOCKS22_A (1); finale names ~/.local/bin/qroky: $FINALE_NAMES22 (>=1), NEW-terminal honesty: $FINALE_NEWTERM22 (>=1), the word itself: $FINALE_WORD22 (>=1)"
+  echo "(b) relay: exit $STATUS22B (2 = help), kit qroky.sh spoke: $RELAY22 (>=1)"
+  echo "(c) backfill on update: exit $STATUS22C (0); launcher back: $BACKFILL22_OK (1); PATH blocks: $PATHBLOCKS22_C (1); announced: $ANNOUNCED22 (>=1); tag v1.7.0: $TAG22 (1)"
+  echo "(d1) foreign launcher kept: $FOREIGN22_KEPT (1), said foreign: $FOREIGN22_SAID (>=1); PATH blocks after uninstall: $PATHBLOCKS22_D (0); user profile line kept: $USERLINE22 (1); state gone: $STATE22_GONE (1); exit $STATUS22D (0)"
+  echo "(d2) OUR launcher removed via vendored installer: $OURS22_GONE (1); PATH blocks: $PATHBLOCKS22_E (0); user line still kept: $USERLINE22_E (1); removal listed the launcher: $REMOVAL22_LISTED (>=1); exit $STATUS22E (0)"
+  echo "(d3) no-launcher uninstall: exit $STATUS22F (0), polite no-op: $NOOP22 (>=1)"
+} >> "$T22"
+if [[ $STATUS22A -eq 0 && $LAUNCHER22_OK -eq 1 && "$PATHBLOCKS22_A" -eq 1 \
+      && "$FINALE_NAMES22" -ge 1 && "$FINALE_NEWTERM22" -ge 1 && "$FINALE_WORD22" -ge 1 \
+      && $STATUS22B -eq 2 && "$RELAY22" -ge 1 \
+      && $STATUS22C -eq 0 && $BACKFILL22_OK -eq 1 && "$PATHBLOCKS22_C" -eq 1 && "$ANNOUNCED22" -ge 1 && "$TAG22" -eq 1 \
+      && $STATUS22D -eq 0 && $FOREIGN22_KEPT -eq 1 && "$FOREIGN22_SAID" -ge 1 && "$PATHBLOCKS22_D" -eq 0 && "$USERLINE22" -eq 1 && $STATE22_GONE -eq 1 \
+      && $STATUS22E -eq 0 && $OURS22_GONE -eq 1 && "$PATHBLOCKS22_E" -eq 0 && "$USERLINE22_E" -eq 1 && "$REMOVAL22_LISTED" -ge 1 \
+      && $STATUS22F -eq 0 && "$NOOP22" -ge 1 ]]; then
+  record "22-qroky-command" PASS "curl-mode (process substitution, neutral cwd) install put the qroky command on PATH (launcher with provenance + exactly one marker block, finale names both + new-terminal honesty); the launcher relays to the kit; a pre-131 machine got it back on its next update, announced; uninstall kept a FOREIGN launcher and a user profile line, removed OURS (via the vendored installer, kit copy gone) and the marker block; no-launcher uninstall = polite no-op"
+else
+  record "22-qroky-command" FAIL "a=$STATUS22A/$LAUNCHER22_OK/$PATHBLOCKS22_A finale=$FINALE_NAMES22/$FINALE_NEWTERM22/$FINALE_WORD22 relay=$STATUS22B/$RELAY22 c=$STATUS22C/$BACKFILL22_OK/$PATHBLOCKS22_C/$ANNOUNCED22/$TAG22 d1=$STATUS22D/$FOREIGN22_KEPT/$FOREIGN22_SAID/$PATHBLOCKS22_D/$USERLINE22/$STATE22_GONE d2=$STATUS22E/$OURS22_GONE/$PATHBLOCKS22_E/$USERLINE22_E/$REMOVAL22_LISTED d3=$STATUS22F/$NOOP22"
 fi
 
 # ---------------------------------------------------------------------------

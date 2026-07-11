@@ -1,0 +1,287 @@
+Scenario 14 — language integrity end-to-end (ATOM-105 DoD 1)
+Generated: 2026-07-11T18:29:17Z
+
+--- (a) ru install with telegram ---
+== Qroky setup ==
+
+Step 1 of 8 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   язык установлен: ru
+
+Вот вся дорога: 8 вопросов, около 3 минут установки, а в конце вы получите
+две готовые строки — скопировать и вставить для первого разговора. Каждый
+вопрос говорит, какой он по счёту; необязательные пропускаются одним
+Enter. Ничего не устанавливается у вас за спиной.
+
+Шаг 2 из 8 — выбор рабочей папки
+Где должна находиться ваша личная папка Qroky?
+Нажмите Enter, чтобы использовать предложенную папку, или введите свой путь.
+Предложено: /private/tmp/qroky-install-dry-run.M8KeeL/w14
+>   рабочая папка: /private/tmp/qroky-install-dry-run.M8KeeL/w14
+
+Шаг 3 из 8 — проверка ассистента Claude Code
+  Claude Code — найден (claude-code 0.0.0-dry-run-stub)
+  скачиваю свод правил, которым следует ассистент (закреплён на одной версии — он никогда не меняется, не спросив вас)...
+  учу эту папку стартовой фразе ("qroky start")...
+  стартовая фраза подключена — разговор, открытый В ЭТОЙ ПАПКЕ, поймёт "qroky start"
+
+Шаг 4 из 8 — проверка подписки
+  подписка/вход — похоже, активны
+
+Шаг 5 из 8 — подключение Telegram (необязательно)
+Enter = пропустить, подключите позже (одной командой: bash install.sh --enable-telegram).
+Или: хотите ассистента в Telegram — утренний дайджест, новости и вопросы,
+которые он сможет задавать вам прямо в телефон? Введите y, чтобы подключить сейчас:   Давайте создадим вашего собственного бота в Telegram — это займёт около 2 минут:
+    1. Откройте приложение Telegram.
+    2. В строке поиска введите: BotFather (у него синяя галочка).
+    3. Откройте чат с BotFather и отправьте: /newbot
+    4. Он попросит имя — введите любое, какое нравится (например, "My Qroky").
+    5. Он попросит username — должен заканчиваться на "bot" (например, "my_qroky_bot").
+    6. BotFather ответит сообщением с длинным кодом — это ТОКЕН вашего бота.
+       Выглядит так: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ
+    7. Скопируйте весь этот код.
+Вставьте токен сюда (или напишите "skip", чтобы пропустить):   проверяю токен через Telegram...
+  токен работает — подключено к боту: qroky_test_bot
+  токен сохранён только на этом компьютере (никуда больше не отправляется): ****N123
+  Теперь откройте вашего бота в Telegram — @qroky_test_bot — и нажмите Start
+  (или отправьте ему любое сообщение). Я жду его здесь, до 4 секунд...
+  поймал — ваш Telegram теперь связан с этим ассистентом (обслуживается только ВАШ чат)
+  бот только что написал вам в ответ — посмотрите на телефон
+  подключаю бота к этому компьютеру (проверка каждые 30 секунд; дайджест ежедневно в 09:05)...
+  первый проход слушателя — исправен
+  Telegram-ассистент — ВКЛЮЧЁН (слушатель каждые 30 с, дайджест ежедневно в 09:05; его файлы — в .qroky/telegram/ внутри рабочей папки)
+
+Шаг 6 из 8 — ежедневный обмен данными о поддержке (необязательно)
+Ежедневный обмен данными о поддержке — прежде чем спросить, вот ТОЧНО что
+уйдёт с этого компьютера, если вы скажете да. Полный список — ничего
+другого никогда не читается:
+  1. файлы прогресса задач (STATUS.md) — только слово статуса, дата и
+     идентификатор задачи
+  2. сводки стоимости (RESULT.md)      — ТОЛЬКО цифры стоимости
+     (время/единицы); разделы с описанием и содержанием, где описывался бы
+     ваш продукт, никогда не копируются
+  3. журналы шагов (run.log)           — только отметки времени и имена
+     шагов
+  4. доска статуса (status.yaml)       — одна строка на задачу, свободные
+     заметки удаляются
+  5. результаты независимых проверок (VERDICT.md) — только строка вердикта,
+     никогда текст находок
+Свободные предложения удаляются из каждого из этих файлов перед
+копированием. Ваш код, спецификации и содержание продукта в этом списке
+отсутствуют и никогда не читаются. Заметка: «да» сегодня только записывает
+ваш выбор — этот установщик не ставит никакого механизма отправки, поэтому
+ничего пока не может уйти; сам скрипт отправки вам покажут, строка за
+строкой, прежде чем он когда-либо будет добавлен.
+Включить ежедневный обмен данными о поддержке? Да/нет (y/n), по умолчанию n:   ежедневный обмен данными о поддержке — ВЫКЛЮЧЕН (ничего не отправляется, пока выключен)
+
+Шаг 7 из 8 — утренний дайджест (необязательно)
+Утренний дайджест — короткое ежедневное сообщение: что сделано, что ждёт
+вас. Да/нет сейчас, позже можно передумать. Одна честная строка о том, как
+это работает: он только ЧИТАЕТ ваше рабочее пространство, чтобы составить
+сводку — никогда не совершает действий сам и ничего никуда не отправляет,
+кроме этого дайджеста вам. Рекомендация: да.
+Включить утренний дайджест? Да/нет (y/n), по умолчанию y:   утренний дайджест — установлен, но ВЫКЛЮЧЕН. Включить в любой момент:
+      bash install.sh --enable-heartbeat
+
+Шаг 8 из 8 — резервная копия в ваш GitHub (необязательно)
+Резервная копия — приватная копия вашего рабочего пространства вне этого
+компьютера: потерянный или сломанный компьютер больше не означает потерянную
+работу. Одна честная строка о том, куда она уходит: копия хранится в ВАШЕМ
+СОБСТВЕННОМ приватном аккаунте GitHub — ничьём другом; видите её только вы.
+Рекомендация: да.
+Включить резервную копию? Да/нет (y/n), по умолчанию y:   резервная копия — выключена, как вы выбрали. Включить в любой момент:
+      bash install.sh --enable-backup
+
+  учу весь этот компьютер стартовой фразе (ровно два файла в ~/.claude; финальный экран называет их и команду полного удаления)...
+  готово — "qroky start" теперь работает в любом разговоре на этом компьютере.
+  Записаны ровно два файла (чтобы убрать — удалите их):
+    ~/.claude/skills/qroky/SKILL.md
+    помеченный блок в ~/.claude/CLAUDE.md (между маркерами qroky-machinewide)
+
+
+== Установка завершена. Ничего не сломалось. ==
+
+Скопируйте и вставьте это в терминал:
+
+    cd /private/tmp/qroky-install-dry-run.M8KeeL/w14 && claude
+
+затем скажите:
+
+    qroky start
+
+(В VS Code: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w14 → новый разговор — та же фраза.)
+
+Одна честная заметка: при ПЕРВОМ запуске claude задаёт пару собственных
+вопросов (цветовая тема, вход в аккаунт) — это нормально; ответьте на них
+и продолжайте. Ваши первые 5 минут описаны в README рядом с этим
+установщиком (раздел «Первые 5 минут»).
+
+Отныне в любом НОВОМ окне терминала одно слово работает из любого места:
+    qroky update       — обновить ассистента
+    qroky uninstall    — убрать всё, что он поставил на этот компьютер
+(что настроено: маленький файл команды ~/.local/bin/qroky,
+ плюс одна строка PATH в /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — обе убирает qroky uninstall)
+
+Настроено без вопроса (чтобы просто работало): ассистент отвечает на
+«qroky» в ЛЮБОЙ сессии Claude Code на этом компьютере — ровно два файла в
+~/.claude. Удаляется целиком одной командой: qroky uninstall
+
+Важно: установленное видят только НОВЫЕ чаты Claude Code — окно, открытое
+ДО этой установки, фразу ещё не знает. Откройте новый чат.
+
+Замечание об ответственности: система производит черновики и анализ;
+юридические, финансовые и медицинские решения и подписи — всегда только
+человек. Это не профессиональная консультация.
+
+(всего прошло: 1s)
+
+--- (b) apply-update: prompt RU, «нет» cancels, «да» applies ---
+Применить это обновление сейчас? Введите "да" для подтверждения, что угодно ещё — отмена:   обновление отменено — ничего не изменилось
+Применить это обновление сейчас? Введите "да" для подтверждения, что угодно ещё — отмена:   обновление применено: v1.3.0 -> v1.4.0. Запись сохранена сюда: /private/tmp/qroky-install-dry-run.M8KeeL/w14/decisions/UPDATE-2026-07-11-v1.4.0.md
+
+--- (c) second update: English «yes» on the ru path ---
+Применить это обновление сейчас? Введите "да" для подтверждения, что угодно ещё — отмена:   обновление применено: v1.4.0 -> v1.5.0. Запись сохранена сюда: /private/tmp/qroky-install-dry-run.M8KeeL/w14/decisions/UPDATE-2026-07-11-v1.5.0.md
+
+--- (d) unrecognized q1 answers -> honest trilingual fallback ---
+== Qroky setup ==
+
+Step 1 of 8 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru): Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru): Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru): Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru): Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru): (no recognizable answer — continuing in English / răspuns nerecunoscut — continuăm în engleză / ответ не распознан — продолжаю по-английски. Change any time: bash install.sh)
+  language set: en
+
+Here is the whole road: 8 questions, about 3 minutes of setup, and at the
+end you get two ready lines to copy-paste for your first conversation.
+Every question says which number it is; optional ones can be skipped with
+a single Enter. Nothing installs behind your back.
+
+Step 2 of 8 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w14b
+>   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w14b
+
+Step 3 of 8 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  downloading the rulebook the assistant follows (pinned to one fixed version, so it never changes without asking you)...
+  teaching this folder the starting phrase ("qroky start")...
+  starting phrase wired — a chat opened IN THIS FOLDER will understand "qroky start"
+
+Step 4 of 8 — check your subscription
+  subscription/login — looks active
+
+Step 5 of 8 — connect Telegram (optional)
+Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Or: would you like your assistant on Telegram — a morning digest, updates,
+and questions it can ask you on your phone? Type y to connect now:   Telegram — skipped. Connect any time with one command:
+      bash install.sh --enable-telegram
+
+Step 6 of 8 — daily support sharing (optional)
+Daily support sharing — before asking, here is EXACTLY what would leave this
+computer if you say yes. The complete list — nothing else is ever read:
+  1. task progress files (STATUS.md)  — status word, date, task id only
+  2. cost summaries (RESULT.md)       — token/time cost figures ONLY; the
+                                        summary and content sections, where
+                                        your product would be described,
+                                        are never copied
+  3. step logs (run.log)              — timestamps and step names only
+  4. the status board (status.yaml)   — one line per task, free-text notes
+                                        stripped
+  5. independent check results (VERDICT.md) — the verdict line only, never
+                                        the findings text
+Free-text sentences are stripped from every one of these before copying.
+Your code, specs, and product content are not on this list and are never
+read. Note: saying yes today only records your choice — no sending
+mechanism is installed by this installer, so nothing can leave yet; you
+will be shown the sending script itself, line by line, before it is ever
+added.
+Turn daily support sharing on? Yes/no (y/n), default n:   daily support sharing — OFF (nothing is ever sent while this stays off)
+
+Step 7 of 8 — morning digest (optional)
+Morning digest — a short daily message: what got done, what is waiting for
+you. Yes/no now, you can change your mind later. One honest line about how
+it works: it only READS your own workspace to build the summary — it never
+takes actions on its own and never sends anything anywhere except this
+digest to you. Recommended: yes.
+Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed but OFF. Turn it on any time with:
+      bash install.sh --enable-heartbeat
+
+Step 8 of 8 — backup to your own GitHub (optional)
+Backup — keep a private, off-computer copy of your workspace, so a lost or
+broken computer never means lost work. One honest line about where it goes:
+the backup is stored in YOUR OWN private GitHub account — nobody else's;
+nobody but you can see it. Recommended: yes.
+Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
+      bash install.sh --enable-backup
+
+  teaching this whole machine the starting phrase (exactly two files in ~/.claude; the finish screen names them and the one-command removal)...
+  done — "qroky start" now works in any chat on this machine.
+  Exactly two files were written (to remove, delete them):
+    ~/.claude/skills/qroky/SKILL.md
+    the marked block in ~/.claude/CLAUDE.md (between the qroky-machinewide markers)
+
+
+== Setup finished. Nothing failed. ==
+
+Copy-paste this into your terminal:
+
+    cd /private/tmp/qroky-install-dry-run.M8KeeL/w14b && claude
+
+then say:
+
+    qroky start
+
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w14b → start a new chat — same phrase.)
+
+One honest note: the FIRST time claude starts, it asks a couple of its own
+questions (color theme, login) — that is normal; answer them and continue.
+Your first 5 minutes are described in the README next to this installer
+("Your first 5 minutes").
+
+From now on, in any NEW terminal window, one word works from anywhere:
+    qroky update       — update your assistant
+    qroky uninstall    — remove everything it put on this machine
+(what was set up: the small command file ~/.local/bin/qroky,
+ plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+
+Set up without a question (so it just works): the assistant answers to
+«qroky» in ANY Claude Code session on this machine — exactly two files in
+~/.claude. Remove everything entirely with one command: qroky uninstall
+
+Important: only NEW Claude Code chats see what was just installed — a window
+opened BEFORE this install does not know the phrase yet. Open a new chat.
+
+A note on responsibility: the system produces drafts and analysis; legal,
+financial, and medical decisions and signatures are always made by a human.
+Not professional advice.
+
+(total elapsed: 0s)
+
+--- assertions ---
+(a) exit: 0 (0); ru hello really sent: 1 (1); head profile LANGUAGE=ru: 1 (1); state language ru: 1 (1)
+(b) apply prompt in Russian: 1 (>0), EN prompt leak: 0 (0); «нет» cancelled in Russian: 1 (1); «да» applied: 1 (1), applied line ru: 1 (1)
+(c) «yes» on ru path applied v1.5.0: 1 (1) with the prompt still Russian: 1 (>0)
+locale survived both updates: 1 (1); language question re-asked by subcommands: 0 (must be 0)
+(d) honest trilingual fallback line: 1 (1); install continued green in EN: 1 (>0), exit 0 (0)

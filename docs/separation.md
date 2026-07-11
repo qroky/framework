@@ -10,7 +10,9 @@ apart.*
   universal for every instance: the constitution (`framework/`), the
   runtime bindings (`runtime/`), the machine-wide skill, the installer kit
   (`distribution/`), the docs and knowledge layers, the one-command entry
-  (`qroky.sh`), CHANGELOG/README/LICENSE/MANIFEST. The exact list is the
+  (`qroky.sh` — installed as the `qroky` command on PATH, so `qroky update`
+  and `qroky uninstall` work from anywhere; INFO-044),
+  CHANGELOG/README/LICENSE/MANIFEST. The exact list is the
   whitelist [`distribution/dist-manifest`](../distribution/dist-manifest).
   Principle: **universal whole, or it does not ship.**
 - **qroky/lab = the public factory.** The full self-construction journal:

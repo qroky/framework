@@ -123,7 +123,7 @@ L_TELEGRAM_NO_START() {
 L_TELEGRAM_HEAD_MISSING() {
   printf '  the Telegram assistant files are not in the downloaded rulebook (its version\n'
   printf '  predates this installer). Your token and link are saved. Try:\n'
-  printf '      bash install.sh --apply-update   and then: bash install.sh --enable-telegram\n'
+  printf '      qroky update   and then: bash install.sh --enable-telegram\n'
   printf '  Setup continues.\n'
 }
 L_TELEGRAM_DEPLOYING() { printf '  connecting the bot to this computer (checks every 30 seconds; daily digest at 09:05)...\n'; }
@@ -228,8 +228,8 @@ L_UPDATE_AVAILABLE() {
 A new version of the framework your assistant follows is available: $from -> $to
 What improves for you:
 $changelog
-To accept now:   bash install.sh --apply-update
-To see more:     bash install.sh --show-update-details
+To accept now:   qroky update
+To see more:     qroky details
 To decide later: do nothing — you will see this again next time
 EOF
 }
@@ -377,7 +377,8 @@ L_ORPHAN_FOUND() {
 L_ORPHAN_ASK() { printf 'Recreate it and install fresh? [yes/no] (Enter = no): '; }
 L_ORPHAN_DECLINED() { printf 'Okay — leaving everything as it is.\n'; }
 L_UNINSTALL_REINSTALL_HINT() {
-  printf 'To reinstall, just run this installer again — your data will stay.\n'
+  printf 'To reinstall — one command, from anywhere; your data will stay:\n'
+  printf '    bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install\n'
 }
 
 # --- fresh-gesture visibility (ATOM-106 DoD 6, INFO-041) --------------------
@@ -396,5 +397,19 @@ L_MARKER_SESSION_NOTE() {
 L_FINALE_MACHINEWIDE_TRACE() {
   printf 'Set up without a question (so it just works): the assistant answers to\n'
   printf '«qroky» in ANY Claude Code session on this machine — exactly two files in\n'
-  printf '~/.claude. Remove everything entirely with one command: bash install.sh --uninstall\n'
+  printf '~/.claude. Remove everything entirely with one command: qroky uninstall\n'
+}
+
+# --- the qroky command on PATH (ATOM-131, INFO-044) --------------------------
+# $1 = the profile file a PATH marker line was added to ("" = none needed).
+L_FINALE_QROKY_COMMAND() {
+  printf 'From now on, in any NEW terminal window, one word works from anywhere:\n'
+  printf '    qroky update       — update your assistant\n'
+  printf '    qroky uninstall    — remove everything it put on this machine\n'
+  printf '(what was set up: the small command file ~/.local/bin/qroky'
+  if [[ -n "${1:-}" ]]; then
+    printf ',\n plus one PATH line in %s — both removed by qroky uninstall)\n' "$1"
+  else
+    printf ' —\n removed by qroky uninstall)\n'
+  fi
 }

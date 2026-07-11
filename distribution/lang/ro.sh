@@ -118,7 +118,7 @@ L_TELEGRAM_NO_START() {
 L_TELEGRAM_HEAD_MISSING() {
   printf '  fișierele asistentului Telegram nu sunt în regulamentul descărcat (versiunea\n'
   printf '  lui e mai veche decât acest instalator). Token-ul și legătura sunt salvate. Încearcă:\n'
-  printf '      bash install.sh --apply-update   apoi: bash install.sh --enable-telegram\n'
+  printf '      qroky update   apoi: bash install.sh --enable-telegram\n'
   printf '  Instalarea continuă.\n'
 }
 L_TELEGRAM_DEPLOYING() { printf '  conectez botul la acest calculator (verificare la fiecare 30 de secunde; rezumat zilnic la 09:05)...\n'; }
@@ -224,8 +224,8 @@ L_UPDATE_AVAILABLE() {
 O versiune nouă a regulilor pe care le urmează asistentul tău este disponibilă: $from -> $to
 Ce se îmbunătățește pentru tine:
 $changelog
-Ca să accepți acum:  bash install.sh --apply-update
-Ca să vezi mai mult:  bash install.sh --show-update-details
+Ca să accepți acum:  qroky update
+Ca să vezi mai mult:  qroky details
 Ca să decizi mai târziu: nu face nimic — vei vedea din nou acest mesaj data viitoare
 EOF
 }
@@ -374,7 +374,8 @@ L_ORPHAN_FOUND() {
 L_ORPHAN_ASK() { printf 'O recreez și instalez curat? [da/nu] (Enter = nu): '; }
 L_ORPHAN_DECLINED() { printf 'Bine — las totul așa cum este.\n'; }
 L_UNINSTALL_REINSTALL_HINT() {
-  printf 'Pentru reinstalare, pornește pur și simplu acest installer din nou — datele rămân.\n'
+  printf 'Pentru reinstalare — o singură comandă, de oriunde; datele rămân:\n'
+  printf '    %s\n' 'bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install'
 }
 
 # --- vizibilitatea gestului proaspăt (ATOM-106 DoD 6, INFO-041) --------------
@@ -393,5 +394,19 @@ L_MARKER_SESSION_NOTE() {
 L_FINALE_MACHINEWIDE_TRACE() {
   printf 'Configurat fără întrebare (ca să funcționeze pur și simplu): asistentul\n'
   printf 'răspunde la «qroky» în ORICE sesiune Claude Code pe acest calculator — exact\n'
-  printf 'două fișiere în ~/.claude. Se elimină complet cu o comandă: bash install.sh --uninstall\n'
+  printf 'două fișiere în ~/.claude. Se elimină complet cu o comandă: qroky uninstall\n'
+}
+
+# --- comanda qroky pe PATH (ATOM-131, INFO-044) --------------------------------
+# $1 = fișierul de profil în care s-a adăugat linia PATH ("" = nu a fost nevoie).
+L_FINALE_QROKY_COMMAND() {
+  printf 'De acum, în orice fereastră NOUĂ de terminal, un singur cuvânt merge de oriunde:\n'
+  printf '    qroky update       — actualizează asistentul\n'
+  printf '    qroky uninstall    — elimină tot ce a pus pe acest calculator\n'
+  printf '(ce a fost configurat: micul fișier de comandă ~/.local/bin/qroky'
+  if [[ -n "${1:-}" ]]; then
+    printf ',\n plus o linie PATH în %s — ambele eliminate de qroky uninstall)\n' "$1"
+  else
+    printf ' —\n eliminat de qroky uninstall)\n'
+  fi
 }

@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-# qroky.sh — the one memorable command (ATOM-130, INFO-040 carry-over):
+# qroky.sh — the one memorable command (ATOM-130; ATOM-131 INFO-044):
 #
-#   bash qroky.sh install      set Qroky up on this machine
-#   bash qroky.sh update       update an existing install
-#   bash qroky.sh uninstall    remove everything the installer put here
+#   qroky install      set Qroky up on this machine
+#   qroky update       update an existing install
+#   qroky uninstall    remove everything the installer put here
+#
+# First time (no clone, no cwd assumptions — this file runs fine from a
+# process substitution, so the README's ONE entry command is):
+#   bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install
+# The install then puts a launcher on PATH (~/.local/bin/qroky), so from the
+# next terminal on, the bare word `qroky` works from anywhere, forever.
 #
 # Works from ANY folder — you never need to know where a clone lives:
 # install keeps its own kit copy under ~/.qroky/kit, and uninstall/update
@@ -72,6 +78,14 @@ case "$CMD" in
     _kit_ready
     exec bash "$KIT_HOME/distribution/install.sh" --apply-update
     ;;
+  details)
+    # what the pending update changes, in full (the digest names this word)
+    if INSTALLER="$(_find_installer)"; then
+      exec bash "$INSTALLER" --show-update-details
+    fi
+    say "No Qroky install found on this machine — nothing to show details for."
+    exit 1
+    ;;
   uninstall)
     if INSTALLER="$(_find_installer)"; then
       exec bash "$INSTALLER" --uninstall
@@ -81,10 +95,13 @@ case "$CMD" in
     exit 0
     ;;
   *)
-    say "qroky.sh — one command for the whole journey:"
-    say "  bash qroky.sh install      set Qroky up on this machine"
-    say "  bash qroky.sh update       update an existing install"
-    say "  bash qroky.sh uninstall    remove everything it put on this machine"
+    say "qroky — one command for the whole journey:"
+    say "  qroky install      set Qroky up on this machine"
+    say "  qroky update       update an existing install"
+    say "  qroky uninstall    remove everything it put on this machine"
+    say ""
+    say "Not installed yet? One command, from anywhere:"
+    say "  bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install"
     exit 2
     ;;
 esac

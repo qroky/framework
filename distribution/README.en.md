@@ -11,22 +11,31 @@ check result, or (on a real problem) a plain-language fix instruction
 naming the exact next step. The very first screen is a map of the whole
 road: 8 questions, ~3 minutes, two lines at the end.
 
-## The one-liner
+## The one command
 
 ```
-bash qroky.sh install
+bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install
 ```
 
-Run it from anywhere — `qroky.sh` (at the top of this repository) keeps its
-own kit copy under `~/.qroky/kit` and starts the interview. The same command
-family covers the whole journey: `bash qroky.sh update` and
-`bash qroky.sh uninstall` work from any folder — you never need to remember
-where a clone lives. (Running `bash install.sh` from this folder still works
-exactly as before.) If something is
+That is the whole entry — run it from anywhere, no download, no clone, no
+folder to find first. It fetches its own kit copy under `~/.qroky/kit`,
+starts the interview, and puts a small `qroky` command on your PATH. From
+your next terminal window on, the whole journey is one word from any folder:
+
+```
+qroky update       # update your assistant
+qroky uninstall    # remove everything it put on this machine
+```
+
+You never need to remember where anything lives. If something is
 missing (git, curl, the Claude Code assistant itself), the script stops and
 tells you exactly what to install and how — then you run the same command
 again, and it continues from exactly where it stopped. Nothing is repeated,
 nothing you already answered is asked twice.
+
+*Alternative (air-gapped or curl-less machines): clone this repository by
+hand and run `bash qroky.sh install` — or `bash install.sh` from this
+folder — the same interview, the same result.*
 
 ## Your first 5 minutes
 
@@ -57,7 +66,7 @@ in the same folder — everything is plain text you can open and read.
 One honest note: the starting phrase works **in any Claude Code chat on
 this machine** — the installer sets that up itself (exactly two files under
 `~/.claude`; the finish screen names them, and
-`bash install.sh --uninstall` removes everything entirely).
+`qroky uninstall` removes everything entirely).
 
 ## The eight questions
 
@@ -102,7 +111,10 @@ copy of the phrase's rules page at `~/.claude/skills/qroky/SKILL.md` and a
 marked trigger block in `~/.claude/CLAUDE.md` — nothing else, ever). The
 trace replaces the question: the assistant answers to «qroky» in ANY Claude
 Code session on this machine, and one command removes it all entirely:
-`bash install.sh --uninstall`.
+`qroky uninstall`. The same rule gives you the `qroky` command itself: a
+small launcher at `~/.local/bin/qroky` (plus one marked PATH line in your
+shell profile, only if `~/.local/bin` was not on PATH already) — named on
+the finish screen, removed by the same `qroky uninstall`.
 
 ## What leaves this computer
 
@@ -151,14 +163,17 @@ optional piece it turns on can be turned off just as easily:
 - **Remove the machine-wide starting phrase**: delete exactly the two
   files that were written — the file
   `~/.claude/skills/qroky/SKILL.md` and the marked block between the
-  `qroky-machinewide` markers in `~/.claude/CLAUDE.md`. The installer wrote
-  nothing else under `~`.
-- **Check for a framework update (read-only, changes nothing):**
-  `bash install.sh --check-update`
-- **See more detail on a pending update:**
-  `bash install.sh --show-update-details`
-- **Apply a pending update (only after you explicitly confirm):**
-  `bash install.sh --apply-update` — if you have made your own edits inside
+  `qroky-machinewide` markers in `~/.claude/CLAUDE.md`.
+- **Remove the `qroky` command by hand**: delete `~/.local/bin/qroky` and
+  the marked block between the `qroky command` markers in your shell
+  profile. Beyond these, `~/.qroky` (the kit copy and one pointer file),
+  the installer wrote nothing else under `~` — and `qroky uninstall` does
+  all of this for you.
+- **See everything a pending update changes:**
+  `qroky details`
+- **Apply a pending update (only after you explicitly confirm — with no
+  update pending this changes nothing and says so):**
+  `qroky update` — if you have made your own edits inside
   the vendored `framework/` folder, the installer SHOWS you exactly what
   would be affected before touching anything; it never silently overwrites
   your changes.
@@ -203,7 +218,7 @@ scheduled jobs, the machine-wide gesture files (only if they carry this
 kit's provenance), the `~/.qroky` state, the saved answers, and the bot
 token file (announced before deletion; its contents are never read):
 
-    bash install.sh --uninstall
+    qroky uninstall
 
 Every step is printed before it runs, and the end is a list of what was
 removed. Your working folder is NOT touched — its path is printed so you
@@ -212,5 +227,9 @@ install this command is a polite no-op.
 
 What this undoes, among the rest: the assistant answers to «qroky» in any
 Claude Code session on this machine — that machine-wide setup is removed
-entirely by this one command. To reinstall later, just run the installer
-again — your data will stay.
+entirely by this one command, together with the `qroky` command itself
+(`~/.local/bin/qroky` and its PATH line — foreign lines in your profile are
+never touched). To reinstall later — one command, from anywhere; your data
+will stay:
+
+    bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install

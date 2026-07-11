@@ -1,0 +1,93 @@
+# run.log — ATOM-131 (qroky command on PATH, kit v0.4.1)
+
+Executor: pilot-toolsmith (warm). G1 = INFO-044. Canonical:
+decisions/INFO-044-qroky-command-on-path.md (read first).
+
+## Chronology
+
+1. Read INFO-044 + surveyed current qroky.sh, install.sh anchors
+   (step_machinewide, finale, cmd_apply_update, cmd_uninstall), lang ×3,
+   scenario 12/15/21 asserts, README entry sections.
+2. install.sh: LAUNCHER_FILE/_launcher_profile/_launcher_wire (launcher
+   heredoc with INFO-044 provenance line; PATH marker block written only
+   when ~/.local/bin absent from PATH, checked across .zshrc/.zprofile/
+   .bashrc/.bash_profile/.profile before writing — idempotent); called
+   after step_machinewide in main_interview and in cmd_apply_update
+   (backfill, announced only when NEW — DoD 6); cmd_uninstall step 2b:
+   launcher removed only with our provenance (grep INFO-044, same doctrine
+   as the GATE-028 skill rule), PATH marker block awk-cut from any profile,
+   foreign lines untouched.
+3. qroky.sh: header + help rewritten path-free; `details` command added
+   (the update digest names it; resolves via _find_installer). Verified
+   no $0/cwd dependence for the curl entry.
+4. lang ×3: L_FINALE_QROKY_COMMAND (names launcher + profile file when a
+   PATH line was needed; new-terminal honesty per INFO-041 physics);
+   L_FINALE_MACHINEWIDE_TRACE removal command -> `qroky uninstall`;
+   L_UPDATE_AVAILABLE -> `qroky update` / `qroky details`;
+   L_UNINSTALL_REINSTALL_HINT -> the curl one-liner;
+   L_TELEGRAM_HEAD_MISSING apply-update mention -> `qroky update`.
+5. Vendored SKILL.md: I3 exception Amended (INFO-044, third file:
+   launcher + PATH line, removed by qroky uninstall) + provenance table
+   row; GATE-028 string preserved (uninstall grep contract). Authored
+   copy untouched (coordinator's).
+6. README ×3: the curl one-liner is THE one entry command; qroky update/
+   uninstall word-commands; manual-clone moved to an explicit air-gapped
+   alternative; manual-removal section extended with the launcher; the
+   uninstall section closes with the curl reinstall command.
+   docs/separation.md + root README map row updated. CHANGELOG v0.4.1.
+7. Harness: fake framework origin now ships the FULL distribution/
+   (install.sh + lang) and root qroky.sh — like the real repo — so the
+   vendored-installer uninstall path is real, not vacuous. Scenario 12
+   tightened (HOME invariant 4 -> 6 files; launcher provenance; PATH
+   block exactly 1 after run AND after re-run; INFO-044 in the skill
+   copy). Two stale greps updated to the new texts (scenario 12 trace,
+   scenario 15 reinstall hint). NEW scenario 22 — see RESULT DoD 5.
+8. Run: 24/24 PASS first full run; re-run after the last text tweak:
+   24/24 again. Transcripts in this workspace.
+
+## Design decisions
+
+- Launcher = 12 lines of sh, ZERO logic: kit resolve + one fallback to the
+  instance's vendored framework/qroky.sh via the machine trace. The
+  fallback is 3 lines of path resolution, not duplicated behavior — it is
+  what makes `qroky uninstall` work offline and after ~/.qroky/kit is
+  gone (proven in scenario 22 round d2).
+- qroky.sh entry «install launcher too» is satisfied by delegation:
+  qroky.sh install/update exec install.sh, which wires the launcher —
+  no second implementation (mandate: reuse ATOM-106/130 logic, never
+  duplicate).
+- PATH block profile choice by $SHELL (zsh -> .zshrc, bash -> .bashrc,
+  else .profile); the DUPLICATE check spans all five common profiles, so
+  a shell switch never yields two blocks.
+- LAUNCHER_PATH_ADDED is set both when the line is freshly added AND when
+  the marker already exists — the finale text is then identical across
+  install/reinstall (keeps scenario 5 idempotency-diff clean and the
+  message truthful: the line IS in that file).
+- Foreign-launcher protection mirrors the skill rule exactly (provenance
+  grep, honest «not ours to delete» line) — one doctrine, two files.
+
+## Harness catches this run
+
+- None red on the final code; the one design catch happened BEFORE the
+  run, at fixture level: scenario 22 round d2 (uninstall via the vendored
+  installer) was impossible against the old fake origin — it shipped only
+  dist-manifest/verify.sh inside distribution/, unlike the real repo. The
+  fixture now ships the full kit; without that fix the round would have
+  silently passed through the polite-noop branch (vacuous). Recorded here
+  as the vacuity trap of the day.
+
+## Mutation readiness (INFO-037)
+
+Pre-131 code: no launcher is ever written -> scenario 22 fails whole
+(legs a..d), scenario 12 fails on the 6-file HOME invariant, launcher
+provenance, PATH-block counts, and the INFO-044 skill amendment; the
+finale/README greps for «qroky uninstall» and the curl hint fail.
+Reverting only the cmd_apply_update hook kills 22(c); reverting only the
+uninstall block kills 22(d1/d2); breaking the launcher's kit resolve
+kills 22(b).
+
+## Envelope
+
+~55k of ~80k executor budget (INFO-019: in envelope, honest E4 not
+needed). No network, no real tokens, no git operations against real
+repos, no framework commits (coordinator's after acceptance).

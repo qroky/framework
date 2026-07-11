@@ -1,0 +1,103 @@
+Scenario 3 — rerun over the complete Scenario-1 install: the (a) dialog
+Generated: 2026-07-11T18:28:55Z
+
+--- answer 'cancel': leaves without a trace ---
+== Qroky setup ==
+
+Step 1 of 8 — choose your language
+  language set: en
+This folder already carries a Qroky install: framework/ plus your data next to it.
+  /private/tmp/qroky-install-dry-run.M8KeeL/w1
+Reinstall: your data stays untouched, framework/ is recreated fresh.
+What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Cancelled. Nothing was changed.
+
+--- answer 'update': routes to the self-update path (still at the newest tag here) ---
+== Qroky setup ==
+
+Step 1 of 8 — choose your language
+  language set: en
+This folder already carries a Qroky install: framework/ plus your data next to it.
+  /private/tmp/qroky-install-dry-run.M8KeeL/w1
+Reinstall: your data stays untouched, framework/ is recreated fresh.
+What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Routing to the update path...
+  no update available — you are on the latest release
+
+--- answer 'reinstall' (as '1'): framework recreated fresh, live data untouched ---
+== Qroky setup ==
+
+Step 1 of 8 — choose your language
+  language set: en
+This folder already carries a Qroky install: framework/ plus your data next to it.
+  /private/tmp/qroky-install-dry-run.M8KeeL/w1
+Reinstall: your data stays untouched, framework/ is recreated fresh.
+What do we do? [1 reinstall / 2 update / 3 cancel] (Enter = cancel): Recreating framework/ — your data is not touched.
+
+Step 2 of 8 — choose your working folder
+  this folder is already your Qroky workspace — reusing it
+
+Step 3 of 8 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  downloading the rulebook the assistant follows (pinned to one fixed version, so it never changes without asking you)...
+  the starting phrase is already in place — nothing to do (health check)
+
+Step 4 of 8 — check your subscription
+  already set up — nothing to do (health check)
+
+Step 5 of 8 — connect Telegram (optional)
+  already set up — nothing to do (health check)
+
+Step 6 of 8 — daily support sharing (optional)
+  already set up — nothing to do (health check)
+
+Step 7 of 8 — morning digest (optional)
+  already set up — nothing to do (health check)
+
+Step 8 of 8 — backup to your own GitHub (optional)
+  already set up — nothing to do (health check)
+
+  the machine-wide starting phrase is already in place — nothing to do (health check)
+
+
+== Setup finished. Nothing failed. ==
+
+Copy-paste this into your terminal:
+
+    cd /private/tmp/qroky-install-dry-run.M8KeeL/w1 && claude
+
+then say:
+
+    qroky start
+
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w1 → start a new chat — same phrase.)
+
+One honest note: the FIRST time claude starts, it asks a couple of its own
+questions (color theme, login) — that is normal; answer them and continue.
+Your first 5 minutes are described in the README next to this installer
+("Your first 5 minutes").
+
+From now on, in any NEW terminal window, one word works from anywhere:
+    qroky update       — update your assistant
+    qroky uninstall    — remove everything it put on this machine
+(what was set up: the small command file ~/.local/bin/qroky,
+ plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+
+Set up without a question (so it just works): the assistant answers to
+«qroky» in ANY Claude Code session on this machine — exactly two files in
+~/.claude. Remove everything entirely with one command: qroky uninstall
+
+Important: only NEW Claude Code chats see what was just installed — a window
+opened BEFORE this install does not know the phrase yet. Open a new chat.
+
+A note on responsibility: the system produces drafts and analysis; legal,
+financial, and medical decisions and signatures are always made by a human.
+Not professional advice.
+
+(total elapsed: 0s)
+
+--- assertions ---
+cancel: exit 0 (0), dialog shown: 1 (>=1), cancel line: 1 (1), tree diff empty: yes, state diff empty: yes, map on rerun: 0 (0)
+update: exit 0 (0), route line: 1 (1), update path reached: 1 (>=1)
+reinstall: exit 0 (0), dialog: 1 (>=1), start line: 1 (1), planted marker gone (fresh clone): 1 (1), PROVENANCE present: 1 (1), framework/.git present: 1 (1)
+live data untouched: token mtime stable: yes, profile md5 stable: yes
+state answers preserved byte-for-byte (excl. generated_at): yes
+zero questions re-asked: 0 (0); finale shown again: 1 (>=1); raw git fatal on screen: 0 (0)

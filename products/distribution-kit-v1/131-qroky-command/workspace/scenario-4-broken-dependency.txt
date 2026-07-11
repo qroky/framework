@@ -1,0 +1,79 @@
+Scenario 4 — broken dependency (framework source unreachable)
+Generated: 2026-07-11T18:28:56Z
+QROKY_FRAMEWORK_SOURCE points at a path that does not exist — the
+network/dependency failure a founder would see as 'can't reach it'.
+
+== Qroky setup ==
+
+Step 1 of 8 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   language set: en
+
+Here is the whole road: 8 questions, about 3 minutes of setup, and at the
+end you get two ready lines to copy-paste for your first conversation.
+Every question says which number it is; optional ones can be skipped with
+a single Enter. Nothing installs behind your back.
+
+Step 2 of 8 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w4
+>   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w4
+
+Step 3 of 8 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  downloading the rulebook the assistant follows (pinned to one fixed version, so it never changes without asking you)...
+  that did not work — trying again automatically (attempt 1 of 2)...
+  that did not work — trying again automatically (attempt 2 of 2)...
+
+SETUP STOPPED.
+Could not download the assistant's rulebook (the address it tried: /private/tmp/qroky-nonexistent-source-33714).
+  This is almost always the internet connection. Check it, then run this
+  installer again — it will continue from exactly this step.
+  If this keeps failing, whoever gave you this kit can send a local copy to
+  point QROKY_FRAMEWORK_SOURCE at instead.
+  (The technical details were saved to: /private/tmp/qroky-install-dry-run.M8KeeL/w4/install.log)
+
+Nothing was changed silently — the message above is the whole story.
+Fix that one thing, then run this installer again; it picks up exactly here.
+
+--- exit code: 1 (non-zero expected — setup stopped) ---
+
+--- state file after the failure (workdir stays done, framework marked failed) ---
+{
+  "version": 1,
+  "generated_at": "2026-07-11T18:28:59Z",
+  "answer_language": "en",
+  "answer_workdir": "/private/tmp/qroky-install-dry-run.M8KeeL/w4",
+  "answer_telegram_optin": "",
+  "answer_telegram_token_stored": "no",
+  "answer_telegram_bound": "no",
+  "answer_machinewide_optin": "",
+  "answer_telemetry_optin": "",
+  "answer_heartbeat_optin": "",
+  "answer_backup_optin": "",
+  "step_language": "done",
+  "step_workdir": "done",
+  "step_framework": "failed",
+  "step_gesture": "pending",
+  "step_claude_code": "done",
+  "step_subscription": "pending",
+  "step_telegram": "pending",
+  "step_telemetry": "pending",
+  "step_heartbeat": "pending",
+  "step_backup": "pending",
+  "step_machinewide": "pending",
+  "backup_repo": "",
+  "framework_source": "/private/tmp/qroky-nonexistent-source-33714",
+  "framework_ref": "",
+  "framework_tag": ""
+}
+
+auto-retry lines seen: 2 (ladder cap is 2, harness-checklist point 3)
+concrete human instruction present (rulebook download named, not the Claude check): yes
+failure mis-attributed under the Claude Code header (must be no): no
+raw git fatal:/error: lines on the founder's screen (must be 0): 0
+git technical details preserved in install.log (for support): yes

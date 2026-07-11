@@ -1,0 +1,30 @@
+dry-run.sh — summary of all scenarios
+Generated: 2026-07-11T18:29:28Z
+Sandbox: /private/tmp/qroky-install-dry-run.M8KeeL (removed on exit)
+
+PASS — 1-full-clean-run: exit 0 in 1s
+PASS — 1-journey-map-and-finale: map up front, 'N of 8' headers (no 'of 9' leftovers), finale = real-path copy-paste block + VS Code + first-run honesty
+PASS — 1-question-inventory: 7/7 prompts tagged, all within points 1-8, point 8 = backup present, q9 gone, none beyond 8
+PASS — 2-kill-mid-install: SIGKILL landed mid-telegram (state: prior steps done, telegram not), rerun resumed without re-asking and completed all-done
+PASS — 3-reinstall-dialog: (a) x3: cancel = no trace; update = routed; reinstall = fresh framework (marker gone, PROVENANCE), live data untouched (token mtime + profile md5 stable), state preserved, zero re-asks, no raw git fatal
+PASS — 4-broken-dependency: 2 auto-retries then a concrete human instruction under the correct step, no raw git spew on screen, exit 1, prior steps' state preserved
+PASS — 5-idempotency-diff: identical file listing and state across install + reinstall (git internals excluded)
+PASS — 6-secrets-negative-grep: zero raw-token leaks across state/log/telemetry/git AND the deployed head's home (9 files, non-vacuous); masked line in log; token file mode 600
+PASS — 7-self-update: 3-line changelog in digest; нет cancelled a genuinely pending update (tag stayed v1.0.0); conflict shown (README.md only, no PROVENANCE false alarm); да applied to v1.1.0; decisions record written
+PASS — 8-heartbeat-both-branches: yes branch bootstraps + enables, no branch installs disabled with a one-command enable instruction, no agent registered
+PASS — 9-backup-optin-optout: opt-in: auth walkthrough shown, real push, zero token leaks in pushed history, token file excluded, tree non-empty, restore command printed; opt-out: choice recorded, enable-later shown, nothing pushed
+PASS — 10-gesture-wiring: skill file landed non-empty, ONE trigger block after re-run, workdir copy identical to vendored source, default workdir outside the clone
+PASS — 11-telegram-journey: A: Start caught, bound 424242, offset 111, hello really sent (exactly 1 send), head deployed (profile+wrappers+2 plists+bootstrap), listener pass OK, digest pre-marked; B: honest timeout, no deploy, install green, --enable-telegram then completes bind+hello+deploy reusing the stored token
+PASS — 12-machinewide-always-on: no question asked; default install wrote exactly 2 files under ~/.claude (skill = vendored source with the GATE-028+INFO-042+INFO-044 amended exception) + the qroky launcher with provenance + ONE PATH block (still one after re-run, 6 HOME files total), one marker after re-run, removal named, finale + README carry the trace in 3 locales; a pre-existing CLAUDE.md survived untouched
+PASS — 13-router-hooks: deploy registers the workspace; second workspace joins (registry 2 lines, primary first) with zero token/hello/launchd of its own; apply-update auto-completed the «токен есть, головы нет» half-connect with no second hello (H5) and only HINTED when the binding was missing
+PASS — 14-language-integrity: ru q1 governs everything: ru hello, LANGUAGE=ru in the head profile, RUSSIAN apply-update prompt, «да» AND English «yes» both accepted, locale survives two updates with zero re-asks; unrecognized q1 answers now produce an HONEST trilingual line before the EN fallback
+PASS — 15-clean-slate: uninstall removed launchd/gesture/registry/token/state (each announced first, token warned, summary listed, workdir kept + path printed + reinstall hint), left a FOREIGN skill alone; reinstall over the occupied workdir = dialog, then a genuine first run (map, all 8, fresh hello, zero raw git fatals); clean machine = polite no-op rc 0
+PASS — 16-orphan-clone: (b) no = polite exit, folder byte-untouched; (b) 'da' = stale clone recreated + full clean install (marker gone, PROVENANCE, map, no raw fatal); (c) parity: clean run saw no dialog; all 15 new strings present x3 locales
+PASS — 17-broken-framework-recovery: half-state after an interrupted self-update (non-vacuous) recovered via the dialog to a working install: framework healthy, mission note + answers intact, zero re-asks, no raw fatal, update channel alive; ru dialog speaks Russian and «отмена» works
+PASS — 18-fresh-gesture-visibility: the new-session note is at all three touch points (finale en+ru, hello with the literal route + real path en+ru, marker blocks in BOTH copies incl. inside the uninstall fences)
+PASS — 19-sparse-and-freeze: origin tree carries factory junk (non-vacuous) yet the instance worktree has none; runtime/manifest materialized; verify.sh green on clean, red with the offender NAMED on one planted file
+PASS — 20-silent-migration: fat v0.3.x instance (junk vendored, non-vacuous) updated to the manifest release with one «да»: factory history shed, runtime alive, chat binding + profile + token byte-stable, zero interview lines, zero extra sends, freeze check green
+PASS — 21-bootstrap: qroky.sh from arbitrary folders: install cloned the kit to ~/.qroky/kit at the release tag and completed sparse; update applied the new tag with no workdir hint; uninstall found the install by the machine trace alone, removed the machine side, kept the workdir; second uninstall = polite no-op
+PASS — 22-qroky-command: curl-mode (process substitution, neutral cwd) install put the qroky command on PATH (launcher with provenance + exactly one marker block, finale names both + new-terminal honesty); the launcher relays to the kit; a pre-131 machine got it back on its next update, announced; uninstall kept a FOREIGN launcher and a user profile line, removed OURS (via the vendored installer, kit copy gone) and the marker block; no-launcher uninstall = polite no-op
+
+Totals: 24 passed, 0 failed

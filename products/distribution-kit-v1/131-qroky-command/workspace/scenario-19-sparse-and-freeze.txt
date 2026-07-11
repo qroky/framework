@@ -1,0 +1,17 @@
+Scenario 19 — sparse vendoring + freeze check, against Scenario-1's instance
+Generated: 2026-07-11T18:29:24Z
+
+junk paths in the checked-out TREE (must be >0 — non-vacuous): 4
+junk files in the WORKTREE (must be 0 — sparse): 0
+runtime materialized: 1 (1); manifest materialized: 1 (1); sparse patterns active: 11 (>0)
+
+--- freeze check on the clean tree ---
+FREEZE-CHECK OK: /private/tmp/qroky-install-dry-run.M8KeeL/w1/framework contains manifest paths only (11 manifest entries).
+
+--- freeze check with ONE planted non-manifest file (must FAIL) ---
+FREEZE-CHECK FAILED — non-manifest content in /private/tmp/qroky-install-dry-run.M8KeeL/w1/framework:
+  NOT IN MANIFEST: products/evil.md
+FREEZE-CHECK: 1 offending file(s). The distribution ships manifest paths ONLY.
+
+--- assertions ---
+clean tree: verify exit 0 (0); planted file: verify exit 1 (1), offender named: 1 (1)

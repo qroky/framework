@@ -118,7 +118,7 @@ L_TELEGRAM_NO_START() {
 L_TELEGRAM_HEAD_MISSING() {
   printf '  файлов Telegram-ассистента нет в скачанном своде правил (его версия старше\n'
   printf '  этого установщика). Токен и связка сохранены. Попробуйте:\n'
-  printf '      bash install.sh --apply-update   а затем: bash install.sh --enable-telegram\n'
+  printf '      qroky update   а затем: bash install.sh --enable-telegram\n'
   printf '  Установка продолжается.\n'
 }
 L_TELEGRAM_DEPLOYING() { printf '  подключаю бота к этому компьютеру (проверка каждые 30 секунд; дайджест ежедневно в 09:05)...\n'; }
@@ -225,8 +225,8 @@ L_UPDATE_AVAILABLE() {
 Доступна новая версия правил, которым следует ваш ассистент: $from -> $to
 Что улучшится у вас:
 $changelog
-Чтобы принять сейчас:   bash install.sh --apply-update
-Чтобы узнать подробнее: bash install.sh --show-update-details
+Чтобы принять сейчас:   qroky update
+Чтобы узнать подробнее: qroky details
 Чтобы решить позже:     ничего не делайте — увидите это сообщение снова в следующий раз
 EOF
 }
@@ -376,7 +376,8 @@ L_ORPHAN_FOUND() {
 L_ORPHAN_ASK() { printf 'Пересоздать её и установить начисто? [да/нет] (Enter = нет): '; }
 L_ORPHAN_DECLINED() { printf 'Хорошо — оставляю всё как есть.\n'; }
 L_UNINSTALL_REINSTALL_HINT() {
-  printf 'Для переустановки просто запустите этот установщик ещё раз — данные останутся.\n'
+  printf 'Для переустановки — одна команда, из любого места; данные останутся:\n'
+  printf '    %s\n' 'bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install'
 }
 
 # --- видимость свежего жеста (ATOM-106 DoD 6, INFO-041) ---------------------
@@ -394,5 +395,19 @@ L_MARKER_SESSION_NOTE() {
 L_FINALE_MACHINEWIDE_TRACE() {
   printf 'Настроено без вопроса (чтобы просто работало): ассистент отвечает на\n'
   printf '«qroky» в ЛЮБОЙ сессии Claude Code на этом компьютере — ровно два файла в\n'
-  printf '~/.claude. Удаляется целиком одной командой: bash install.sh --uninstall\n'
+  printf '~/.claude. Удаляется целиком одной командой: qroky uninstall\n'
+}
+
+# --- команда qroky в PATH (ATOM-131, INFO-044) --------------------------------
+# $1 = файл профиля, куда добавлена строка PATH ("" = не понадобилась).
+L_FINALE_QROKY_COMMAND() {
+  printf 'Отныне в любом НОВОМ окне терминала одно слово работает из любого места:\n'
+  printf '    qroky update       — обновить ассистента\n'
+  printf '    qroky uninstall    — убрать всё, что он поставил на этот компьютер\n'
+  printf '(что настроено: маленький файл команды ~/.local/bin/qroky'
+  if [[ -n "${1:-}" ]]; then
+    printf ',\n плюс одна строка PATH в %s — обе убирает qroky uninstall)\n' "$1"
+  else
+    printf ' —\n убирает qroky uninstall)\n'
+  fi
 }

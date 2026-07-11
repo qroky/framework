@@ -5,6 +5,24 @@ better for you). Rendered from the release's verified records — nothing here
 is composed from memory. Rule (INFO-024): a release without a changelog
 entry is not published.
 
+## v0.4.1 — 2026-07-11
+
+- The problem is solved, not hinted at (INFO-044): setup now puts a real
+  `qroky` command on your machine (`~/.local/bin/qroky`, plus one marked
+  PATH line in your shell profile only if it was needed). From your next
+  terminal window on, `qroky update` and `qroky uninstall` work from ANY
+  folder, forever — you never again need to know where a clone lives or
+  `cd` anywhere first. The finish screen names exactly what was set up,
+  and `qroky uninstall` removes it along with everything else.
+- Getting started is now ONE command, with nothing to download first:
+  `bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install`
+  — it fetches its own kit copy and runs the same eight-question interview.
+  (Cloning by hand still works, documented as the air-gapped alternative.)
+- Existing installs get the `qroky` command automatically on their next
+  update — no reinstall.
+- Every message the kit prints now says `qroky update` / `qroky details` /
+  `qroky uninstall` — no paths, no «go to the folder first».
+
 ## v0.4 — 2026-07-11
 
 - Your instance now receives the PRODUCT and nothing else. Until now the

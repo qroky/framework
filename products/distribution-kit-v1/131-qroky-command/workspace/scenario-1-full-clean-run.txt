@@ -1,0 +1,158 @@
+Scenario 1 — full clean run (H6 baseline, H2 question inventory; v0.3.2 = 8 answers, INFO-042)
+Generated: 2026-07-11T18:28:49Z
+Command a founder actually types: bash install.sh   (no arguments)
+Answers fed (stdin, in order): en / <accept suggested folder> / y (telegram) /
+GOODTOKEN123 / n (sharing) / y (digest) / n (backup); the machine-wide
+phrase is set up WITHOUT a question since INFO-042 — the trace replaces it;
+the fake owner presses Start (QROKY_STUB_TG_START=1), so this run also
+walks the full bind+hello+deploy path inside question 5.
+
+== Qroky setup ==
+
+Step 1 of 8 — choose your language
+Which language do you want to use?
+  1) English (en)
+  2) Română (ro)
+  3) Русский (ru)
+Type 1, 2, 3, or the code (en/ro/ru):   language set: en
+
+Here is the whole road: 8 questions, about 3 minutes of setup, and at the
+end you get two ready lines to copy-paste for your first conversation.
+Every question says which number it is; optional ones can be skipped with
+a single Enter. Nothing installs behind your back.
+
+Step 2 of 8 — choose your working folder
+Where should your private Qroky folder live?
+Press Enter to use the suggested folder, or type a different path.
+Suggested: /private/tmp/qroky-install-dry-run.M8KeeL/w1
+>   working folder: /private/tmp/qroky-install-dry-run.M8KeeL/w1
+
+Step 3 of 8 — check the Claude Code assistant
+  Claude Code — found (claude-code 0.0.0-dry-run-stub)
+  downloading the rulebook the assistant follows (pinned to one fixed version, so it never changes without asking you)...
+  teaching this folder the starting phrase ("qroky start")...
+  starting phrase wired — a chat opened IN THIS FOLDER will understand "qroky start"
+
+Step 4 of 8 — check your subscription
+  subscription/login — looks active
+
+Step 5 of 8 — connect Telegram (optional)
+Enter = skip, connect later (one command: bash install.sh --enable-telegram).
+Or: would you like your assistant on Telegram — a morning digest, updates,
+and questions it can ask you on your phone? Type y to connect now:   Let's create your own Telegram bot — this takes about 2 minutes:
+    1. Open the Telegram app.
+    2. In the search bar, type: BotFather (it has a blue checkmark).
+    3. Open the chat with BotFather and send: /newbot
+    4. It will ask for a name — type anything you like (e.g. "My Qroky").
+    5. It will ask for a username — must end in "bot" (e.g. "my_qroky_bot").
+    6. BotFather replies with a message containing a long code — this is
+       your bot's TOKEN. It looks like: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ
+    7. Copy that whole code.
+Paste the token here (or type "skip" to skip this step):   checking the token with Telegram...
+  token works — connected to bot: qroky_test_bot
+  token saved on this computer only (never sent anywhere else): ****N123
+  Now open your bot in Telegram — @qroky_test_bot — and press Start
+  (or send it any message). I am waiting for it here, up to 4 seconds...
+  got you — your Telegram is now linked to this assistant (only YOUR chat will ever be served)
+  the bot just wrote back to you — check your phone
+  connecting the bot to this computer (checks every 30 seconds; daily digest at 09:05)...
+  first listener pass — healthy
+  Telegram assistant — ON (listener every 30 s, digest daily at 09:05; its files live in .qroky/telegram/ inside your workspace)
+
+Step 6 of 8 — daily support sharing (optional)
+Daily support sharing — before asking, here is EXACTLY what would leave this
+computer if you say yes. The complete list — nothing else is ever read:
+  1. task progress files (STATUS.md)  — status word, date, task id only
+  2. cost summaries (RESULT.md)       — token/time cost figures ONLY; the
+                                        summary and content sections, where
+                                        your product would be described,
+                                        are never copied
+  3. step logs (run.log)              — timestamps and step names only
+  4. the status board (status.yaml)   — one line per task, free-text notes
+                                        stripped
+  5. independent check results (VERDICT.md) — the verdict line only, never
+                                        the findings text
+Free-text sentences are stripped from every one of these before copying.
+Your code, specs, and product content are not on this list and are never
+read. Note: saying yes today only records your choice — no sending
+mechanism is installed by this installer, so nothing can leave yet; you
+will be shown the sending script itself, line by line, before it is ever
+added.
+Turn daily support sharing on? Yes/no (y/n), default n:   daily support sharing — OFF (nothing is ever sent while this stays off)
+
+Step 7 of 8 — morning digest (optional)
+Morning digest — a short daily message: what got done, what is waiting for
+you. Yes/no now, you can change your mind later. One honest line about how
+it works: it only READS your own workspace to build the summary — it never
+takes actions on its own and never sends anything anywhere except this
+digest to you. Recommended: yes.
+Turn the morning digest on? Yes/no (y/n), default y:   morning digest — installed and ON
+
+Step 8 of 8 — backup to your own GitHub (optional)
+Backup — keep a private, off-computer copy of your workspace, so a lost or
+broken computer never means lost work. One honest line about where it goes:
+the backup is stored in YOUR OWN private GitHub account — nobody else's;
+nobody but you can see it. Recommended: yes.
+Turn the backup on? Yes/no (y/n), default y:   backup — off, as you chose. Turn it on any time with:
+      bash install.sh --enable-backup
+
+  teaching this whole machine the starting phrase (exactly two files in ~/.claude; the finish screen names them and the one-command removal)...
+  done — "qroky start" now works in any chat on this machine.
+  Exactly two files were written (to remove, delete them):
+    ~/.claude/skills/qroky/SKILL.md
+    the marked block in ~/.claude/CLAUDE.md (between the qroky-machinewide markers)
+
+
+== Setup finished. Nothing failed. ==
+
+Copy-paste this into your terminal:
+
+    cd /private/tmp/qroky-install-dry-run.M8KeeL/w1 && claude
+
+then say:
+
+    qroky start
+
+(In VS Code instead: File → Open Folder → /private/tmp/qroky-install-dry-run.M8KeeL/w1 → start a new chat — same phrase.)
+
+One honest note: the FIRST time claude starts, it asks a couple of its own
+questions (color theme, login) — that is normal; answer them and continue.
+Your first 5 minutes are described in the README next to this installer
+("Your first 5 minutes").
+
+From now on, in any NEW terminal window, one word works from anywhere:
+    qroky update       — update your assistant
+    qroky uninstall    — remove everything it put on this machine
+(what was set up: the small command file ~/.local/bin/qroky,
+ plus one PATH line in /private/tmp/qroky-install-dry-run.M8KeeL/home/.zshrc — both removed by qroky uninstall)
+
+Set up without a question (so it just works): the assistant answers to
+«qroky» in ANY Claude Code session on this machine — exactly two files in
+~/.claude. Remove everything entirely with one command: qroky uninstall
+
+Important: only NEW Claude Code chats see what was just installed — a window
+opened BEFORE this install does not know the phrase yet. Open a new chat.
+
+A note on responsibility: the system produces drafts and analysis; legal,
+financial, and medical decisions and signatures are always made by a human.
+Not professional advice.
+
+(total elapsed: 1s)
+
+--- exit code: 0 ; elapsed: 1s (budget: 900s / 15min) ---
+
+--- v0.2 journey checks ---
+journey map shown on the fresh install: yes
+map names 8 questions (INFO-042): yes
+headers say 'of 8' (step 5 seen: 1, step 8 seen: 1); leftover 'of 9' headers (must be 0): 0
+finale copy-paste block carries the REAL workdir path (cd /private/tmp/qroky-install-dry-run.M8KeeL/w1 && claude): yes
+finale says the phrase (qroky start): yes
+finale carries the VS Code line: yes
+finale warns about claude's own first-run questions: yes
+
+--- Question inventory check (H2: zero questions outside the interview; v0.3.2 = exactly 8 points — q9 REMOVED by INFO-042, NEVER 9+) ---
+read_answer call sites inside the interview step functions (incl. the shared telegram connect flow): 7
+of those, tagged with # IV-POINT\:<n>\:<name>: 7
+distinct interview points referenced: IV-POINT:1 IV-POINT:2 IV-POINT:3 IV-POINT:4 IV-POINT:5 IV-POINT:6 IV-POINT:7 IV-POINT:8 (closed list is 1..8)
+point 8 (backup) present: yes; point 9 remnants (must be 0 — INFO-042): 0; highest point referenced: 8 (must be 8, never 9+)
+PASS — every interactive prompt in the interview is accounted for in the closed list of 8 (INFO-042).

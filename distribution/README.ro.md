@@ -15,19 +15,29 @@ două linii la final.
 ## Comanda unică
 
 ```
-bash qroky.sh install
+bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install
 ```
 
-Rulează de oriunde — `qroky.sh` (în rădăcina acestui repository) își ține
-propria copie a kitului în `~/.qroky/kit` și pornește interviul. Aceeași
-familie de comenzi acoperă tot drumul: `bash qroky.sh update` și
-`bash qroky.sh uninstall` funcționează din orice folder — nu trebuie să ții
-minte unde stă o clonă. (Comanda `bash install.sh` din acest folder
-funcționează ca înainte.) Dacă lipsește
+Asta e toată intrarea — rulează de oriunde, fără descărcare, fără clonă,
+fără vreun folder de găsit mai întâi. Comanda își aduce singură copia
+kitului în `~/.qroky/kit`, pornește interviul și pune o mică comandă
+`qroky` în PATH-ul tău. Din următoarea fereastră de terminal, tot drumul e
+un singur cuvânt, din orice folder:
+
+```
+qroky update       # actualizează asistentul
+qroky uninstall    # elimină tot ce a pus pe acest calculator
+```
+
+Nu trebuie să ții minte unde stă nimic. Dacă lipsește
 ceva (git, curl, chiar asistentul Claude Code), scriptul se oprește și îți
 spune exact ce să instalezi și cum — apoi rulezi din nou aceeași comandă,
 și continuă chiar de unde s-a oprit. Nimic nu se repetă, nimic la care ai
 răspuns deja nu se întreabă a doua oară.
+
+*Alternativă (mașini fără internet sau fără curl): clonează acest
+repository manual și rulează `bash qroky.sh install` — sau
+`bash install.sh` din acest folder — același interviu, același rezultat.*
 
 ## Primele 5 minute
 
@@ -60,7 +70,7 @@ poți deschide și citi.
 O notă sinceră: fraza de pornire funcționează **în orice conversație
 Claude Code pe acest calculator** — instalatorul configurează asta singur
 (exact două fișiere în `~/.claude`; ecranul final le numește, iar
-`bash install.sh --uninstall` elimină totul complet).
+`qroky uninstall` elimină totul complet).
 
 ## Cele opt întrebări
 
@@ -109,7 +119,10 @@ instalatorul o face acum pur și simplu singur (exact **două fișiere** în
 și un bloc-declanșator marcat în `~/.claude/CLAUDE.md` — nimic altceva,
 niciodată). Urma înlocuiește întrebarea: asistentul răspunde la «qroky» în
 ORICE sesiune Claude Code pe acest calculator, iar o singură comandă
-elimină totul complet: `bash install.sh --uninstall`.
+elimină totul complet: `qroky uninstall`. Aceeași regulă aduce și comanda
+`qroky` însăși: un mic lansator la `~/.local/bin/qroky` (plus o linie PATH
+marcată în profilul shell-ului — doar dacă `~/.local/bin` nu era deja în
+PATH) — numit pe ecranul final, eliminat de același `qroky uninstall`.
 
 ## Ce pleacă de pe acest calculator
 
@@ -160,14 +173,17 @@ opțională pe care o pornește poate fi oprită la fel de ușor:
 - **Elimină fraza de pornire „pe tot calculatorul"**: șterge exact cele
   două fișiere care au fost scrise —
   fișierul `~/.claude/skills/qroky/SKILL.md` și blocul marcat dintre
-  marcajele `qroky-machinewide` din `~/.claude/CLAUDE.md`. Instalatorul nu
-  a scris nimic altceva în `~`.
-- **Verifică o actualizare a regulilor (doar citire, nu schimbă nimic):**
-  `bash install.sh --check-update`
-- **Vezi mai multe detalii despre o actualizare în așteptare:**
-  `bash install.sh --show-update-details`
-- **Aplică o actualizare în așteptare (doar după ce confirmi explicit):**
-  `bash install.sh --apply-update` — dacă ai făcut propriile modificări în
+  marcajele `qroky-machinewide` din `~/.claude/CLAUDE.md`.
+- **Elimină manual comanda `qroky`**: șterge `~/.local/bin/qroky` și blocul
+  marcat dintre marcajele `qroky command` din profilul shell-ului. În afară
+  de acestea și de `~/.qroky` (copia kitului și un fișier-indicator),
+  instalatorul nu a scris nimic altceva în `~` — iar `qroky uninstall` face
+  toate acestea pentru tine.
+- **Vezi tot ce schimbă o actualizare în așteptare:**
+  `qroky details`
+- **Aplică o actualizare în așteptare (doar după ce confirmi explicit;
+  fără actualizare în așteptare nu schimbă nimic și o spune):**
+  `qroky update` — dacă ai făcut propriile modificări în
   folderul vendorizat `framework/`, instalatorul îți ARATĂ exact ce ar fi
   afectat înainte de a atinge ceva; nu suprascrie niciodată pe ascuns
   schimbările tale.
@@ -214,7 +230,7 @@ marcajul de proveniență al acestui kit), starea `~/.qroky`, răspunsurile
 salvate și fișierul cu token-ul botului (anunțat înainte de ștergere;
 conținutul nu este citit):
 
-    bash install.sh --uninstall
+    qroky uninstall
 
 Fiecare pas se tipărește înainte de execuție, iar la final — lista celor
 șterse. Dosarul tău de lucru NU este atins — calea lui se tipărește, ca să
@@ -223,5 +239,9 @@ comanda este un no-op politicos.
 
 Ce anulează, printre altele: asistentul răspunde la «qroky» în orice
 sesiune Claude Code pe acest calculator — această configurare machine-wide
-este eliminată complet de această singură comandă. Pentru reinstalare,
-pornește pur și simplu instalatorul din nou — datele rămân.
+este eliminată complet de această singură comandă — împreună cu comanda
+`qroky` însăși (`~/.local/bin/qroky` și linia ei PATH; liniile străine din
+profil nu sunt atinse niciodată). Pentru reinstalare — o singură comandă,
+de oriunde; datele rămân:
+
+    bash <(curl -fsSL https://raw.githubusercontent.com/qroky/framework/main/qroky.sh) install
