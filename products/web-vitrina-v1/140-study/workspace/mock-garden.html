@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:;">
+<title>Сад — витрина проекта (эскиз ATOM-140)</title>
+<style>
+  :root{
+    --paper:#faf6ec; --ink:#26301f; --ink-soft:#5c6650;
+    --green:#2d5a3d; --green-deep:#1e3f2a; --terra:#c4642e;
+    --line:#ddd3bd; --card:#fffdf6; --mock:#b45309; --mock-bg:#fdf0dc;
+    --real:#1e6b3c; --real-bg:#e2f2e5; --wait:#8a4a12; --wait-bg:#fbe9d3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);
+    font:16px/1.55 "Georgia","Times New Roman",serif;padding-bottom:4rem}
+  .wrap{max-width:960px;margin:0 auto;padding:0 1.25rem}
+  /* header */
+  header{border-bottom:3px double var(--line);padding:2.2rem 0 1.4rem;margin-bottom:2rem}
+  .kicker{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:400;line-height:1.08;margin:.35rem 0 .5rem}
+  h1 em{font-style:italic;color:var(--green)}
+  .mission{color:var(--ink-soft);font-style:italic;max-width:44ch}
+  .meta-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.1rem;
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:.75rem}
+  .chip{border:1px solid var(--line);border-radius:999px;padding:.25rem .7rem;background:var(--card)}
+  .chip.ro{background:var(--green-deep);color:#f2efe4;border-color:var(--green-deep)}
+  .chip.fresh{background:var(--real-bg);color:var(--real);border-color:#bfdcc6}
+  /* badges */
+  .b{display:inline-block;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;
+    font-weight:700;letter-spacing:.08em;border-radius:3px;padding:.12rem .4rem;vertical-align:middle}
+  .b.mock{background:var(--mock-bg);color:var(--mock);border:1px solid #e8c495}
+  .b.real{background:var(--real-bg);color:var(--real);border:1px solid #bfdcc6}
+  /* sections */
+  section{margin-bottom:2.4rem}
+  h2{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--green-deep);
+    border-bottom:1px solid var(--line);padding-bottom:.45rem;margin-bottom:1rem;
+    display:flex;align-items:center;gap:.6rem;justify-content:space-between}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.3rem}
+  /* digest */
+  .digest p{margin:.3rem 0}
+  .digest .quiet{color:var(--ink-soft)}
+  /* map + smeta grid */
+  .duo{display:grid;grid-template-columns:1.25fr 1fr;gap:1.4rem}
+  @media(max-width:760px){.duo{grid-template-columns:1fr}}
+  figure svg{width:100%;height:auto;display:block;border-radius:8px}
+  figcaption{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;
+    color:var(--ink-soft);margin-top:.5rem}
+  /* legend */
+  .leg{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:.5rem;
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:.7rem;color:var(--ink-soft)}
+  .leg i{display:inline-block;width:.75rem;height:.75rem;border-radius:3px;
+    margin-right:.3rem;vertical-align:-1px}
+  /* smeta */
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);text-align:left;
+    border-bottom:2px solid var(--line);padding:.4rem .5rem}
+  td{border-bottom:1px solid var(--line);padding:.5rem;vertical-align:top}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr.total td{border-bottom:none;border-top:2px solid var(--ink);font-weight:700}
+  /* stages */
+  .stage{display:grid;grid-template-columns:2.1rem 1fr;gap:0 1rem;position:relative;padding-bottom:1.3rem}
+  .stage:last-child{padding-bottom:0}
+  .dot{width:2.1rem;height:2.1rem;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;
+    font-weight:700;background:var(--card);border:2px solid var(--line);color:var(--ink-soft);z-index:1}
+  .stage.done .dot{background:var(--green);border-color:var(--green);color:#f2efe4}
+  .stage.now .dot{background:var(--terra);border-color:var(--terra);color:#fff}
+  .stage::before{content:"";position:absolute;left:1rem;top:2.1rem;bottom:0;
+    width:2px;background:var(--line)}
+  .stage:last-child::before{display:none}
+  .stage h3{font-size:1.02rem;font-weight:700;font-family:"Helvetica Neue",Arial,sans-serif}
+  .stage p{color:var(--ink-soft);font-size:.9rem;max-width:62ch}
+  .stage .tag{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;color:var(--terra)}
+  /* wait block */
+  .wait{background:var(--wait-bg);border:1px solid #ecd3ae;border-radius:10px;padding:1rem 1.2rem}
+  .wait strong{color:var(--wait)}
+  .wait .how{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;
+    color:var(--wait);margin-top:.5rem}
+  /* team */
+  .team li{list-style:none;border-bottom:1px dashed var(--line);padding:.55rem 0;font-size:.92rem}
+  .team li:last-child{border-bottom:none}
+  .role{font-family:"Helvetica Neue",Arial,sans-serif;font-weight:700;font-size:.8rem;
+    color:var(--green-deep);text-transform:uppercase;letter-spacing:.06em}
+  .conflict{background:var(--card);border-left:3px solid var(--terra);
+    padding:.7rem .9rem;margin-top:.8rem;font-size:.9rem}
+  /* cost line */
+  .cost{font-family:"SF Mono",Menlo,monospace;font-size:.8rem;background:var(--green-deep);
+    color:#e8e4d2;border-radius:10px;padding:.9rem 1.2rem;overflow-x:auto;white-space:nowrap}
+  /* footer */
+  footer{border-top:3px double var(--line);margin-top:3rem;padding-top:1rem;
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;color:var(--ink-soft)}
+  footer p{margin:.25rem 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Qroky · витрина проекта · тип: сад → карта / этапы / смета</div>
+  <h1>Сад у дома —<br><em>сезон 2026</em></h1>
+  <p class="mission">«Минимум ухода, максимум тени к июлю; ничего, что нельзя бросить на две недели отпуска.» <span class="b real">ИЗ MISSION.MD — форма реальна, текст MOCK</span></p>
+  <div class="meta-row">
+    <span class="chip ro">только чтение — решения в Telegram и в сессии</span>
+    <span class="chip fresh">данные шины на 11.07 09:07 (heartbeat)</span>
+    <span class="chip">обновить сейчас: скажи «qroky dashboard»</span>
+  </div>
+</header>
+
+<section class="digest">
+  <h2>За сутки <span class="b real">ФОРМАТ ИЗ HEARTBEAT-ДАЙДЖЕСТА</span></h2>
+  <div class="card">
+    <p>— Опись участка закончена: 14 позиций «сохранить», 6 «изменить», 3 «убрать». <span class="b real">ПАТТЕРН РЕАЛЕН (as-is инвентаризация, INFO-006)</span></p>
+    <p>— Смета посадок пересчитана после твоего «дороже 8 000 лей не идём». <span class="b mock">MOCK</span></p>
+    <p class="quiet">— Тишины по проверкам нет: план полива принят с первого раза. <span class="b mock">MOCK</span></p>
+  </div>
+</section>
+
+<section>
+  <h2>Карта участка <span class="b mock">СХЕМА ЦЕЛИКОМ MOCK</span></h2>
+  <div class="duo">
+    <figure class="card">
+      <svg viewBox="0 0 460 300" role="img" aria-label="Схема участка: дом, газон, грядки, плодовые деревья, зона отдыха">
+        <rect x="0" y="0" width="460" height="300" rx="10" fill="#eef3e2"/>
+        <!-- path -->
+        <path d="M0 165 H150 Q170 165 170 145 V60" stroke="#d9cfae" stroke-width="18" fill="none" stroke-linecap="round"/>
+        <!-- house -->
+        <rect x="20" y="30" width="120" height="90" rx="4" fill="#c9b78f"/>
+        <polygon points="15,32 80,6 145,32" fill="#a08a5d"/>
+        <text x="80" y="82" text-anchor="middle" font-family="Arial" font-size="13" fill="#4a3f28">дом</text>
+        <!-- lawn -->
+        <ellipse cx="300" cy="90" rx="120" ry="60" fill="#bcd9a0"/>
+        <text x="300" y="94" text-anchor="middle" font-family="Arial" font-size="13" fill="#3c5a26">газон · сохранить</text>
+        <!-- beds -->
+        <g fill="#a9c17f" stroke="#7e9a55" stroke-width="1.5">
+          <rect x="30" y="200" width="86" height="26" rx="4"/>
+          <rect x="30" y="236" width="86" height="26" rx="4"/>
+          <rect x="130" y="200" width="86" height="26" rx="4"/>
+          <rect x="130" y="236" width="86" height="26" rx="4"/>
+        </g>
+        <text x="123" y="188" text-anchor="middle" font-family="Arial" font-size="12" fill="#4c5a33">грядки ×4 · изменить</text>
+        <!-- orchard -->
+        <g>
+          <circle cx="290" cy="215" r="24" fill="#7fa64f22"/>
+          <circle cx="290" cy="215" r="22" fill="#8fb168"/>
+          <circle cx="350" cy="245" r="22" fill="#8fb168"/>
+          <circle cx="405" cy="205" r="22" fill="#d9a86c"/>
+          <rect x="287" y="233" width="6" height="14" fill="#7a5c34"/>
+          <rect x="347" y="263" width="6" height="12" fill="#7a5c34"/>
+          <rect x="402" y="223" width="6" height="12" fill="#7a5c34"/>
+        </g>
+        <text x="348" y="290" text-anchor="middle" font-family="Arial" font-size="12" fill="#4c5a33">плодовые · +1 новое (оранж.)</text>
+        <!-- rest zone -->
+        <rect x="392" y="30" width="52" height="52" rx="26" fill="#e7d3b1"/>
+        <text x="418" y="60" text-anchor="middle" font-family="Arial" font-size="11" fill="#6b5636">отдых</text>
+      </svg>
+      <figcaption>Схема рисуется рендерером из описи участка (продукт атома «опись as-is»). Здесь — вручную, как выглядело бы. <span class="b mock">MOCK</span></figcaption>
+      <div class="leg">
+        <span><i style="background:#bcd9a0"></i>сохранить</span>
+        <span><i style="background:#a9c17f"></i>изменить</span>
+        <span><i style="background:#d9a86c"></i>новое</span>
+      </div>
+    </figure>
+    <div class="card">
+      <h3 style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:.95rem;margin-bottom:.6rem">Смета сезона <span class="b mock">ЦИФРЫ MOCK</span></h3>
+      <table>
+        <thead><tr><th>Позиция</th><th class="num">лей</th></tr></thead>
+        <tbody>
+          <tr><td>Саженцы (абрикос ×1, смородина ×4)</td><td class="num">1 850</td></tr>
+          <tr><td>Земля, компост, мульча</td><td class="num">1 200</td></tr>
+          <tr><td>Капельный полив (грядки)</td><td class="num">2 400</td></tr>
+          <tr><td>Борта грядок, замена ×2</td><td class="num">960</td></tr>
+          <tr><td>Инструмент, расходники</td><td class="num">540</td></tr>
+          <tr class="total"><td>Итого (потолок 8 000)</td><td class="num">6 950</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.78rem;color:var(--ink-soft);margin-top:.6rem">Потолок — твоё ограничение из вводного разговора; смета живёт как продукт атома «смета», витрина её только показывает.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Этапы сезона <span class="b real">ПОРЯДОК ЭТАПОВ = РЕАЛЬНЫЙ COPILOT-ПАТТЕРН САД-ТЕСТА</span></h2>
+  <div class="card">
+    <div class="stage done">
+      <div class="dot">✓</div>
+      <div><h3>Чего хотим к июлю <span class="b real">РЕАЛЬНЫЙ ЭТАП</span></h3>
+      <p>Сначала ожидаемый результат, потом проработка — так шёл живой сад-тест (нечёткая формулировка → «а как это должно выглядеть в конце?»).</p></div>
+    </div>
+    <div class="stage done">
+      <div class="dot">✓</div>
+      <div><h3>Опись того, что уже растёт <span class="b real">РЕАЛЬНЫЙ ЭТАП (находка №1, INFO-006)</span></h3>
+      <p>«Опись существующего + явное сохранить / изменить / убрать — до проектирования нового». Урок сад-теста, вошедший в правила системы.</p></div>
+    </div>
+    <div class="stage now">
+      <div class="dot">3</div>
+      <div><h3>План посадок и полива <span class="b mock">MOCK</span> <span class="tag">— идёт сейчас</span></h3>
+      <p>Схема капельного полива на 4 грядки; проверка плана вторым взглядом вернула одну переделку (сток к дорожке).</p></div>
+    </div>
+    <div class="stage">
+      <div class="dot">4</div>
+      <div><h3>Закупка по смете <span class="b mock">MOCK</span></h3>
+      <p>Стартует после твоего «го» по смете (ниже, в «Ждёт тебя»).</p></div>
+    </div>
+    <div class="stage">
+      <div class="dot">5</div>
+      <div><h3>Посадка и мульчирование <span class="b mock">MOCK</span></h3>
+      <p>Выходные 25–26.07, две пары рук; список работ по часам будет здесь.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Ждёт тебя</h2>
+  <div class="wait">
+    <strong>1 решение:</strong> смета 6 950 лей при потолке 8 000 — принять как есть или срезать полив до ручного (−2 400)? <span class="b mock">MOCK</span>
+    <div class="how">Витрина только показывает. Ответить — кнопкой в Telegram или словами в сессии.</div>
+  </div>
+</section>
+
+<section>
+  <h2>Команда работала <span class="b real">ФОРМА = TEAM-СВОДКА (ИНВАРИАНТ INFO-007), СОДЕРЖАНИЕ MOCK</span></h2>
+  <div class="card">
+    <ul class="team">
+      <li><span class="role">Планировщик участка</span> — опись 23 позиций, карта зон, план посадок.</li>
+      <li><span class="role">Сметчик</span> — 2 варианта сметы (с поливом / без), проверка цен по трём магазинам.</li>
+      <li><span class="role">Проверяющий свежим взглядом</span> — 1 возврат: сток полива шёл к дорожке; переделано.</li>
+    </ul>
+    <div class="conflict"><strong>Где спорили:</strong> сметчик хотел дешёвый шланг вместо капельного; взгляд «минимум ухода» (твоё ограничение из миссии) забраковал — ручной полив = ежедневная обязанность. Выбрали капельный, вынесли тебе вопрос потолка.</div>
+    <p style="font-size:.78rem;color:var(--ink-soft);margin-top:.7rem">Эта сводка — прямой ответ на урок №2 сад-теста: «CEO прожил проект и не увидел, какие роли работали и где спорили». <span class="b real">УРОК РЕАЛЕН</span></p>
+  </div>
+</section>
+
+<section>
+  <h2>Себестоимость <span class="b real">ФОРМАТ = COST-LINE-SPEC (ATOM-072)</span></h2>
+  <div class="cost">проект: сад-2026 · работа машин: 412 тыс. токенов (~$3.1) · витрина: 19 тыс. (0.9% — в норме ≤5%) · проверки: 2, возвратов: 1 · цифры MOCK, формат реальный</div>
+</section>
+
+<footer>
+  <p><strong>Эскиз ATOM-140 (design study).</strong> Это иллюстрация формы витрины типа «сад», не продукт. Один файл, без сети, только чтение.</p>
+  <p>Источники реальных элементов: INFO-006/INFO-007 (уроки живого сад-теста), GATE-018 (вердикты CEO), team-summary-spec + cost-line-spec (ATOM-072), heartbeat-prompt (формат дайджеста и штампа свежести). Всё, что помечено MOCK, — вымышленные данные по типажу.</p>
+</footer>
+
+</div>
+</body>
+</html>

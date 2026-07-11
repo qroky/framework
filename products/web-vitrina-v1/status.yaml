@@ -1,0 +1,10 @@
+# web-vitrina-v1 — generative web dashboard (third head over the bus)
+# Mandate: INFO-045 (CEO, 2026-07-11). Build queued for wave 2.
+atoms:
+  ATOM-140:
+    folder: 140-study
+    status: reviewed ([Q?] study — slim verify ACCEPT r1, 4 cosmetic minors; build plan awaits CEO go after wave 1)
+    maturity: —
+    opened: 2026-07-11
+    gate: INFO-045 (study authorized pre-wave; construction = wave-2 queue)
+    mandate: v1 composition verdict + garden/jewelry mock sketches + build/upkeep economics
