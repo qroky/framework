@@ -84,6 +84,32 @@ installer and no Windows-specific flags.
 
 ---
 
+## Using Qroky day to day
+
+If you are on Windows, read this: Qroky's engine runs inside Ubuntu (WSL2),
+but you do **not** have to live in a Linux terminal to use it. There are three
+ways to work with it, and the first two feel like ordinary Windows.
+
+- **VS Code — the main way.** Install VS Code on Windows plus its **WSL**
+  extension, then open your workspace once with `code .` from the Ubuntu
+  terminal. From then on it is a normal Windows window connected to the Linux
+  side: you edit files, start Claude Code, and talk to Qroky from there, while
+  the Linux terminal stays under the hood.
+- **Telegram — from your phone or any device.** Once you connect the bot during
+  setup, the morning digest, the gate decisions (approve or decline as buttons),
+  and "what's in progress" all arrive in Telegram. You can steer Qroky and
+  approve its decisions from your phone while it works on your PC — no terminal,
+  no computer required.
+- **The Ubuntu terminal directly**, if that is what you prefer.
+
+The only things that happen strictly inside Ubuntu are the one-time install
+above and the Claude Code sessions themselves — and even those you normally
+open through the Windows VS Code window, not a bare terminal. Keep your
+workspace on the Linux side (`~/...`), not on the Windows `C:` drive — see the
+next section.
+
+---
+
 ## What is different from macOS
 
 - **Where your files live.** Your workspace is a normal folder inside the Linux
